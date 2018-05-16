@@ -1,9 +1,6 @@
 $(document).ready(function () {
 
-	if ( $(".pagina-canales").length > 0 ) {
-		tablaCanales();
-	}
-	importarCanales();
+
 
 	var arrayConfig = new Array();
 
@@ -23,13 +20,29 @@ $(document).ready(function () {
 			  setInterval(descargarFichero, (arrayConfig["refresco"]*1000));
 			}
 
+			if(arrayConfig["canales"]==false){
+				importarCanales();
+			}
+			if(arrayConfig["usuarios"]==false){
+				importarUsuarios();
+			}
+
+			if ( $(".pagina-canales").length > 0 ) {
+				tablaCanales();
+				btnImportarCanales();
+			}
+			if ( $(".pagina-usuarios").length > 0 ) {
+				tablaUsuarios();
+				btnImportarUsuarios();
+			}
+
 
        	}).fail(function( jqxhr, textStatus, error ) {
            	var err = textStatus + ", " + error;
            	console.log( "Request Failed: " + err );
        	});
    }
-    function cargarConfiguracion(){
+	function cargarConfiguracion(){
 	   $("#ip").val(arrayConfig["ip"]);
 	   $("#puerto").val(arrayConfig["puerto"]);
 	   $("#pass").val(arrayConfig["pass"]);
@@ -38,8 +51,6 @@ $(document).ready(function () {
     }
 
 	function guardarConfiguracion(){
-
-
 		$('#formConfiguracion').on('submit', function(e){
             e.preventDefault();
 			var form = $('#formConfiguracion')[0];
@@ -111,21 +122,6 @@ $(document).ready(function () {
 		});
 	}
 
-	function importarCanales(){
-		$.ajax({
-			type: "POST",
-			url: "acciones/importarCanales.php",
-			success: function (data) {
-				if(data==true){
-					console.log("Canales importados correctamente");
-				}else if(data=="repedito"){
-					console.log("Canales importados anteriormente");
-				}else{
-					console.log("Error al importar canales");
-				}
-			}
-		});
-	}
 
 	function tablaCanales(){
 		$('#tablaCanales tfoot th').each( function () {
@@ -166,5 +162,138 @@ $(document).ready(function () {
         });
         table.select();
 	}
+	function btnImportarCanales(){
+		$( ".btnImportarCanales" ).click(function() {
+			$.ajax({
+				type: "POST",
+				url: "acciones/importarCanales.php",
+				beforeSend:function(){
+                	irArriba();
+			    	$(".cargando").toggle();
+			    },
+				success: function (data) {
+					$(".cargando").toggle();
+					if(data==true){
+						console.log("Canales importados correctamente");
+						$(".canalesImportados").fadeTo(2000, 500).slideUp(500, function(){
+							$(".canalesImportados").slideUp(500);
+						});
+					}else if(data=="404"){
+						console.log("error, url no existe");
+					}else if(data=="401"){
+						console.log("error, usuario o contraseña incorrecta");
+					}else{
+						console.log("Error al importar usuarios");
+					}
+				}
+			});
+		});
+	}
 
+	function tablaUsuarios(){
+		$('#tablaUsuarios tfoot th').each( function () {
+            var title = $('#tablaUsuarios thead th').eq( $(this).index() ).text();
+            $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+        } );
+		var table = $('#tablaUsuarios').DataTable({
+            language: {
+                url: "vendor/datatables/i18n/Spanish.json"
+            },
+            ajax: {
+                url: "acciones/phpUsuarios.php",
+                type: 'POST'
+            },
+            responsive: true,
+            /*destroy: true,
+            processing: true,*/
+            destroy: true,
+            iDisplayLength: 5,
+            lengthMenu: [
+                [5, 10, 25, 50, 100, -1],
+                [5, 10, 25, 50, 100, "Todo"] // change per page values here
+            ],
+            order: [[ 0, "asc" ]],
+            columns: [
+                {data: "1"}
+            ],
+            initComplete: function() {
+                table.columns().every( function (){
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function (){
+                        if ( that.search() !== this.value ) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            }
+        });
+        table.select();
+	}
+	function btnImportarUsuarios(){
+		$( ".btnImportarUsuarios" ).click(function() {
+			$.ajax({
+				type: "POST",
+				url: "acciones/importarUsuarios.php",
+				beforeSend:function(){
+                	irArriba();
+			    	$(".cargando").toggle();
+			    },
+				success: function (data) {
+					$(".cargando").toggle();
+					if(data==true){
+						console.log("Usuarios importados correctamente");
+						$(".usuariosImportados").fadeTo(2000, 500).slideUp(500, function(){
+							$(".usuariosImportados").slideUp(500);
+						});
+					}else if(data=="404"){
+						console.log("error, url no existe");
+					}else if(data=="401"){
+						console.log("error, usuario o contraseña incorrecta");
+					}else{
+						console.log("Error al importar usuarios");
+					}
+				}
+			});
+		});
+	}
+
+
+	function importarCanales(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/importarCanales.php",
+			success: function (data) {
+				if(data==true){
+					console.log("Canales importados correctamente");
+				}else if(data=="404"){
+					console.log("error, url no existe");
+				}else if(data=="401"){
+					console.log("error, usuario o contraseña incorrecta");
+				}else{
+					console.log("Error al importar usuarios");
+				}
+			}
+		});
+	}
+	function importarUsuarios(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/importarUsuarios.php",
+			success: function (data) {
+				if(data==true){
+					console.log("Usuarios importados correctamente");
+				}else if(data=="404"){
+					console.log("error, url no existe");
+				}else if(data=="401"){
+					console.log("error, usuario o contraseña incorrecta");
+				}else{
+					console.log("Error al importar usuarios");
+				}
+			}
+		});
+	}
+
+	function irArriba(){
+		$('body,html').animate({scrollTop : 0}, 500);
+	}
 });

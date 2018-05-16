@@ -23,7 +23,7 @@
 */
 
 // DB table to use
-$table = 'canales';
+$table = 'usuarios';
 
 // Table's primary key
 $primaryKey = 'id';
@@ -34,7 +34,7 @@ $primaryKey = 'id';
 // indexes
 $columns = array(
 	array( 'db' => 'id', 'dt' => 0 ),
-	array( 'db' => 'nombre', 'dt' => 1 )
+	array( 'db' => 'nombre',     'dt' => 1 )
 );
 
 $sql_details = array(

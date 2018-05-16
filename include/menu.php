@@ -24,13 +24,13 @@
 				</a>
 			</li>
 			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Canales">
-				<a class="nav-link" href="#">
+				<a class="nav-link" href="canales.php">
 					<i class="fa fa-fw fa-area-chart"></i>
 					<span class="nav-link-text">Canales</span>
 				</a>
 			</li>
 			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Usuarios">
-				<a class="nav-link" href="#">
+				<a class="nav-link" href="usuarios.php">
 					<i class="fa fa-fw fa-area-chart"></i>
 					<span class="nav-link-text">Usuarios</span>
 				</a>

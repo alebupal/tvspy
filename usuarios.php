@@ -7,11 +7,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<title>Canales - TVSPY</title>
+	<title>Usuarios - TVSPY</title>
 	<?php include "include/estilo.php"; ?>
 </head>
 
-<body class="fixed-nav sticky-footer bg-dark pagina-canales" id="page-top">
+<body class="fixed-nav sticky-footer bg-dark pagina-usuarios" id="page-top">
 	<?php include "include/menu.php"; ?>
 	<!-- Navigation-->
 
@@ -22,7 +22,7 @@
 				<li class="breadcrumb-item">
 					<a href="#">Inicio</a>
 				</li>
-				<li class="breadcrumb-item active">Canales</li>
+				<li class="breadcrumb-item active">Usuarios</li>
 			</ol>
 			<div class="row mb-2">
 				<div class="col-lg-12">
@@ -35,13 +35,13 @@
 					</div>
 				</div>
 				<div class="col-lg-12">
-					<div class="alert alert-success canalesImportados oculto" role="alert">
-					  Canales importados correctamente
+					<div class="alert alert-success usuariosImportados oculto" role="alert">
+						Usuarios importados correctamente
 					</div>
 				</div>
 				<div class="col-lg-12">
 					<div class="table-responsive">
-						<table  class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaCanales">
+						<table  class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaUsuarios">
 							<thead>
 								<tr>
 									<th>Nombre</th>
@@ -58,7 +58,7 @@
 			</div>
 			<div class="row mb-2">
 				<div class="col-md-12">
-					<a class="btn btn-primary btn-block text-white btnImportarCanales">Importar canales de nuevo</a>
+					<a class="btn btn-primary btn-block text-white btnImportarUsuarios">Importar usuarios de nuevo</a>
 				</div>
 			</div>
 
