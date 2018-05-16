@@ -1,4 +1,10 @@
 $(document).ready(function () {
+
+	if ( $(".pagina-canales").length > 0 ) {
+		tablaCanales();
+	}
+	importarCanales();
+
 	var arrayConfig = new Array();
 
 	leerConfig('config.json');
@@ -103,6 +109,62 @@ $(document).ready(function () {
 			var err = textStatus + ", " + error;
 			console.log( "Request Failed: " + err );
 		});
+	}
+
+	function importarCanales(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/importarCanales.php",
+			success: function (data) {
+				if(data==true){
+					console.log("Canales importados correctamente");
+				}else if(data=="repedito"){
+					console.log("Canales importados anteriormente");
+				}else{
+					console.log("Error al importar canales");
+				}
+			}
+		});
+	}
+
+	function tablaCanales(){
+		$('#tablaCanales tfoot th').each( function () {
+            var title = $('#tablaCanales thead th').eq( $(this).index() ).text();
+            $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+        } );
+		var table = $('#tablaCanales').DataTable({
+            language: {
+                url: "vendor/datatables/i18n/Spanish.json"
+            },
+            ajax: {
+                url: "acciones/phpCanales.php",
+                type: 'POST'
+            },
+            responsive: true,
+            /*destroy: true,
+            processing: true,*/
+            destroy: true,
+            iDisplayLength: 5,
+            lengthMenu: [
+                [5, 10, 25, 50, 100, -1],
+                [5, 10, 25, 50, 100, "Todo"] // change per page values here
+            ],
+            order: [[ 0, "asc" ]],
+            columns: [
+                {data: "1"}
+            ],
+            initComplete: function() {
+                table.columns().every( function (){
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function (){
+                        if ( that.search() !== this.value ) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            }
+        });
+        table.select();
 	}
 
 });

@@ -11,19 +11,31 @@
 					<span class="nav-link-text">Inicio</span>
 				</a>
 			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
+			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estadisticas">
 				<a class="nav-link" href="#">
 					<i class="fa fa-fw fa-area-chart"></i>
 					<span class="nav-link-text">Estadisticas</span>
 				</a>
 			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Registro">
 				<a class="nav-link" href="#">
 					<i class="fa fa-list"></i>
 					<span class="nav-link-text">Registro</span>
 				</a>
 			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
+			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Canales">
+				<a class="nav-link" href="#">
+					<i class="fa fa-fw fa-area-chart"></i>
+					<span class="nav-link-text">Canales</span>
+				</a>
+			</li>
+			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Usuarios">
+				<a class="nav-link" href="#">
+					<i class="fa fa-fw fa-area-chart"></i>
+					<span class="nav-link-text">Usuarios</span>
+				</a>
+			</li>
+			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Configuración">
 				<a class="nav-link" href="configuracion.php">
 					<i class="fa fa-cog"></i>
 					<span class="nav-link-text">Configuración</span>
