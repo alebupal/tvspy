@@ -17,13 +17,14 @@ $(document).ready(function () {
 			  guardarConfiguracion();
 			}
 			if ( $(".pagina-inicio").length > 0 ) {
-			  setInterval(descargarFichero, (arrayConfig["refresco"]*1000));
+				descargarFichero();
+				setInterval(descargarFichero, (arrayConfig["refresco"]*1000));
 			}
 
-			if(arrayConfig["canales"]==false){
+			if(arrayConfig["canales"]=="false"){
 				importarCanales();
 			}
-			if(arrayConfig["usuarios"]==false){
+			if(arrayConfig["usuarios"]=="false"){
 				importarUsuarios();
 			}
 
@@ -34,6 +35,9 @@ $(document).ready(function () {
 			if ( $(".pagina-usuarios").length > 0 ) {
 				tablaUsuarios();
 				btnImportarUsuarios();
+			}
+			if ( $(".pagina-registro").length > 0 ) {
+				tablaRegistro();
 			}
 
 
@@ -48,6 +52,9 @@ $(document).ready(function () {
 	   $("#pass").val(arrayConfig["pass"]);
 	   $("#usuario").val(arrayConfig["usuario"]);
 	   $("#refresco").val(arrayConfig["refresco"]);
+	   $("#usuarios").val(arrayConfig["usuarios"]);
+	   $("#canales").val(arrayConfig["canales"]);
+	   $("#refrescoCron").val(arrayConfig["refrescoCron"]);
     }
 
 	function guardarConfiguracion(){
@@ -74,7 +81,7 @@ $(document).ready(function () {
 			});
         });
     }
-
+	//Con el cron se quitará este método para no descargalo varias veces
 	function descargarFichero(){
 		$.ajax({
 			type: "POST",
@@ -123,6 +130,46 @@ $(document).ready(function () {
 	}
 
 
+	function btnImportarCanales(){
+		$( ".btnImportarCanales" ).click(function() {
+			var formData = new FormData();
+			formData.append("ip", arrayConfig["ip"]);
+			formData.append("puerto", arrayConfig["puerto"]);
+			formData.append("pass", arrayConfig["pass"]);
+			formData.append("usuario", arrayConfig["usuario"]);
+			formData.append("refresco", arrayConfig["refresco"]);
+			formData.append("usuarios", arrayConfig["usuarios"]);
+			formData.append("refrescoCron", arrayConfig["refrescoCron"]);
+			$.ajax({
+				type: "POST",
+				url: "acciones/importarCanales.php",
+				data : formData,
+				contentType : false,
+				processData : false,
+				async: false,
+				beforeSend:function(){
+                	irArriba();
+			    	$(".cargando").toggle();
+			    },
+				success: function (data) {
+					$(".cargando").toggle();
+					tablaCanales();
+					if(data==true){
+						console.log("Canales importados correctamente");
+						$(".canalesImportados").fadeTo(2000, 500).slideUp(500, function(){
+							$(".canalesImportados").slideUp(500);
+						});
+					}else if(data=="404"){
+						console.log("error, url no existe");
+					}else if(data=="401"){
+						console.log("error, usuario o contraseña incorrecta");
+					}else{
+						console.log("Error al importar usuarios");
+					}
+				}
+			});
+		});
+	}
 	function tablaCanales(){
 		$('#tablaCanales tfoot th').each( function () {
             var title = $('#tablaCanales thead th').eq( $(this).index() ).text();
@@ -162,21 +209,35 @@ $(document).ready(function () {
         });
         table.select();
 	}
-	function btnImportarCanales(){
-		$( ".btnImportarCanales" ).click(function() {
+
+	function btnImportarUsuarios(){
+		$(".btnImportarUsuarios").click(function() {
+			var formData = new FormData();
+			formData.append("ip", arrayConfig["ip"]);
+			formData.append("puerto", arrayConfig["puerto"]);
+			formData.append("pass", arrayConfig["pass"]);
+			formData.append("usuario", arrayConfig["usuario"]);
+			formData.append("refresco", arrayConfig["refresco"]);
+			formData.append("canales", arrayConfig["canales"]);
+			formData.append("refrescoCron", arrayConfig["refrescoCron"]);
 			$.ajax({
 				type: "POST",
-				url: "acciones/importarCanales.php",
+				url: "acciones/importarUsuarios.php",
+				data : formData,
+				contentType : false,
+				processData : false,
+				async: false,
 				beforeSend:function(){
                 	irArriba();
 			    	$(".cargando").toggle();
 			    },
 				success: function (data) {
 					$(".cargando").toggle();
+					tablaUsuarios();
 					if(data==true){
-						console.log("Canales importados correctamente");
-						$(".canalesImportados").fadeTo(2000, 500).slideUp(500, function(){
-							$(".canalesImportados").slideUp(500);
+						console.log("Usuarios importados correctamente");
+						$(".usuariosImportados").fadeTo(2000, 500).slideUp(500, function(){
+							$(".usuariosImportados").slideUp(500);
 						});
 					}else if(data=="404"){
 						console.log("error, url no existe");
@@ -189,7 +250,6 @@ $(document).ready(function () {
 			});
 		});
 	}
-
 	function tablaUsuarios(){
 		$('#tablaUsuarios tfoot th').each( function () {
             var title = $('#tablaUsuarios thead th').eq( $(this).index() ).text();
@@ -229,39 +289,23 @@ $(document).ready(function () {
         });
         table.select();
 	}
-	function btnImportarUsuarios(){
-		$( ".btnImportarUsuarios" ).click(function() {
-			$.ajax({
-				type: "POST",
-				url: "acciones/importarUsuarios.php",
-				beforeSend:function(){
-                	irArriba();
-			    	$(".cargando").toggle();
-			    },
-				success: function (data) {
-					$(".cargando").toggle();
-					if(data==true){
-						console.log("Usuarios importados correctamente");
-						$(".usuariosImportados").fadeTo(2000, 500).slideUp(500, function(){
-							$(".usuariosImportados").slideUp(500);
-						});
-					}else if(data=="404"){
-						console.log("error, url no existe");
-					}else if(data=="401"){
-						console.log("error, usuario o contraseña incorrecta");
-					}else{
-						console.log("Error al importar usuarios");
-					}
-				}
-			});
-		});
-	}
-
 
 	function importarCanales(){
+		var formData = new FormData();
+		formData.append("ip", arrayConfig["ip"]);
+		formData.append("puerto", arrayConfig["puerto"]);
+		formData.append("pass", arrayConfig["pass"]);
+		formData.append("usuario", arrayConfig["usuario"]);
+		formData.append("refresco", arrayConfig["refresco"]);
+		formData.append("usuarios", arrayConfig["usuarios"]);
+		formData.append("refrescoCron", arrayConfig["refrescoCron"]);
 		$.ajax({
 			type: "POST",
 			url: "acciones/importarCanales.php",
+			data : formData,
+			contentType : false,
+			processData : false,
+			async: false,
 			success: function (data) {
 				if(data==true){
 					console.log("Canales importados correctamente");
@@ -270,15 +314,27 @@ $(document).ready(function () {
 				}else if(data=="401"){
 					console.log("error, usuario o contraseña incorrecta");
 				}else{
-					console.log("Error al importar usuarios");
+					console.log("Error al importar canales");
 				}
 			}
 		});
 	}
 	function importarUsuarios(){
+		var formData = new FormData();
+		formData.append("ip", arrayConfig["ip"]);
+		formData.append("puerto", arrayConfig["puerto"]);
+		formData.append("pass", arrayConfig["pass"]);
+		formData.append("usuario", arrayConfig["usuario"]);
+		formData.append("refresco", arrayConfig["refresco"]);
+		formData.append("canales", arrayConfig["canales"]);
+		formData.append("refrescoCron", arrayConfig["refrescoCron"]);
 		$.ajax({
 			type: "POST",
 			url: "acciones/importarUsuarios.php",
+			data : formData,
+			contentType : false,
+			processData : false,
+			async: false,
 			success: function (data) {
 				if(data==true){
 					console.log("Usuarios importados correctamente");
@@ -292,6 +348,50 @@ $(document).ready(function () {
 			}
 		});
 	}
+
+	function tablaRegistro(){
+		$('#tablaRegistro tfoot th').each( function () {
+            var title = $('#tablaRegistro thead th').eq( $(this).index() ).text();
+            $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+        } );
+		var table = $('#tablaRegistro').DataTable({
+            language: {
+                url: "vendor/datatables/i18n/Spanish.json"
+            },
+            ajax: {
+                url: "acciones/phpRegistro.php",
+                type: 'POST'
+            },
+            responsive: true,
+            /*destroy: true,
+            processing: true,*/
+            destroy: true,
+            iDisplayLength: 5,
+            lengthMenu: [
+                [5, 10, 25, 50, 100, -1],
+                [5, 10, 25, 50, 100, "Todo"] // change per page values here
+            ],
+            order: [[ 0, "asc" ]],
+            columns: [
+                {data: "1"},
+                {data: "2"},
+                {data: "3"},
+                {data: "4"}
+            ],
+            initComplete: function() {
+                table.columns().every( function (){
+                    var that = this;
+                    $('input', this.footer()).on('keyup change', function (){
+                        if ( that.search() !== this.value ) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            }
+        });
+        table.select();
+	}
+
 
 	function irArriba(){
 		$('body,html').animate({scrollTop : 0}, 500);

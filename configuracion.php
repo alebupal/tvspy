@@ -58,29 +58,17 @@
 							   		</div>
 						   		</div>
 								<div class="form-row">
-									<div class="form-group col-md-12">
+									<div class="form-group col-md-6">
 										<label for="refresco">Tiempo de refresco (segundos)</label>
 										<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
 							   		</div>
+									<div class="form-group col-md-6">
+										<label for="refrescoCron">Tiempo de refresco cron (segundos)</label>
+										<input type="number" class="form-control" id="refrescoCron" name="refrescoCron" placeholder="1" required>
+									</div>
 						   		</div>
-								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
-							</form>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-12">
-					<!-- Example Notifications Card-->
-					<div class="card mb-3">
-						<div class="card-header">
-							<i class="fa fa-cog"></i> Configuración cron</div>
-						<div class="col-md-12 mb-2 mt-2">
-							<form id="formConfiguracionCron" method="post">
-								<div class="form-row">
-									<div class="form-group col-md-12">
-										<label for="refresco">Tiempo de refresco (segundos)</label>
-										<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
-							   		</div>
-						   		</div>
+								<input type="hidden" class="form-control" id="canales" name="canales">
+								<input type="hidden" class="form-control" id="usuarios" name="usuarios">
 								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
 							</form>
 						</div>
