@@ -22,6 +22,8 @@
  * @author alebupal
 */
 
+require_once "../clases/Constantes.php";
+
 // DB table to use
 $table = 'canales';
 
@@ -37,9 +39,18 @@ $columns = array(
 	array( 'db' => 'nombre', 'dt' => 1 )
 );
 
+/*
 $sql_details = array(
 	'db' => "../bd.db"
 );
+*/
+$sql_details = array(
+	'user' => Constantes::username,
+	'pass' => Constantes::password,
+	'db'   => Constantes::dbname,
+	'host' => Constantes::servername
+);
+
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

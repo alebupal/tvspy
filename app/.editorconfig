@@ -1,0 +1,7 @@
+# editorconfig.org
+root = true
+[*]
+indent_style = tab
+end_of_line = lf
+charset = utf-8
+indent_size = 4

@@ -1,6 +1,14 @@
 <?php
 
-$db = new PDO('sqlite:../bd.db') or die('Unable to open database');
+require_once "../clases/Constantes.php";
+$db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername."",
+				Constantes::username,
+				Constantes::password,
+				array(
+					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		    		PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+		  		)
+			);
 
 $config = file_get_contents("../config.json");
 $json_config = json_decode($config, true);
@@ -78,14 +86,14 @@ if($httpCode == 404) {
 				$arrayDiferente = array_diff(array_column($reproducciones2["entries"], 'id'), array_column($reproducciones["entries"], 'id'));
 				$arrayDiferente2 = array_diff(array_column($reproducciones["entries"], 'id'), array_column($reproducciones2["entries"], 'id'));
 				// echo "ambos tienen<br>";
-				// echo "<pre>";
-				// var_dump($arrayDiferente);
-				// var_dump($arrayDiferente2);
-				// echo"<br>---<br>";
-				// echo "</pre>";
+				echo "<pre>";
+				var_dump($arrayDiferente);
+				var_dump($arrayDiferente2);
+				echo"<br>---<br>";
+				echo "</pre>";
 				//ids que estan en resultado2 y hay que actualizar la fecha
 				if(count($arrayDiferente)>0){
-					for ($i=1; $i <= count($arrayDiferente); $i++) {
+					for ($i=0; $i < count($arrayDiferente); $i++) {
 						for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
 							var_dump($arrayDiferente[$i]);
 							var_dump($reproducciones2["entries"][$r]["id"]);
@@ -100,7 +108,7 @@ if($httpCode == 404) {
 
 				//ids que estan en resultado.json y hay que insertar en la bd
 				if(count($arrayDiferente2)>0){
-					for ($i=1; $i <= count($arrayDiferente2); $i++) {
+					for ($i=0; $i < count($arrayDiferente2); $i++) {
 						for ($r=0; $r < count($reproducciones["entries"]); $r++) {
 							if($arrayDiferente2[$i]==$reproducciones["entries"][$r]["id"]){
 								echo "igual, inserta<br>";
@@ -135,7 +143,7 @@ function insertarReproduccion($db, $reproducciones){
 function actualizoReproduccion($db, $idReproduccion){
 	$statement="";
 
-	$update = "UPDATE registro SET fin = strftime('%Y-%m-%d %H:%M:%S','now') WHERE idReproduccion=:idReproduccion";
+	$update = "UPDATE registro SET fin = now() WHERE idReproduccion=:idReproduccion";
 	$statement = $db->prepare($update);
 	// Bind parameters to statement variables
 	$statement->bindParam(':idReproduccion', $idReproduccion);

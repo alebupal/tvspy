@@ -22,6 +22,8 @@
  * @author alebupal
 */
 
+require_once "../clases/Constantes.php";
+
 // DB table to use
 $table = 'usuarios';
 
@@ -34,12 +36,21 @@ $primaryKey = 'id';
 // indexes
 $columns = array(
 	array( 'db' => 'id', 'dt' => 0 ),
-	array( 'db' => 'nombre',     'dt' => 1 )
+	array( 'db' => 'nombre', 'dt' => 1 )
 );
 
+/*
 $sql_details = array(
 	'db' => "../bd.db"
 );
+*/
+$sql_details = array(
+	'user' => Constantes::username,
+	'pass' => Constantes::password,
+	'db'   => Constantes::dbname,
+	'host' => Constantes::servername
+);
+
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

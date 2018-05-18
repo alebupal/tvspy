@@ -1,11 +1,15 @@
 <?php
-
-$db = new SQLite3('../bd.db');
-
+require_once "../clases/Constantes.php";
+$db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername."",
+				Constantes::username,
+				Constantes::password,
+				array(
+					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+		    		PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+		  		)
+			);
 try {
-	$result = $db->query('DELETE from canales');
-	$result = $db->query('UPDATE sqlite_sequence set seq=0 where name="canales"');
-
+	$result = $db->query('TRUNCATE TABLE canales');
 
 	$config = file_get_contents("../config.json");
 	$json_config = json_decode($config, true);
@@ -30,7 +34,6 @@ try {
 	$canales_json=curl_exec($ch);
 	/* Check for 404 (file not found). */
 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
 	if($httpCode == 404) {
 		echo 404;
 	}else if($httpCode == 401) {
@@ -69,7 +72,9 @@ try {
 		    "refresco" => $_POST["refresco"],
 		    "refrescoCron" => $_POST["refrescoCron"],
 		    "canales" => "true",
-		    "usuarios" => $_POST["usuarios"]
+		    "usuarios" => $_POST["usuarios"],
+			"bot_token" => $_POST["bot_token"],
+			"id_chat" => $_POST["id_chat"]
 		);
 		$json = json_encode($array);
 		$fp = fopen('../config.json', 'w');

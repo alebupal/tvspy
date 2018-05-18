@@ -22,6 +22,8 @@
  * @author alebupal
 */
 
+require_once "../clases/Constantes.php";
+
 // DB table to use
 $table = 'registro';
 
@@ -40,9 +42,18 @@ $columns = array(
 	array( 'db' => 'fin', 'dt' => 4 )
 );
 
+/*
 $sql_details = array(
 	'db' => "../bd.db"
 );
+*/
+$sql_details = array(
+	'user' => Constantes::username,
+	'pass' => Constantes::password,
+	'db'   => Constantes::dbname,
+	'host' => Constantes::servername
+);
+
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -67,6 +67,16 @@
 										<input type="number" class="form-control" id="refrescoCron" name="refrescoCron" placeholder="1" required>
 									</div>
 						   		</div>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="refresco">Telegram Bot Token</label>
+										<input type="number" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
+							   		</div>
+									<div class="form-group col-md-6">
+										<label for="refrescoCron">Telegram Chat ID, Group ID, or Channel Username</label>
+										<input type="number" class="form-control" id="id_chat" name="id_chat" placeholder="177537537537375252452" required>
+									</div>
+						   		</div>
 								<input type="hidden" class="form-control" id="canales" name="canales">
 								<input type="hidden" class="form-control" id="usuarios" name="usuarios">
 								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>

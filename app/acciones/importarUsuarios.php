@@ -1,11 +1,11 @@
 <?php
-
-$db = new PDO('sqlite:../bd.db') or die('Unable to open database');
-
+require_once "../clases/Constantes.php";
+$db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername."",
+				Constantes::username,
+				Constantes::password
+			);
 try {
-	$result = $db->query('DELETE from usuarios');
-	$result = $db->query('UPDATE sqlite_sequence set seq=0 where name="usuarios"');
-
+	$result = $db->query('TRUNCATE TABLE usuarios');
 
 	$config = file_get_contents("../config.json");
 	$json_config = json_decode($config, true);
@@ -30,7 +30,6 @@ try {
 	$canales_json=curl_exec($ch);
 	/* Check for 404 (file not found). */
 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
 	if($httpCode == 404) {
 		echo 404;
 	}else if($httpCode == 401) {
@@ -70,7 +69,9 @@ try {
 		    "refresco" => $_POST["refresco"],
 		    "refrescoCron" => $_POST["refrescoCron"],
 		    "canales" => $_POST["canales"],
-		    "usuarios" => "true"
+		    "usuarios" => "true",
+			"bot_token" => $_POST["bot_token"],
+			"id_chat" => $_POST["id_chat"]
 		);
 		$json = json_encode($array);
 		$fp = fopen('../config.json', 'w');

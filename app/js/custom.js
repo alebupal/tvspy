@@ -55,6 +55,8 @@ $(document).ready(function () {
 	   $("#usuarios").val(arrayConfig["usuarios"]);
 	   $("#canales").val(arrayConfig["canales"]);
 	   $("#refrescoCron").val(arrayConfig["refrescoCron"]);
+	   $("#bot_token").val(arrayConfig["bot_token"]);
+	   $("#id_chat").val(arrayConfig["id_chat"]);
     }
 
 	function guardarConfiguracion(){
@@ -140,6 +142,8 @@ $(document).ready(function () {
 			formData.append("refresco", arrayConfig["refresco"]);
 			formData.append("usuarios", arrayConfig["usuarios"]);
 			formData.append("refrescoCron", arrayConfig["refrescoCron"]);
+			formData.append("bot_token", arrayConfig["bot_token"]);
+			formData.append("id_chat", arrayConfig["id_chat"]);
 			$.ajax({
 				type: "POST",
 				url: "acciones/importarCanales.php",
@@ -220,6 +224,8 @@ $(document).ready(function () {
 			formData.append("refresco", arrayConfig["refresco"]);
 			formData.append("canales", arrayConfig["canales"]);
 			formData.append("refrescoCron", arrayConfig["refrescoCron"]);
+			formData.append("bot_token", arrayConfig["bot_token"]);
+			formData.append("id_chat", arrayConfig["id_chat"]);
 			$.ajax({
 				type: "POST",
 				url: "acciones/importarUsuarios.php",
@@ -299,6 +305,8 @@ $(document).ready(function () {
 		formData.append("refresco", arrayConfig["refresco"]);
 		formData.append("usuarios", arrayConfig["usuarios"]);
 		formData.append("refrescoCron", arrayConfig["refrescoCron"]);
+		formData.append("bot_token", arrayConfig["bot_token"]);
+		formData.append("id_chat", arrayConfig["id_chat"]);
 		$.ajax({
 			type: "POST",
 			url: "acciones/importarCanales.php",
@@ -328,6 +336,8 @@ $(document).ready(function () {
 		formData.append("refresco", arrayConfig["refresco"]);
 		formData.append("canales", arrayConfig["canales"]);
 		formData.append("refrescoCron", arrayConfig["refrescoCron"]);
+		formData.append("bot_token", arrayConfig["bot_token"]);
+		formData.append("id_chat", arrayConfig["id_chat"]);
 		$.ajax({
 			type: "POST",
 			url: "acciones/importarUsuarios.php",
