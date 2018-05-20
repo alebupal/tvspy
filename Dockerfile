@@ -53,12 +53,12 @@ ADD supporting_files/apache_default /etc/apache2/sites-available/000-default.con
 RUN a2enmod rewrite
 
 # Zona horaria de España y limpieza de la instalación y ficheros temporales
-    && export DEBIAN_FRONTEND=noninteractive \
-    && ln -fs /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
+	&& export DEBIAN_FRONTEND=noninteractive \
+	&& ln -fs /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
 	&& dpkg-reconfigure --frontend noninteractive tzdata \
-    && apt-get clean autoclean \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	&& apt-get clean autoclean \
+	&& apt-get autoremove -y \
+	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Puertos
 EXPOSE 80 3306
