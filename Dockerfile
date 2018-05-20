@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM phusion/baseimage
 #
 MAINTAINER alebupal <alebupal@gmail.com>
 
@@ -9,7 +9,7 @@ RUN apt-get update && \
 	apt-get install -y apache2 software-properties-common mysql-server && \
 	add-apt-repository -y ppa:ondrej/php && \
 	apt-get update -y && \
-	apt-get install -y php7.2 php7.0-cli php7.2-common php7.2-mbstring php7.2-intl php7.2-xml php7.2-mysql && \
+	apt-get install -y supervisor wget php7.2 php7.0-cli php7.2-common php7.2-mbstring php7.2-intl php7.2-xml php7.2-mysql && \
 	echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 
@@ -50,14 +50,6 @@ RUN mv /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.
 # config to enable .htaccess
 ADD supporting_files/apache_default /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
-
-# Zona horaria de España y limpieza de la instalación y ficheros temporales
-RUN export DEBIAN_FRONTEND=noninteractive \
-	&& ln -fs /usr/share/zoneinfo/Europe/Madrid /etc/localtime \
-	&& dpkg-reconfigure --frontend noninteractive tzdata \
-	&& apt-get clean autoclean \
-	&& apt-get autoremove -y \
-	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Puertos
 EXPOSE 80 3306
