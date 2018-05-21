@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # start db
-sudo service mysql start
+sudo /etc/init.d/mysql start
 # create the default database from the ADDed file.
 mysql -e "CREATE USER 'tvspy'@'localhost' IDENTIFIED BY 'tvspy'"
 mysql < /var/www/html/bd.sql
