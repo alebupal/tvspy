@@ -15,7 +15,7 @@ RUN apt-get update && \
 	apt-get install -y nano supervisor wget php7.2 php7.0-cli php7.2-common php7.2-mbstring php7.2-curl php7.2-intl php7.2-xml php7.2-mysql && \
 	echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-RUN chmod 777 /etc/crontab
+RUN chmod 600 /etc/crontab
 
 # copia de la aplicación web
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
