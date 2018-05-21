@@ -68,14 +68,14 @@ if($httpCode == 404) {
 				for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
 					actualizoReproduccion($db,$reproducciones2["entries"][$r]["id"]);
 				}
-				actualizarResultado2($result);
+				actualizarResultado2($result, $ruta);
 			}else if(count($reproducciones["entries"])!=0 && count($reproducciones2["entries"])==0){
 				//No hay nada en resultado2.json, pero hay datos en resultado.json de una nueva reproducción
 				echo "Insertamos la nueva produccion de reproducciones y actualizo resultado2 respecto a resultado1<br>";
 				for ($i=0; $i < count($reproducciones["entries"]) ; $i++) {
 					insertarReproduccion($db,$reproducciones["entries"][$i]);
 				}
-				actualizarResultado2($result);
+				actualizarResultado2($result, $ruta);
 
 
 			}else if(count($reproducciones["entries"])!=0 && count($reproducciones2["entries"])!=0){
@@ -117,7 +117,7 @@ if($httpCode == 404) {
 						}
 					}
 				}
-				actualizarResultado2($result);
+				actualizarResultado2($result, $ruta);
 			}
 		}else{
 			echo false;
@@ -151,7 +151,7 @@ function actualizoReproduccion($db, $idReproduccion){
 	$statement->execute();
 
 }
-function actualizarResultado2($result){
+function actualizarResultado2($result, $ruta){
 	$fp = fopen($ruta.'acciones/resultado2.json', 'w');
 	if(fwrite($fp, json_encode($result))!=false){
 		fclose($fp);

@@ -13,4 +13,4 @@
 #
 #--------------------------------------------------
 # php que actualiza la base de datos
-*/%refrescoCron% * * * * root php /var/www/html/acciones/actualizacion.php
+*/%refrescoCron% * * * * root php /var/www/html/acciones/actualizacion.php &> /var/www/html/cron_log.log

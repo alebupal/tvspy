@@ -21,8 +21,10 @@
 		$contenidoPlantillaCron = file_get_contents('../crontab_template');
 		$contenidoPlantillaCron = str_replace("%refrescoCron%",$_POST["refrescoCron"], $contenidoPlantillaCron);
 		file_put_contents($cron, $contenidoPlantillaCron);
-		exec('crontab /var/www/html/crontab');
-		exec('service cron reload');
+		//exec('crontab /var/www/html/crontab 2>&1');
+		echo exec('crontab /var/www/html/crontab 2>&1', $output);
+		print_r($output);  // to see the response to your command
+		echo exec('service cron reload');
 		echo true;
 	}else{
 		echo false;

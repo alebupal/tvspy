@@ -63,7 +63,7 @@
 										<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
 							   		</div>
 									<div class="form-group col-md-6">
-										<label for="refrescoCron">Tiempo de refresco cron (segundos)</label>
+										<label for="refrescoCron">Tiempo de refresco cron (minutos)</label>
 										<input type="number" class="form-control" id="refrescoCron" name="refrescoCron" placeholder="1" required>
 									</div>
 						   		</div>

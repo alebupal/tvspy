@@ -1,20 +1,17 @@
 $(document).ready(function () {
-
-
-
 	var arrayConfig = new Array();
 
 	leerConfig('config.json');
 
 	function leerConfig(fileLocation){
-        $.getJSON(fileLocation).done(function( json ) {
-		   	arrayConfig = json;
-		   	console.log(arrayConfig);
-		   	console.log("Configuración leida");
+		$.getJSON(fileLocation).done(function( json ) {
+			arrayConfig = json;
+			console.log(arrayConfig);
+		 	console.log("Configuración leida");
 
 			if ( $(".pagina-configuracion").length > 0 ) {
-			  cargarConfiguracion();
-			  guardarConfiguracion();
+				cargarConfiguracion();
+				guardarConfiguracion();
 			}
 			if ( $(".pagina-inicio").length > 0 ) {
 				descargarFichero();
@@ -23,9 +20,11 @@ $(document).ready(function () {
 
 			if(arrayConfig["canales"]=="false"){
 				importarCanales();
+				leerConfigBasica('config.json');
 			}
 			if(arrayConfig["usuarios"]=="false"){
 				importarUsuarios();
+				leerConfigBasica('config.json');
 			}
 
 			if ( $(".pagina-canales").length > 0 ) {
@@ -39,13 +38,23 @@ $(document).ready(function () {
 			if ( $(".pagina-registro").length > 0 ) {
 				tablaRegistro();
 			}
+		}).fail(function( jqxhr, textStatus, error ) {
+			var err = textStatus + ", " + error;
+			console.log( "Request Failed: " + err );
+		});
+	}
 
+	function leerConfigBasica(fileLocation){
+		$.getJSON(fileLocation).done(function( json ) {
+			arrayConfig = json;
+			console.log(arrayConfig);
+			console.log("Configuración basica leida");
+		}).fail(function( jqxhr, textStatus, error ) {
+			var err = textStatus + ", " + error;
+			console.log( "Request Failed: " + err );
+		});
+	}
 
-       	}).fail(function( jqxhr, textStatus, error ) {
-           	var err = textStatus + ", " + error;
-           	console.log( "Request Failed: " + err );
-       	});
-   }
 	function cargarConfiguracion(){
 	   $("#ip").val(arrayConfig["ip"]);
 	   $("#puerto").val(arrayConfig["puerto"]);
