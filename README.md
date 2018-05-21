@@ -1,88 +1,22 @@
-# Project Title
+# TVSPY
 
-One Paragraph of project description goes here
+Aplicación web sobre Monitorizacion para tvheadend - Web application about Monitoring for tvheadend.
 
-## Getting Started
+La aplicación está realizada en PHP, MYSQL y JS. Hay un cron que se ejecuta cada cierto tiempo, el cual va guardando los registros que hay en la API de tvheadend, después con estos datos se elaboran las estadisticas.
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+The application is made in PHP, MYSQL and JS. There is a cron that runs every so often and keeps the records of the tvheadend API in the database. This data is used to make the statistics.
 
-### Prerequisites
+## Instalación - Installing
+Para utilizarla basta con instalar la imagen de docker https://hub.docker.com/r/alebupal/tvspy/ , para crear la imagen de docker me he basado en  https://github.com/mattrayner/docker-lamp . La imagen tiene PHP 7.2, MYSQL, PHPMyAdmin y apache.
+Para acceder a PHPMyAdmin la ruta es: http://IP_DOCKER:PORT_DOCKER/phpmyadmin y para acceder a la aplicación http://IP_DOCKER:PORT_DOCKER
 
-What things you need to install the software and how to install them
+To use it just install the docker image https://hub.docker.com/r/alebupal/tvspy/, to create the image of docker I have based on https://github.com/mattrayner/docker-lamp . The image has PHP 7.2, MYSQL, PHPMyAdmin and apache
+To access PHPMyAdmin the route is: http://IP_DOCKER:PORT_DOCKER/phpmyadmin and to access the application http://IP_DOCKER:PORT_DOCKER
 
-```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+USER phpmyadmin:
+PASS phpmyadmin:
+db: tvspy
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
-
