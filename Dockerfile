@@ -55,4 +55,4 @@ RUN a2enmod rewrite
 EXPOSE 80 3306
 
 # comando a ejecutar en el inicio
-CMD ["/opt/src/run.sh"]
+CMD ["/run.sh"]
