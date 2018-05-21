@@ -20,11 +20,10 @@ $(document).ready(function () {
 
 			if(arrayConfig["canales"]=="false"){
 				importarCanales();
-				leerConfigBasica('config.json');
+
 			}
 			if(arrayConfig["usuarios"]=="false"){
 				importarUsuarios();
-				leerConfigBasica('config.json');
 			}
 
 			if ( $(".pagina-canales").length > 0 ) {
@@ -326,6 +325,7 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data==true){
 					console.log("Canales importados correctamente");
+					leerConfigBasica('config.json');
 				}else if(data=="404"){
 					console.log("error, url no existe");
 				}else if(data=="401"){
@@ -357,6 +357,7 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data==true){
 					console.log("Usuarios importados correctamente");
+					leerConfigBasica('config.json');
 				}else if(data=="404"){
 					console.log("error, url no existe");
 				}else if(data=="401"){
