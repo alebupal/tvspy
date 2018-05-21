@@ -16,7 +16,7 @@ RUN apt-get update && \
 # copia de la aplicación web
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 ADD app/ /app
-RUN chmod 777 /var/www/html/*
+RUN chmod -R 777 /var/www/html/*
 
 # Add image configuration and scripts
 ADD include/start-apache2.sh /start-apache2.sh

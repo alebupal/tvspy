@@ -1,6 +1,5 @@
 #!/bin/bash
 #Iniciar crontab
-crontab -e
 crontab /var/www/html/acciones/crontab
 # start db
 /etc/init.d/mysql start
