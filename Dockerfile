@@ -41,7 +41,7 @@ RUN chmod 755 /*.sh
 # stop mysqld, and finally copy the /var/lib/mysql directory
 # to default_mysql_db.tar.gz
 RUN /init_db.sh
-ENTRYPOINT /init_db.sh"
+
 
 # Añadir phpmyadmin
 ENV PHPMYADMIN_VERSION=4.8.0.1
