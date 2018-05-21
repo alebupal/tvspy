@@ -43,12 +43,12 @@ if($httpCode == 404) {
 	// Closing
 	curl_close($ch);
 	if($result!="" || $result != null){
-		$fp = fopen($ruta.'resultado.json', 'w');
+		$fp = fopen($ruta.'acciones/resultado.json', 'w');
 		if(fwrite($fp, json_encode($result))!=false){
 			fclose($fp);
 			$reproducciones = json_decode($result, true);
 			//var_dump($reproducciones);
-			$archivoReproducciones2 = file_get_contents($ruta."resultado2.json");
+			$archivoReproducciones2 = file_get_contents($ruta."acciones/resultado2.json");
 			$reproducciones2 = json_decode($archivoReproducciones2, true);
 			$reproducciones2 = json_decode($reproducciones2, true);
 
@@ -152,7 +152,7 @@ function actualizoReproduccion($db, $idReproduccion){
 
 }
 function actualizarResultado2($result){
-	$fp = fopen($ruta.'resultado2.json', 'w');
+	$fp = fopen($ruta.'acciones/resultado2.json', 'w');
 	if(fwrite($fp, json_encode($result))!=false){
 		fclose($fp);
 		echo "resultado.json copiado a resultado2.json<br>";

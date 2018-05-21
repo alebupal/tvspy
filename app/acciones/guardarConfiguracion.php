@@ -17,7 +17,7 @@
 		fclose($fp);
 		//Editamos cron
 		$plantillaCron = '../crontab_template';
-		$cron = '../crontab_template';
+		$cron = '../crontab';
 		$contenidoPlantillaCron = file_get_contents('../crontab_template');
 		$contenidoPlantillaCron = str_replace("%refrescoCron%",$_POST["refrescoCron"], $contenidoPlantillaCron);
 		file_put_contents($cron, $contenidoPlantillaCron);

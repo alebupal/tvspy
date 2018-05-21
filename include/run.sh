@@ -1,8 +1,9 @@
 #!/bin/bash
 #Iniciar crontab
-crontab /var/www/html/acciones/crontab
+crontab /var/www/html/crontab
 # start db
 /etc/init.d/mysql start
+service cron reload
 # crear usuario y contraseña
 mysql -e "CREATE USER 'tvspy'@'localhost' IDENTIFIED BY 'tvspy'"
 mysql < /var/www/html/bd.sql
