@@ -29,10 +29,6 @@ ADD supporting_files/supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-
 RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/apache2/php.ini
 RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/cli/php.ini
 
-# Add MySQL utils
-ADD supporting_files/init_db.sh /init_db.sh
-RUN chmod 755 /*.sh
-
 # Añadir phpmyadmin
 ENV PHPMYADMIN_VERSION=4.8.0.1
 RUN wget -O /tmp/phpmyadmin.tar.gz https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
