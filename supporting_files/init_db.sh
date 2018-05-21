@@ -9,8 +9,6 @@
 set -e
 set -x
 
-mysql_install_db
-
 # Start the MySQL daemon in the background.
 /usr/sbin/mysqld &
 mysql_pid=$!
