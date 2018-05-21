@@ -29,19 +29,9 @@ ADD supporting_files/supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-
 RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/apache2/php.ini
 RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/cli/php.ini
 
-# Remove pre-installed database
-RUN rm -rf /var/lib/mysql
-
 # Add MySQL utils
 ADD supporting_files/init_db.sh /init_db.sh
 RUN chmod 755 /*.sh
-
-# init_db will create the default
-# database from epcis_schema.sql, then
-# stop mysqld, and finally copy the /var/lib/mysql directory
-# to default_mysql_db.tar.gz
-RUN /init_db.sh
-
 
 # Añadir phpmyadmin
 ENV PHPMYADMIN_VERSION=4.8.0.1
