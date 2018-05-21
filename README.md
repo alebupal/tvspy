@@ -13,8 +13,8 @@ Para acceder a PHPMyAdmin la ruta es: http://IP_DOCKER:PORT_DOCKER/phpmyadmin y 
 To use it just install the docker image https://hub.docker.com/r/alebupal/tvspy/, to create the image of docker I have based on https://github.com/mattrayner/docker-lamp . The image has PHP 7.2, MYSQL, PHPMyAdmin and apache
 To access PHPMyAdmin the route is: http://IP_DOCKER:PORT_DOCKER/phpmyadmin and to access the application http://IP_DOCKER:PORT_DOCKER
 
-USER phpmyadmin:
-PASS phpmyadmin:
+USER phpmyadmin: tvspy
+PASS phpmyadmin: tvspy
 db: tvspy
 
 ## License
