@@ -3,9 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-05-2018 a las 11:43:21
+-- Tiempo de generación: 21-05-2018 a las 12:30:37
 -- Versión del servidor: 10.1.21-MariaDB
 -- Versión de PHP: 7.1.1
+
+create database tvspy;
+use tvspy;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -23,6 +26,32 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `canales`
+--
+
+CREATE TABLE `canales` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `registro`
+--
+
+CREATE TABLE `registro` (
+  `id` int(11) NOT NULL,
+  `usuario` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `canal` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `inicio` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fin` datetime DEFAULT NULL,
+  `idReproduccion` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `usuarios`
 --
 
@@ -36,6 +65,21 @@ CREATE TABLE `usuarios` (
 --
 
 --
+-- Indices de la tabla `canales`
+--
+ALTER TABLE `canales`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `id_2` (`id`),
+  ADD KEY `id_3` (`id`);
+
+--
+-- Indices de la tabla `registro`
+--
+ALTER TABLE `registro`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -47,6 +91,16 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
+--
+-- AUTO_INCREMENT de la tabla `canales`
+--
+ALTER TABLE `canales`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT de la tabla `registro`
+--
+ALTER TABLE `registro`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
