@@ -15,6 +15,14 @@
 	$fp = fopen('../config.json', 'w');
 	if(fwrite($fp,$json)!=false){
 		fclose($fp);
+		//Editamos cron
+		$plantillaCron = '../crontab_template';
+		$cron = '../crontab_template';
+		$contenidoPlantillaCron = file_get_contents('../crontab_template');
+		$contenidoPlantillaCron = str_replace("%refrescoCron%",$_POST["refrescoCron"], $contenidoPlantillaCron);
+		file_put_contents($cron, $contenidoPlantillaCron);
+		exec('crontab /var/www/html/crontab');
+		exec('service cron reload');
 		echo true;
 	}else{
 		echo false;
