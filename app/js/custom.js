@@ -206,7 +206,7 @@ $(document).ready(function () {
 								'<img width="50" class="d-flex mr-3 rounded-circle" src="'+img+'" alt="">'+
 								'<div class="media-body">'+
 									'<strong>'+ultimasFinalizaciones[i]["usuario"]+'</strong> ha parado de reproducir <strong>'+ultimasFinalizaciones[i]["canal"]+'</strong>.'+
-									'<div class="text-muted smaller">'+ultimasFinalizaciones[i]["inicio"]+'</div>'+
+									'<div class="text-muted smaller">'+ultimasFinalizaciones[i]["fin"]+'</div>'+
 								'</div>'+
 							'</div>'+
 						'</a>';
