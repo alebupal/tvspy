@@ -1,18 +1,24 @@
 FROM dockerfile/ubunt
-# Use baseimage-docker's init system.
 
-#
 MAINTAINER alebupal <alebupal@gmail.com>
 
+#Para evitar ventanas de pedir datos
+ARG DEBIAN_FRONTEND=noninteractive
+
 # instalar paquetes necesario
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-	DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends apt-utils && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y apache2 software-properties-common mysql-server && \
-	DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:ondrej/php && \
-	DEBIAN_FRONTEND=noninteractive apt-get update -y && \
-	DEBIAN_FRONTEND=noninteractive apt-get install -y nano supervisor wget php7.2 php7.0-cli php7.2-common php7.2-mbstring php7.2-curl php7.2-intl php7.2-xml php7.2-mysql && \
-	DEBIAN_FRONTEND=noninteractive echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN apt-get update && \
+	apt-get upgrade -y && \
+	apt-get install -y --no-install-recommends apt-utils && \
+	apt-get install -y apache2 software-properties-common mysql-server && \
+	add-apt-repository -y ppa:ondrej/php && \
+	apt-get update -y && \
+	apt-get install -y nano supervisor wget php7.2 php7.0-cli php7.2-common php7.2-mbstring php7.2-curl php7.2-intl php7.2-xml php7.2-mysql && \
+	echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
+	ln -fs /usr/share/zoneinfo/Europe/Madrid /etc/localtime && \
+	dpkg-reconfigure --frontend noninteractive tzdata && \
+	apt-get clean autoclean && \
+	apt-get autoremove -y && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # copia de la aplicación web
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
