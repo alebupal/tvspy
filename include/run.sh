@@ -4,7 +4,7 @@
 #crontab /var/www/html/crontab
 #service cron start
 
-/var/www/html/actualizacion.sh & 
+/var/www/html/actualizacion.sh -u www-data  & 
 echo $! > /var/www/html/pid.file
 
 # start db

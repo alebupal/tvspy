@@ -318,7 +318,7 @@ $(document).ready(function () {
 			async: false,
 			success: function (data) {
 				if(data==true){
-					console.log("Usuarios importados correctamente");
+					console.log("Usuarios y canales importados correctamente");
 					//leerConfigBasica('config.json');
 					arrayConfig["importar"]= "true";
 				}else if(data=="404"){
@@ -326,7 +326,7 @@ $(document).ready(function () {
 				}else if(data=="401"){
 					console.log("error, usuario o contraseña incorrecta");
 				}else{
-					console.log("Error al importar usuarios");
+					console.log("Error al importar usuarios y canales");
 				}
 			}
 		});
