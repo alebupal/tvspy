@@ -4,6 +4,9 @@ CMD ["/sbin/my_init"]
 
 MAINTAINER alebupal <alebupal@gmail.com>
 
+#Tiempo de actualizacion a la api en segundos
+ENV TIME_CRON 60
+
 #Para evitar ventanas de pedir datos
 #ARG DEBIAN_FRONTEND=noninteractive
 
@@ -18,8 +21,6 @@ RUN apt-get update && \
 	echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
 	ln -fs /usr/share/zoneinfo/Europe/Madrid /etc/localtime && \
 	dpkg-reconfigure --frontend noninteractive tzdata
-	
-RUN chmod 600 /etc/crontab
 
 # copia de la aplicación web
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
