@@ -64,6 +64,7 @@ try {
 			$nombre = $item['nombre'];
 			$statement->execute();
 		}
+
 		$array = array(
 		    "ip" => $_POST["ip"],
 		    "puerto" => $_POST["puerto"],
@@ -84,7 +85,6 @@ try {
 		}else{
 			echo false;
 		}
-
 	}
 
 } catch(PDOException $e) {

@@ -14,4 +14,5 @@
 #--------------------------------------------------
 # php que actualiza la base de datos
 */1 * * * * root php /var/www/html/acciones/actualizacion.php &> /var/www/html/cron_log.log
-*/1 * * * * root echo "Performing update" > /tmp/update.log
+*/1 * * * * root /bin/date >> /tmp/update.log
+
