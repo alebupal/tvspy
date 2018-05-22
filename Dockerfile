@@ -50,15 +50,17 @@ ADD include/apache_default /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
 #Crear base de datos
-RUN /etc/init.d/mysql start
-RUN mysql -e "CREATE USER 'tvspy'@'localhost' IDENTIFIED BY 'tvspy'"
-RUN mysql < /var/www/html/bd.sql
-RUN mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'tvspy'@'localhost'"
-RUN mysql -e "FLUSH PRIVILEGES"
+RUN /etc/init.d/mysql start && \
+	mysql -e "CREATE USER 'tvspy'@'localhost' IDENTIFIED BY 'tvspy'" && \
+	mysql < /var/www/html/bd.sql && \
+	mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'tvspy'@'localhost'" && \
+	mysql -e "FLUSH PRIVILEGES"
 
 #Cambiar zona horaria
-RUN echo "Europe/Madrid" > /etc/timezone
-RUN dpkg-reconfigure -f noninteractive tzdata
+RUN apt update && apt install -y tzdata && \
+ apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ENV TZ Europe/Madrid 
 
 # Puertos
 EXPOSE 80 3306
