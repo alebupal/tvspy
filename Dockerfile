@@ -20,10 +20,6 @@ RUN apt-get update && \
 	apt-get install -y nano supervisor wget php7.2 php7.0-cli php7.2-common php7.2-mbstring php7.2-curl php7.2-intl php7.2-xml php7.2-mysql && \
 	echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-#Cambiar zona horaria
-RUN echo "Europe/Madrid" > /etc/timezone && \
-	dpkg-reconfigure -f noninteractive tzdata
-
 # copia de la aplicación web
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
 ADD app/ /app
@@ -52,6 +48,17 @@ RUN mv /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.
 # config to enable .htaccess
 ADD include/apache_default /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
+
+#Crear base de datos
+RUN /etc/init.d/mysql start
+RUN mysql -e "CREATE USER 'tvspy'@'localhost' IDENTIFIED BY 'tvspy'"
+RUN mysql < /var/www/html/bd.sql
+RUN mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'tvspy'@'localhost'"
+RUN mysql -e "FLUSH PRIVILEGES"
+
+#Cambiar zona horaria
+RUN echo "Europe/Madrid" > /etc/timezone
+RUN dpkg-reconfigure -f noninteractive tzdata
 
 # Puertos
 EXPOSE 80 3306
