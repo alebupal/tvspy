@@ -21,7 +21,8 @@ RUN apt-get update && \
 	echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 #Cambiar zona horaria
-RUN echo "Europe/Madrid" > /etc/timezone dpkg-reconfigure -f noninteractive tzdata
+RUN echo "Europe/Madrid" > /etc/timezone && \
+	dpkg-reconfigure -f noninteractive tzdata
 
 # copia de la aplicación web
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
