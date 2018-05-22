@@ -24,8 +24,7 @@
 		file_put_contents($cron, $contenidoPlantillaCron);
 		//exec('crontab /var/www/html/crontab 2>&1');
 		echo exec('kill '.$contenidoPid);
-		echo exec('/var/www/html/actualizacion.sh & 
-		echo $! > /var/www/html/pid.file');
+		echo exec('/var/www/html/actualizacion.sh & echo $! > /var/www/html/pid.file');
 		echo true;
 	}else{
 		echo false;
