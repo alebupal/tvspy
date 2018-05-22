@@ -58,7 +58,7 @@ RUN /etc/init.d/mysql start && \
 
 #Cambiar zona horaria
 RUN apt update && apt install -y tzdata && \
- apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 ENV TZ Europe/Madrid 
 

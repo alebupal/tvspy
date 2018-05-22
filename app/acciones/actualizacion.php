@@ -159,8 +159,11 @@ function actualizarResultado2($result, $ruta){
 	}
 }
 function fechaActual(){
-	$fechaActual= date("Y-m-d H:i:s");
-	return $fechaActual;
+	$tz = 'Europe/Madrid';
+	$timestamp = time();
+	$dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
+	$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
+	return $dt->format('Y-m-d H:i:s');
 }
 
 ?>
