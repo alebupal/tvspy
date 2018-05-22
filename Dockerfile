@@ -1,4 +1,4 @@
-FROM dockerfile/ubunt
+FROM ubuntu:latest
 
 MAINTAINER alebupal <alebupal@gmail.com>
 
