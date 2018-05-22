@@ -52,6 +52,10 @@ RUN mv /var/www/phpmyadmin/config.sample.inc.php /var/www/phpmyadmin/config.inc.
 ADD include/apache_default /etc/apache2/sites-available/000-default.conf
 RUN a2enmod rewrite
 
+ENV LANG=es_ES.UTF-8	
+ENV LANGUAGE=es_ES:es	
+ENV LC_ALL=es_ES.UTF-8
+
 # Puertos
 EXPOSE 80 3306
 
