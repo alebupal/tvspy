@@ -325,7 +325,8 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data==true){
 					console.log("Canales importados correctamente");
-					leerConfigBasica('config.json');
+					//leerConfigBasica('config.json');
+					arrayConfig["canales"]= "true";
 				}else if(data=="404"){
 					console.log("error, url no existe");
 				}else if(data=="401"){
@@ -357,7 +358,8 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data==true){
 					console.log("Usuarios importados correctamente");
-					leerConfigBasica('config.json');
+					//leerConfigBasica('config.json');
+					arrayConfig["usuarios"]= "true";
 				}else if(data=="404"){
 					console.log("error, url no existe");
 				}else if(data=="401"){

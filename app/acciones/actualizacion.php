@@ -60,10 +60,10 @@ if($httpCode == 404) {
 
 			if(count($reproducciones["entries"])==0 && count($reproducciones2["entries"])==0){
 				//No hay nada ni en resultado.json ni en resultado2.json
-				echo "No hacemos nada<br>";
+				echo fechaActual().": No hacemos nada\n";
 			}else if(count($reproducciones["entries"])==0 && count($reproducciones2["entries"])!=0){
 				//No hay nada en resultado.json, pero hay datos en resultado2.json de una reproducción anterior,
-				echo "Insertar fecha de que ha terminado de ver la tv al usuario que haya en resultado2 y actualizo resultado2 respecto a resultado1<br>";
+				echo fechaActual().": Insertar fecha de que ha terminado de ver la tv al usuario que haya en resultado2 y actualizo resultado2 respecto a resultado1\n";
 
 				for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
 					actualizoReproduccion($db,$reproducciones2["entries"][$r]["id"]);
@@ -71,7 +71,7 @@ if($httpCode == 404) {
 				actualizarResultado2($result, $ruta);
 			}else if(count($reproducciones["entries"])!=0 && count($reproducciones2["entries"])==0){
 				//No hay nada en resultado2.json, pero hay datos en resultado.json de una nueva reproducción
-				echo "Insertamos la nueva produccion de reproducciones y actualizo resultado2 respecto a resultado1<br>";
+				echo fechaActual().": Insertamos la nueva produccion de reproducciones y actualizo resultado2 respecto a resultado1\n";
 				for ($i=0; $i < count($reproducciones["entries"]) ; $i++) {
 					insertarReproduccion($db,$reproducciones["entries"][$i]);
 				}
@@ -86,11 +86,11 @@ if($httpCode == 404) {
 				$arrayDiferente = array_diff(array_column($reproducciones2["entries"], 'id'), array_column($reproducciones["entries"], 'id'));
 				$arrayDiferente2 = array_diff(array_column($reproducciones["entries"], 'id'), array_column($reproducciones2["entries"], 'id'));
 				// echo "ambos tienen<br>";
-				echo "<pre>";
+				echo fechaActual().": <pre>";
 				var_dump($arrayDiferente);
+				echo " - ";
 				var_dump($arrayDiferente2);
-				echo"<br>---<br>";
-				echo "</pre>";
+				echo "</pre>\n";
 				//ids que estan en resultado2 y hay que actualizar la fecha
 				if(count($arrayDiferente)>0){
 					for ($i=0; $i < count($arrayDiferente); $i++) {
@@ -99,7 +99,7 @@ if($httpCode == 404) {
 							var_dump($reproducciones2["entries"][$r]["id"]);
 							echo"--";
 							if($arrayDiferente[$i]==$reproducciones2["entries"][$r]["id"]){
-								echo "igual, updatea<br>";
+								echo fechaActual().": Igual, updatea\n";
 								actualizoReproduccion($db,$reproducciones2["entries"][$r]["id"]);
 							}
 						}
@@ -111,7 +111,7 @@ if($httpCode == 404) {
 					for ($i=0; $i < count($arrayDiferente2); $i++) {
 						for ($r=0; $r < count($reproducciones["entries"]); $r++) {
 							if($arrayDiferente2[$i]==$reproducciones["entries"][$r]["id"]){
-								echo "igual, inserta<br>";
+								echo fechaActual().": Igual, inserta\n";
 								insertarReproduccion($db,$reproducciones["entries"][$i]);
 							}
 						}
@@ -157,6 +157,10 @@ function actualizarResultado2($result, $ruta){
 		fclose($fp);
 		echo "resultado.json copiado a resultado2.json<br>";
 	}
+}
+function fechaActual(){
+	$fechaActual= date("Y-m-d H:i:s");
+	return $fechaActual;
 }
 
 ?>

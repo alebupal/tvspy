@@ -1,11 +1,11 @@
 #!/bin/bash
 #Iniciar crontab
 #crontab -u www-data /var/www/html/crontab
-crontab /var/www/html/crontab
-service cron start
+#crontab /var/www/html/crontab
+#service cron start
 
-#./var/www/html/actualizacion.sh &
-#echo $! >/var/www/html/pid.file
+/var/www/html/actualizacion.sh & 
+echo $! > /var/www/html/pid.file
 
 # start db
 /etc/init.d/mysql start

@@ -16,15 +16,16 @@
 	if(fwrite($fp,$json)!=false){
 		fclose($fp);
 		//Editamos cron
-		$plantillaCron = '../crontab_template';
-		$cron = '../crontab';
-		$contenidoPlantillaCron = file_get_contents('../crontab_template');
+		$plantillaCron = '../actualizacion_template.sh';
+		$cron = '../actualizacion.sh';
+		$pid = '../pid.file';
+		$contenidoPlantillaCron = file_get_contents('../actualizacion_template');
 		$contenidoPlantillaCron = str_replace("%refrescoCron%",$_POST["refrescoCron"], $contenidoPlantillaCron);
 		file_put_contents($cron, $contenidoPlantillaCron);
 		//exec('crontab /var/www/html/crontab 2>&1');
-		echo exec('crontab /var/www/html/crontab 2>&1', $output);
-		print_r($output);  // to see the response to your command
-		echo exec('service cron reload');
+		echo exec('kill'.$pid);
+		echo exec('/var/www/html/actualizacion.sh & 
+		echo $! > /var/www/html/pid.file');
 		echo true;
 	}else{
 		echo false;
