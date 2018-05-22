@@ -31,6 +31,7 @@ RUN chmod -R 777 /var/www/html/*
 # Add image configuration and scripts
 ADD include/start-apache2.sh /start-apache2.sh
 ADD include/start-mysqld.sh /start-mysqld.sh
+ADD include/actualizacion.sh /actualizacion.sh
 ADD include/run.sh /run.sh
 RUN chmod 755 /*.sh
 ADD include/supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
