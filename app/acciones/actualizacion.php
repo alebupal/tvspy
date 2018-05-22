@@ -155,7 +155,7 @@ function actualizarResultado2($result, $ruta){
 	$fp = fopen($ruta.'acciones/resultado2.json', 'w');
 	if(fwrite($fp, json_encode($result))!=false){
 		fclose($fp);
-		echo "resultado.json copiado a resultado2.json<br>";
+		echo fechaActual().": resultado.json copiado a resultado2.json\n";
 	}
 }
 function fechaActual(){

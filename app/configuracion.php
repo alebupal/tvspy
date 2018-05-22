@@ -63,7 +63,7 @@
 										<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
 							   		</div>
 									<div class="form-group col-md-6">
-										<label for="refrescoCron">Tiempo de refresco cron (minutos)</label>
+										<label for="refrescoCron">Tiempo de refresco cron (segundos)</label>
 										<input type="number" class="form-control" id="refrescoCron" name="refrescoCron" placeholder="1" required>
 									</div>
 						   		</div>
@@ -77,8 +77,7 @@
 										<input type="number" class="form-control" id="id_chat" name="id_chat" placeholder="177537537537375252452" required>
 									</div>
 						   		</div>
-								<input type="hidden" class="form-control" id="canales" name="canales">
-								<input type="hidden" class="form-control" id="usuarios" name="usuarios">
+								<input type="hidden" class="form-control" id="importar" name="importar">
 								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
 							</form>
 						</div>

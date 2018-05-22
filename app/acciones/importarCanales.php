@@ -72,8 +72,7 @@ try {
 		    "usuario" => $_POST["usuario"],
 		    "refresco" => $_POST["refresco"],
 		    "refrescoCron" => $_POST["refrescoCron"],
-		    "canales" => "true",
-		    "usuarios" => $_POST["usuarios"],
+		    "importar" => $_POST["importar"],
 			"bot_token" => $_POST["bot_token"],
 			"id_chat" => $_POST["id_chat"]
 		);

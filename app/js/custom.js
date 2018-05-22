@@ -18,12 +18,9 @@ $(document).ready(function () {
 				setInterval(descargarFichero, (arrayConfig["refresco"]*1000));
 			}
 
-			if(arrayConfig["canales"]=="false"){
-				importarCanales();
+			if(arrayConfig["importar"]=="false"){
+				importarUsuariosCanales();
 
-			}
-			if(arrayConfig["usuarios"]=="false"){
-				importarUsuarios();
 			}
 
 			if ( $(".pagina-canales").length > 0 ) {
@@ -60,8 +57,7 @@ $(document).ready(function () {
 	   $("#pass").val(arrayConfig["pass"]);
 	   $("#usuario").val(arrayConfig["usuario"]);
 	   $("#refresco").val(arrayConfig["refresco"]);
-	   $("#usuarios").val(arrayConfig["usuarios"]);
-	   $("#canales").val(arrayConfig["canales"]);
+	   $("#importar").val(arrayConfig["importar"]);
 	   $("#refrescoCron").val(arrayConfig["refrescoCron"]);
 	   $("#bot_token").val(arrayConfig["bot_token"]);
 	   $("#id_chat").val(arrayConfig["id_chat"]);
@@ -148,7 +144,7 @@ $(document).ready(function () {
 			formData.append("pass", arrayConfig["pass"]);
 			formData.append("usuario", arrayConfig["usuario"]);
 			formData.append("refresco", arrayConfig["refresco"]);
-			formData.append("usuarios", arrayConfig["usuarios"]);
+			formData.append("importar", arrayConfig["importar"]);
 			formData.append("refrescoCron", arrayConfig["refrescoCron"]);
 			formData.append("bot_token", arrayConfig["bot_token"]);
 			formData.append("id_chat", arrayConfig["id_chat"]);
@@ -230,7 +226,7 @@ $(document).ready(function () {
 			formData.append("pass", arrayConfig["pass"]);
 			formData.append("usuario", arrayConfig["usuario"]);
 			formData.append("refresco", arrayConfig["refresco"]);
-			formData.append("canales", arrayConfig["canales"]);
+			formData.append("importar", arrayConfig["importar"]);
 			formData.append("refrescoCron", arrayConfig["refrescoCron"]);
 			formData.append("bot_token", arrayConfig["bot_token"]);
 			formData.append("id_chat", arrayConfig["id_chat"]);
@@ -303,54 +299,19 @@ $(document).ready(function () {
         });
         table.select();
 	}
-
-	function importarCanales(){
+	function importarUsuariosCanales(){
 		var formData = new FormData();
 		formData.append("ip", arrayConfig["ip"]);
 		formData.append("puerto", arrayConfig["puerto"]);
 		formData.append("pass", arrayConfig["pass"]);
 		formData.append("usuario", arrayConfig["usuario"]);
 		formData.append("refresco", arrayConfig["refresco"]);
-		formData.append("usuarios", arrayConfig["usuarios"]);
 		formData.append("refrescoCron", arrayConfig["refrescoCron"]);
 		formData.append("bot_token", arrayConfig["bot_token"]);
 		formData.append("id_chat", arrayConfig["id_chat"]);
 		$.ajax({
 			type: "POST",
-			url: "acciones/importarCanales.php",
-			data : formData,
-			contentType : false,
-			processData : false,
-			async: false,
-			success: function (data) {
-				if(data==true){
-					console.log("Canales importados correctamente");
-					//leerConfigBasica('config.json');
-					arrayConfig["canales"]= "true";
-				}else if(data=="404"){
-					console.log("error, url no existe");
-				}else if(data=="401"){
-					console.log("error, usuario o contraseña incorrecta");
-				}else{
-					console.log("Error al importar canales");
-				}
-			}
-		});
-	}
-	function importarUsuarios(){
-		var formData = new FormData();
-		formData.append("ip", arrayConfig["ip"]);
-		formData.append("puerto", arrayConfig["puerto"]);
-		formData.append("pass", arrayConfig["pass"]);
-		formData.append("usuario", arrayConfig["usuario"]);
-		formData.append("refresco", arrayConfig["refresco"]);
-		formData.append("canales", arrayConfig["canales"]);
-		formData.append("refrescoCron", arrayConfig["refrescoCron"]);
-		formData.append("bot_token", arrayConfig["bot_token"]);
-		formData.append("id_chat", arrayConfig["id_chat"]);
-		$.ajax({
-			type: "POST",
-			url: "acciones/importarUsuarios.php",
+			url: "acciones/importarUsuariosCanales.php",
 			data : formData,
 			contentType : false,
 			processData : false,
@@ -359,7 +320,7 @@ $(document).ready(function () {
 				if(data==true){
 					console.log("Usuarios importados correctamente");
 					//leerConfigBasica('config.json');
-					arrayConfig["usuarios"]= "true";
+					arrayConfig["importar"]= "true";
 				}else if(data=="404"){
 					console.log("error, url no existe");
 				}else if(data=="401"){

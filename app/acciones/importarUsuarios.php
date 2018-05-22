@@ -27,7 +27,7 @@ try {
 	curl_setopt($ch, CURLOPT_USERPWD, $json_config["usuario"].":".$json_config["pass"]);
 	curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
-	$canales_json=curl_exec($ch);
+	$usuarios_json=curl_exec($ch);
 	/* Check for 404 (file not found). */
 	$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	if($httpCode == 404) {
@@ -38,12 +38,12 @@ try {
 		// Execute
 		// Closing
 		curl_close($ch);
-		$array_canales = json_decode($canales_json, true);
+		$array_usuarios = json_decode($usuarios_json, true);
 		//var_dump($array_canales["entries"]);
 		$items = array();
-		for ($i=0; $i < count($array_canales["entries"]) ; $i++) {
+		for ($i=0; $i < count($array_usuarios["entries"]) ; $i++) {
 			$usuario = array(
-				'nombre' => $array_canales["entries"][$i]["username"]
+				'nombre' => $array_usuarios["entries"][$i]["username"]
 			);
 			array_push($items,$usuario);
 
@@ -68,8 +68,7 @@ try {
 		    "usuario" => $_POST["usuario"],
 		    "refresco" => $_POST["refresco"],
 		    "refrescoCron" => $_POST["refrescoCron"],
-		    "canales" => $_POST["canales"],
-		    "usuarios" => "true",
+		    "importar" => $_POST["importar"],
 			"bot_token" => $_POST["bot_token"],
 			"id_chat" => $_POST["id_chat"]
 		);

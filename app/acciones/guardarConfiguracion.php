@@ -6,8 +6,7 @@
 	    "usuario" => $_POST["usuario"],
 		"refresco" => $_POST["refresco"],
 	    "refrescoCron" => $_POST["refrescoCron"],
-		"canales" => $_POST["canales"],
-		"usuarios" => $_POST["usuarios"],
+		"importar" => $_POST["importar"],
 		"bot_token" => $_POST["bot_token"],
 		"id_chat" => $_POST["id_chat"]
 	);
@@ -19,11 +18,11 @@
 		$plantillaCron = '../actualizacion_template.sh';
 		$cron = '../actualizacion.sh';
 		$pid = '../pid.file';
-		$contenidoPlantillaCron = file_get_contents('../actualizacion_template');
+		$contenidoPlantillaCron = file_get_contents($plantillaCron);
 		$contenidoPlantillaCron = str_replace("%refrescoCron%",$_POST["refrescoCron"], $contenidoPlantillaCron);
 		file_put_contents($cron, $contenidoPlantillaCron);
 		//exec('crontab /var/www/html/crontab 2>&1');
-		echo exec('kill'.$pid);
+		echo exec('kill '.$pid);
 		echo exec('/var/www/html/actualizacion.sh & 
 		echo $! > /var/www/html/pid.file');
 		echo true;
