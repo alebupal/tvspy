@@ -1,4 +1,6 @@
-FROM ubuntu:latest
+FROM phusion/baseimage
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
 
 MAINTAINER alebupal <alebupal@gmail.com>
 
@@ -19,6 +21,8 @@ RUN apt-get update && \
 	apt-get clean autoclean && \
 	apt-get autoremove -y && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+	
+RUN chmod 600 /etc/crontab
 
 # copia de la aplicación web
 RUN mkdir -p /app && rm -fr /var/www/html && ln -s /app /var/www/html
