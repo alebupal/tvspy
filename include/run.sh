@@ -13,7 +13,6 @@ mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'tvspy'@'localhost'"
 mysql -e "FLUSH PRIVILEGES"
 
 #cron
-./actualizacion.sh &
-echo $! > /var/www/html/pid.file
+actualizacion.sh &
 
 exec supervisord -n
