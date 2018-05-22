@@ -36,7 +36,8 @@ $primaryKey = 'id';
 // indexes
 $columns = array(
 	array( 'db' => 'id', 'dt' => 0 ),
-	array( 'db' => 'nombre', 'dt' => 1 )
+	array( 'db' => 'nombre', 'dt' => 1 ),
+	array( 'db' => 'logo', 'dt' => 2 )
 );
 
 /*

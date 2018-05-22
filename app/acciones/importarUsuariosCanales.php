@@ -16,7 +16,7 @@ try {
 
 	$ipuerto =  $json_config["ip"].":".$json_config["puerto"];
 
-	$urlCanales = "http://".$ipuerto."/api/channel/list";
+	$urlCanales = "http://".$ipuerto."/api/channel/grid?limit=100000";
 	//  Initiate curl
 	$chCanales = curl_init();
 	// Disable SSL verification
@@ -32,7 +32,7 @@ try {
 	curl_setopt($chCanales, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
 	$canales_json=curl_exec($chCanales);
-	
+
 	/* Check for 404 (file not found). */
 	$httpCodeCanales = curl_getinfo($chCanales, CURLINFO_HTTP_CODE);
 	if($httpCodeCanales == 404) {
@@ -48,24 +48,27 @@ try {
 		$itemsCanales = array();
 		for ($i=0; $i < count($array_canales["entries"]) ; $i++) {
 			$canal = array(
-				'nombre' => $array_canales["entries"][$i]["val"]
+				'nombre' => $array_canales["entries"][$i]["name"],
+				'logo' => $array_canales["entries"][$i]["icon_public_url"]
 			);
 			array_push($itemsCanales,$canal);
 
 		}
 		// Prepare INSERT statement to SQLite3 file db
-		$insertCanales = "INSERT INTO canales (nombre) VALUES (:nombre)";
+		$insertCanales = "INSERT INTO canales (nombre, logo) VALUES (:nombre, :logo)";
 		$statementCanales = $db->prepare($insertCanales);
 
 		// Bind parameters to statement variables
 		$statementCanales->bindParam(':nombre', $nombre);
+		$statementCanales->bindParam(':nombre', $logo);
 
 		//Insert all of the items in the array
 		foreach ($itemsCanales as $item) {
 			$nombre = $item['nombre'];
+			$logo = $item['logo'];
 			$statementCanales->execute();
 		}
-		
+
 		//Canales insertados ahora usuarios
 		$urlUsuarios = "http://".$ipuerto."/api/access/entry/grid";
 		//  Initiate curl
@@ -83,8 +86,8 @@ try {
 		curl_setopt($chUsuarios, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
 		$usuarios_json=curl_exec($chUsuarios);
-		
-		
+
+
 		$httpCodeUsuarios = curl_getinfo($chUsuarios, CURLINFO_HTTP_CODE);
 		if($httpCodeUsuarios == 404) {
 			echo 404;
@@ -102,21 +105,21 @@ try {
 					'nombre' => $array_usuarios["entries"][$i]["username"]
 				);
 				array_push($itemsUsuarios,$usuario);
-	
+
 			}
 			// Prepare INSERT statement to SQLite3 file db
 			$insertUsuarios = "INSERT INTO usuarios (nombre) VALUES (:nombre)";
 			$statementUsuarios = $db->prepare($insertUsuarios);
-	
+
 			// Bind parameters to statement variables
 			$statementUsuarios->bindParam(':nombre', $nombre);
-	
+
 			//Insert all of the items in the array
 			foreach ($itemsUsuarios as $item) {
 				$nombre = $item['nombre'];
 				$statementUsuarios->execute();
 			}
-	
+
 			$array = array(
 			    "ip" => $_POST["ip"],
 			    "puerto" => $_POST["puerto"],

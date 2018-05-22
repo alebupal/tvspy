@@ -1,7 +1,7 @@
 <footer class="sticky-footer">
 	<div class="container">
 		<div class="text-center">
-			<small>alebupal - https://github.com/alebupal/tvspy</small>
+			<small>alebupal - <a href="https://github.com/alebupal/tvspy" target="_blank">https://github.com/alebupal/tvspy</a></small>
 		</div>
 	</div>
 </footer>

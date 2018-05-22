@@ -41,15 +41,17 @@
 				</div>
 				<div class="col-lg-12">
 					<div class="table-responsive">
-						<table  class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaCanales">
+						<table class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaCanales">
 							<thead>
 								<tr>
 									<th>Nombre</th>
+									<th>Logo</th>
 								</tr>
 							</thead>
 							<tfoot>
 								<tr>
 									<th>Nombre</th>
+									<th>Logo</th>
 								</tr>
 							</tfoot>
 						</table>

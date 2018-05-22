@@ -19,6 +19,12 @@ $(document).ready(function () {
 			if ( $(".pagina-inicio").length > 0 ) {
 				descargarFichero();
 				setInterval(descargarFichero, (arrayConfig["refresco"]*1000));
+				autorizar();
+				usuarioActivo();
+				canalActivo();
+				reproduccionesTotales();
+				ultimasReproducciones();
+				ultimasFinalizaciones();
 			}
 
 			if(arrayConfig["importar"]=="false"){
@@ -27,6 +33,7 @@ $(document).ready(function () {
 			}
 
 			if ( $(".pagina-canales").length > 0 ) {
+				autorizar();
 				tablaCanales();
 				btnImportarCanales();
 			}
@@ -104,6 +111,110 @@ $(document).ready(function () {
 					console.log("error, usuario o contraseña incorrecta");
 				}else{
 					console.log("Error desconocido al descargar");
+				}
+			}
+		});
+	}
+
+	function usuarioActivo(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpUsuarioActivo.php",
+			success: function (data) {
+				if(data!=false){
+					usuarioMas = $.parseJSON(data);
+					$(".usuarioActivo").html(usuarioMas["usuario"]);
+					console.log(usuarioMas);
+				}else{
+					$(".usuarioActivo").html("--");
+				}
+			}
+		});
+	}
+	function canalActivo(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpCanalActivo.php",
+			success: function (data) {
+				if(data!=false){
+					canalMas = $.parseJSON(data);
+					$(".canalActivo").html(canalMas["canal"]);
+					console.log(canalMas);
+				}else{
+					$(".canalActivo").html("--");
+				}
+			}
+		});
+	}
+	function reproduccionesTotales(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpReproduccionesTotales.php",
+			success: function (data) {
+				if(data!=false){
+					reproduccionesTotales = $.parseJSON(data);
+					$(".reproduccionesTotales").html(reproduccionesTotales["total"]);
+					console.log(reproduccionesTotales);
+				}else{
+					$(".canalActivo").html("--");
+				}
+			}
+		});
+	}
+	function ultimasReproducciones(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpUltimasReproduciones.php",
+			success: function (data) {
+				if(data!=false){
+					ultimasReproducciones = $.parseJSON(data);
+					var texto ="";
+					for (var i = 0; i < ultimasReproducciones.length; i++) {
+						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+ultimasReproducciones[i]["logo"];
+						console.log(img);
+						texto+='<a class="list-group-item list-group-item-action">'+
+							'<div class="media">'+
+								'<img width="50" class="d-flex mr-3 rounded-circle" src="'+img+'" alt="">'+
+								'<div class="media-body">'+
+									'<strong>'+ultimasReproducciones[i]["usuario"]+'</strong> ha empezado a reproducir <strong>'+ultimasReproducciones[i]["canal"]+'</strong>.'+
+									'<div class="text-muted smaller">'+ultimasReproducciones[i]["inicio"]+'</div>'+
+								'</div>'+
+							'</div>'+
+						'</a>';
+					}
+
+					$(".ultimasReproducciones").html(texto);
+				}else{
+					$(".canalActivo").html("--");
+				}
+			}
+		});
+	}
+	function ultimasFinalizaciones(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpUltimasFinalizaciones.php",
+			success: function (data) {
+				if(data!=false){
+					ultimasFinalizaciones = $.parseJSON(data);
+					var texto ="";
+					for (var i = 0; i < ultimasFinalizaciones.length; i++) {
+						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+ultimasFinalizaciones[i]["logo"];
+						console.log(img);
+						texto+='<a class="list-group-item list-group-item-action">'+
+							'<div class="media">'+
+								'<img width="50" class="d-flex mr-3 rounded-circle" src="'+img+'" alt="">'+
+								'<div class="media-body">'+
+									'<strong>'+ultimasFinalizaciones[i]["usuario"]+'</strong> ha parado de reproducir <strong>'+ultimasFinalizaciones[i]["canal"]+'</strong>.'+
+									'<div class="text-muted smaller">'+ultimasFinalizaciones[i]["inicio"]+'</div>'+
+								'</div>'+
+							'</div>'+
+						'</a>';
+					}
+
+					$(".ultimasFinalizaciones").html(texto);
+				}else{
+					$(".canalActivo").html("--");
 				}
 			}
 		});
@@ -203,7 +314,12 @@ $(document).ready(function () {
 			],
 			order: [[ 0, "asc" ]],
 			columns: [
-				{data: "1"}
+				{data: "1"},
+				{data: null,
+                    render: function (data, type, row) {
+                        return '<img width="100" src="http://'+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+data[2]+'">';
+                    }
+                },
 			],
 			initComplete: function() {
 				table.columns().every( function (){
@@ -374,7 +490,23 @@ $(document).ready(function () {
 		table.select();
 	}
 
-
+	function autorizar(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpAutorizar.php",
+			success: function (data) {
+				if(data==true){
+					console.log("Autorizado");
+				}else if(data=="404"){
+					console.log("error, url no existe");
+				}else if(data=="401"){
+					console.log("error, usuario o contraseña incorrecta");
+				}else{
+					console.log("Error desconocido al descargar");
+				}
+			}
+		});
+	}
 	function irArriba(){
 		$('body,html').animate({scrollTop : 0}, 500);
 	}

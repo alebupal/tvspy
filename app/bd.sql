@@ -11,7 +11,7 @@ create database tvspy;
 use tvspy;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+SET time_zone = "+02:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -31,7 +31,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `canales` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+  `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `logo` varchar(100) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
@@ -44,6 +45,7 @@ CREATE TABLE `registro` (
   `id` int(11) NOT NULL,
   `usuario` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `canal` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `logo` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `inicio` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fin` datetime DEFAULT NULL,
   `idReproduccion` int(11) NOT NULL
@@ -69,23 +71,21 @@ CREATE TABLE `usuarios` (
 --
 ALTER TABLE `canales`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD KEY `id_2` (`id`),
-  ADD KEY `id_3` (`id`);
+  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indices de la tabla `registro`
 --
 ALTER TABLE `registro`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD KEY `id_2` (`id`);
+  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas

@@ -16,7 +16,7 @@ try {
 
 	$ipuerto =  $json_config["ip"].":".$json_config["puerto"];
 
-	$url = "http://".$ipuerto."/api/channel/list";
+	$url = "http://".$ipuerto."/api/channel/grid?limit=100000";
 	//  Initiate curl
 	$ch = curl_init();
 	// Disable SSL verification
@@ -47,21 +47,24 @@ try {
 		$items = array();
 		for ($i=0; $i < count($array_canales["entries"]) ; $i++) {
 			$canal = array(
-				'nombre' => $array_canales["entries"][$i]["val"]
+				'nombre' => $array_canales["entries"][$i]["name"],
+				'logo' => $array_canales["entries"][$i]["icon_public_url"]
 			);
 			array_push($items,$canal);
 
 		}
 		// Prepare INSERT statement to SQLite3 file db
-		$insert = "INSERT INTO canales (nombre) VALUES (:nombre)";
+		$insert = "INSERT INTO canales (nombre, logo) VALUES (:nombre, :logo)";
 		$statement = $db->prepare($insert);
 
 		// Bind parameters to statement variables
 		$statement->bindParam(':nombre', $nombre);
+		$statement->bindParam(':logo', $logo);
 
 		//Insert all of the items in the array
 		foreach ($items as $item) {
 			$nombre = $item['nombre'];
+			$logo = $item['logo'];
 			$statement->execute();
 		}
 
