@@ -13,10 +13,10 @@ $db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername
 $fechaInicio = $_POST["fechaInicio"];
 $fechaFin = $_POST["fechaFin"];
 $usuario = $_POST["usuario"];
-if($usuario=="todos"){	
+if($usuario=="todos"){
 	$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY DATE(inicio)");
 }else{
-	$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) AND usuario=:usuario GROUP BY DATE(inicio)");	
+	$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) AND usuario=:usuario GROUP BY DATE(inicio)");
 	$stmt->bindParam(':usuario', $usuario);
 }
 $stmt->bindParam(':fechaInicio', $fechaInicio);
@@ -32,10 +32,9 @@ $stmt->execute();
 $row = $stmt->fetchAll();
 
 $canales  = array();
-
 for ($i=0; $i < count($row); $i++) {
 	$canal  = array(
-		"fecha" => $row[$i]["inicio"],
+		"fecha" => $row[$i]["fecha"],
 		"valor" => (int) $row[$i]["valor"]
 	);
 	array_push($canales, $canal);

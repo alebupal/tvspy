@@ -1,6 +1,6 @@
 <?php
-//$ruta = "../";
-$ruta = "/var/www/html/";
+$ruta = "../";
+//$ruta = "/var/www/html/";
 require_once $ruta."clases/Constantes.php";
 $db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername."",
 				Constantes::username,
@@ -60,15 +60,15 @@ if($result!="" || $result != null){
 			$arrayDiferente = array_diff(array_column($reproducciones2["entries"], 'id'), array_column($reproducciones["entries"], 'id'));
 			$arrayDiferente2 = array_diff(array_column($reproducciones["entries"], 'id'), array_column($reproducciones2["entries"], 'id'));
 			// echo "ambos tienen<br>";
-			
+
 			echo fechaActual().": <pre>";
 			var_dump($arrayDiferente);
 			echo " - ";
 			var_dump($arrayDiferente2);
 			echo "</pre>\n";
-			
+
 			//ids que estan en resultado2 y hay que actualizar la fecha
-			
+
 			if(count($arrayDiferente)>0){
 				for ($i=0; $i < count($arrayDiferente); $i++) {
 					for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
@@ -117,13 +117,15 @@ function insertarReproduccion($db, $reproducciones, $logo, $json_config){
 	//var_dump($reproducciones["id"]);
 	$statement->execute();
 	$statement->closeCursor();
-	
+
 	$mensaje = str_replace("%%usuario%%",$reproducciones["username"],$json_config["texto_empieza"]);
 	$mensaje = str_replace("%%canal%%",$reproducciones["channel"],$mensaje);
 	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
-	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);	
+	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
 	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
-	enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+	if($json_config["notificacion_telegram"]!= "true"){
+		enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+	}
 
 }
 function actualizoReproduccion($db, $reproducciones, $json_config){
@@ -143,7 +145,9 @@ function actualizoReproduccion($db, $reproducciones, $json_config){
 	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
 	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
 	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
-	enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+	if($json_config["notificacion_telegram"]!= "true"){
+		enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+	}
 
 }
 function actualizarResultado2($result, $ruta){
@@ -221,16 +225,16 @@ function dameReproducciones($json_config){
 		curl_close($ch);
 		return $result;
 	}
-	
+
 }
 function enviarTelegram($TOKEN, $chat_id, $mensaje){
-	$TELEGRAM = "https://api.telegram.org:443/bot".$TOKEN; 
+	$TELEGRAM = "https://api.telegram.org:443/bot".$TOKEN;
 	$query = http_build_query([
 		'chat_id'=> $chat_id,
 		'text'=> $mensaje,
-		'parse_mode'=> "HTML", 
+		'parse_mode'=> "HTML",
 	]);
-	
+
 	$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
 	return $response;
 }

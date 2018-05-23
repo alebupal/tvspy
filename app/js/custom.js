@@ -45,7 +45,7 @@ $(document).ready(function () {
 				$(".enlaceLogueo").html("https://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]);
 			}
 			if ( $(".pagina-usuarios").length > 0 ) {
-				tablaUsuarios();				
+				tablaUsuarios();
 				importarUsuarios();
 				btnImportarUsuarios();
 			}
@@ -82,12 +82,12 @@ $(document).ready(function () {
 			$("#notificacion_telegram").prop('checked', true);
 			$("#configuracionTelegram").show();
 		}else if(arrayConfig["notificacion_telegram"]=="false"){
-			$("#notificacion_telegram").prop('checked', false);			
+			$("#notificacion_telegram").prop('checked', false);
 			$("#configuracionTelegram").hide();
 		}
 		$("#texto_empieza").val(arrayConfig["texto_empieza"]);
 		$("#texto_para").val(arrayConfig["texto_para"]);
-		
+
 		//$("#importar").val(arrayConfig["importar"]);
 		$("#bot_token").val(arrayConfig["bot_token"]);
 		$("#id_chat").val(arrayConfig["id_chat"]);
@@ -95,9 +95,9 @@ $(document).ready(function () {
 
 	function guardarConfiguracion(){
 		$("#notificacion_telegram").click(function() {
-			if ($('#notificacion_telegram').is(":checked")){				
+			if ($('#notificacion_telegram').is(":checked")){
 				$("#configuracionTelegram").show();
-			}else{				
+			}else{
 				$("#configuracionTelegram").hide();
 			}
 		});
@@ -305,7 +305,7 @@ $(document).ready(function () {
 			});
 		});
 	}
-	
+
 	function importarCanales(){
 		$.ajax({
 			type: "POST",
@@ -540,7 +540,7 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
-					
+
 					if(data==true){
 						console.log("Backup realizado correctamente");
 						window.location.href = "backup.sql";
@@ -597,7 +597,7 @@ $(document).ready(function () {
 				});
 			}
 		});
-		
+
 	}
 	function graficaUsuarios(){
 		$.ajax({
@@ -645,11 +645,11 @@ $(document).ready(function () {
 				});
 			}
 		});
-		
+
 	}
 	function btnAplicarGrafica(){
 		getUsuariosSelect();
-		$("#graficaReproducciones").hide();	
+		$("#graficaReproducciones").hide();
 		$(".js-example-basic-single").select2({
 			language: "es"
 		});
@@ -661,16 +661,14 @@ $(document).ready(function () {
 			todayHighlight: true,
 			toggleActive: true,
 		})
+		$("#fechaInicio").datepicker("update", new Date());
+		$("#fechaFin").datepicker("update", new Date());
 		$(".btnAplicarGrafica" ).click(function() {
-			fechaInicio = $('#fechaInicio').datepicker("getDate");
-			fechaFin = $('#fechaFin').datepicker("getDate");
+			fechaInicio = moment($('#fechaInicio').datepicker("getDate")).format('YYYY-MM-DD');
+			fechaFin = moment($('#fechaFin').datepicker("getDate")).format('YYYY-MM-DD');
 			usuario = $("#usuario").val();
 			console.log(fechaFin);
 			console.log(fechaInicio);
-			var startDateServer = moment(fechaFin).format('YYYY-MM-DD');
-    		var endDateServer = moment(fechaInicio).format('YYYY-MM-DD');
-			console.log(startDateServer);
-			console.log(endDateServer);
 			$("#graficaReproducciones").show();
 			graficaReproducciones(fechaInicio,fechaFin,usuario);
 		});
@@ -681,11 +679,11 @@ $(document).ready(function () {
 			url: "acciones/phpUsuariosSelect.php",
 			success: function (data) {
 				var obj = JSON.parse(data);
-				opciones ="";		
+				opciones ="";
 				for (var i = 0; i < obj.length; i++) {
 					opciones += '<option value="'+obj[i]["nombre"]+'">'+obj[i]["nombre"]+'</option>'
 				}
-				
+
 				$("#usuario").append(opciones);
 			}
 		});
@@ -784,7 +782,7 @@ $(document).ready(function () {
 				        "enabled": true
 				    },
 				    "dataProvider": JSON.parse(data)
-				});				
+				});
 			}
 		});
 	}

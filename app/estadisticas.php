@@ -35,7 +35,7 @@
 							<div id="graficaCanales"></div>
 						</div>
 					</div>
-				</div>				
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12">
@@ -61,11 +61,11 @@
 							<div class="col-12 mt-2">
 		                        <div class="input-daterange" id="datepicker">
 		                            <div class="input-group">
-		                                <input type="text" class="form-control campo" id="fechaInicio" name="fechaInicio" size="10" data-date-format="yyyy-mm-dd" >
+		                                <input type="text" class="form-control campo" id="fechaInicio" name="fechaInicio" >
 		                                <div class="input-group-append">
 		                                    <span class="input-group-text">hasta</span>
 		                                </div>
-		                                <input type="text" class="form-control campo" id="fechaFin" name="fechaFin" size="10" data-date-format="yyyy-mm-dd" >
+		                                <input type="text" class="form-control campo" id="fechaFin" name="fechaFin"   >
 										<select class="js-example-basic-single custom-select" name="usuario" id="usuario">
 					                    	<option value="todos">Todos</option>
 					                    </select>
