@@ -9,7 +9,6 @@ $(document).ready(function () {
 		});
 		$.getJSON(fileLocation).done(function( json ) {
 			arrayConfig = json;
-			console.log(arrayConfig);
 		 	console.log("Configuración leida");
 
 			if ( $(".pagina-configuracion").length > 0 ) {
@@ -63,7 +62,6 @@ $(document).ready(function () {
 	function leerConfigBasica(fileLocation){
 		$.getJSON(fileLocation).done(function( json ) {
 			arrayConfig = json;
-			console.log(arrayConfig);
 			console.log("Configuración basica leida");
 		}).fail(function( jqxhr, textStatus, error ) {
 			var err = textStatus + ", " + error;
@@ -153,7 +151,6 @@ $(document).ready(function () {
 				if(data!=false){
 					usuarioMas = $.parseJSON(data);
 					$(".usuarioActivo").html(usuarioMas["usuario"]);
-					console.log(usuarioMas);
 				}else{
 					$(".usuarioActivo").html("--");
 				}
@@ -168,7 +165,6 @@ $(document).ready(function () {
 				if(data!=false){
 					canalMas = $.parseJSON(data);
 					$(".canalActivo").html(canalMas["canal"]);
-					console.log(canalMas);
 				}else{
 					$(".canalActivo").html("--");
 				}
@@ -183,7 +179,6 @@ $(document).ready(function () {
 				if(data!=false){
 					reproduccionesTotales = $.parseJSON(data);
 					$(".reproduccionesTotales").html(reproduccionesTotales["total"]);
-					console.log(reproduccionesTotales);
 				}else{
 					$(".canalActivo").html("--");
 				}
@@ -200,7 +195,6 @@ $(document).ready(function () {
 					var texto ="";
 					for (var i = 0; i < ultimasReproducciones.length; i++) {
 						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+ultimasReproducciones[i]["logo"];
-						console.log(img);
 						texto+='<a class="list-group-item list-group-item-action">'+
 							'<div class="media">'+
 								'<img width="50" class="d-flex mr-3 rounded-circle" src="'+img+'" alt="">'+
@@ -229,7 +223,6 @@ $(document).ready(function () {
 					var texto ="";
 					for (var i = 0; i < ultimasFinalizaciones.length; i++) {
 						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+ultimasFinalizaciones[i]["logo"];
-						console.log(img);
 						texto+='<a class="list-group-item list-group-item-action">'+
 							'<div class="media">'+
 								'<img width="50" class="d-flex mr-3 rounded-circle" src="'+img+'" alt="">'+
@@ -608,7 +601,6 @@ $(document).ready(function () {
 				$(".cargando").toggle();
 			},
 			success: function (data) {
-				console.log(data);
 				var chart = AmCharts.makeChart( "graficaUsuarios", {
 					"type": "serial",
 					"theme": "light",
@@ -667,8 +659,6 @@ $(document).ready(function () {
 			fechaInicio = moment($('#fechaInicio').datepicker("getDate")).format('YYYY-MM-DD');
 			fechaFin = moment($('#fechaFin').datepicker("getDate")).format('YYYY-MM-DD');
 			usuario = $("#usuario").val();
-			console.log(fechaFin);
-			console.log(fechaInicio);
 			$("#graficaReproducciones").show();
 			graficaReproducciones(fechaInicio,fechaFin,usuario);
 		});
@@ -705,7 +695,6 @@ $(document).ready(function () {
 				$(".cargando").toggle();
 			},
 			success: function (data) {
-				console.log(data);
 				var chart = AmCharts.makeChart("graficaReproducciones", {
 				    "type": "serial",
 				    "theme": "light",
