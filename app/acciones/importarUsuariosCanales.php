@@ -48,24 +48,21 @@ try {
 		$itemsCanales = array();
 		for ($i=0; $i < count($array_canales["entries"]) ; $i++) {
 			$canal = array(
-				'nombre' => $array_canales["entries"][$i]["name"],
-				'logo' => $array_canales["entries"][$i]["icon_public_url"]
+				'nombre' => $array_canales["entries"][$i]["name"]
 			);
 			array_push($itemsCanales,$canal);
 
 		}
 		// Prepare INSERT statement to SQLite3 file db
-		$insertCanales = "INSERT INTO canales (nombre, logo) VALUES (:nombre, :logo)";
+		$insertCanales = "INSERT INTO canales (nombre) VALUES (:nombre)";
 		$statementCanales = $db->prepare($insertCanales);
 
 		// Bind parameters to statement variables
 		$statementCanales->bindParam(':nombre', $nombre);
-		$statementCanales->bindParam(':logo', $logo);
 
 		//Insert all of the items in the array
 		foreach ($itemsCanales as $item) {
 			$nombre = $item['nombre'];
-			$logo = $item['logo'];
 			$statementCanales->execute();
 		}
 

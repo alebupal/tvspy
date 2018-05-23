@@ -71,7 +71,7 @@
 										</div>
 									</div>
 						   		</div>
-								<div id="configuracionTelegram">									
+								<div id="configuracionTelegram">
 									<div class="form-row">
 										<div class="form-group col-md-6">
 											<label for="bot_token">Telegram Bot Token</label>
@@ -85,10 +85,10 @@
 									<div class="form-row">
 										<div class="form-group col-md-6">
 											<label>Texto empieza reprodución</label>
-											<label>Variables: %%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>											
+											<label>Variables: %%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
 											<textarea class="form-control" name="texto_empieza" id="texto_empieza" rows="3"></textarea>
 										</div>
-										<div class="form-group col-md-6">										
+										<div class="form-group col-md-6">
 											<label>Texto para reprodución</label>
 											<label>Variables: %%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
 											<textarea class="form-control" name="texto_para" id="texto_para" rows="3"></textarea>
@@ -98,9 +98,9 @@
 								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
 							</form>
 						</div>
-						<div class="col-md-12 mb-2 mt-2">
+						<!--<div class="col-md-12 mb-2 mt-2">
 							<a class="btn btn-primary btn-block text-white btnBackup" >Backup base de datos</a>
-						</div>
+						</div>-->
 					</div>
 				</div>
 			</div>

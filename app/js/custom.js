@@ -194,10 +194,8 @@ $(document).ready(function () {
 					ultimasReproducciones = $.parseJSON(data);
 					var texto ="";
 					for (var i = 0; i < ultimasReproducciones.length; i++) {
-						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+ultimasReproducciones[i]["logo"];
 						texto+='<a class="list-group-item list-group-item-action">'+
 							'<div class="media">'+
-								'<img width="50" class="d-flex mr-3 rounded-circle" src="'+img+'" alt="">'+
 								'<div class="media-body">'+
 									'<strong>'+ultimasReproducciones[i]["usuario"]+'</strong> ha empezado a reproducir <strong>'+ultimasReproducciones[i]["canal"]+'</strong>.'+
 									'<div class="text-muted smaller">'+ultimasReproducciones[i]["inicio"]+'</div>'+
@@ -222,10 +220,8 @@ $(document).ready(function () {
 					ultimasFinalizaciones = $.parseJSON(data);
 					var texto ="";
 					for (var i = 0; i < ultimasFinalizaciones.length; i++) {
-						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+ultimasFinalizaciones[i]["logo"];
 						texto+='<a class="list-group-item list-group-item-action">'+
 							'<div class="media">'+
-								'<img width="50" class="d-flex mr-3 rounded-circle" src="'+img+'" alt="">'+
 								'<div class="media-body">'+
 									'<strong>'+ultimasFinalizaciones[i]["usuario"]+'</strong> ha parado de reproducir <strong>'+ultimasFinalizaciones[i]["canal"]+'</strong>.'+
 									'<div class="text-muted smaller">'+ultimasFinalizaciones[i]["fin"]+'</div>'+
@@ -341,13 +337,7 @@ $(document).ready(function () {
 			],
 			order: [[ 0, "asc" ]],
 			columns: [
-				{data: "1"},
-				{data: null,
-                    render: function (data, type, row) {
-						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+data[2];
-                        return '<img width="100" src="http://'+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+data[2]+'">';
-                    }
-                },
+				{data: "1"}
 			],
 			initComplete: function() {
 				table.columns().every( function (){

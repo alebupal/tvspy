@@ -31,8 +31,7 @@ SET time_zone = "+02:00";
 
 CREATE TABLE `canales` (
   `id` int(11) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `logo` varchar(100) COLLATE utf8_unicode_ci NOT NULL
+  `nombre` varchar(100) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
@@ -44,8 +43,7 @@ CREATE TABLE `canales` (
 CREATE TABLE `registro` (
   `id` int(11) NOT NULL,
   `usuario` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `canal` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `logo` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `canal` varchar(100) COLLATE utf8_unicode_ci NOT NULL
   `inicio` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fin` datetime DEFAULT NULL,
   `idReproduccion` int(11) NOT NULL

@@ -47,7 +47,7 @@ if($result!="" || $result != null){
 				for ($r=0; $r < count($canales["entries"]); $r++) {
 					if($canales["entries"][$r]["name"]==$reproducciones["entries"][$i]["channel"]){
 						echo fechaActual().": Nueva reproducción ".$reproducciones["entries"][$i]["id"]."\n";
-						insertarReproduccion($db,$reproducciones["entries"][$i],$canales["entries"][$r]["icon_public_url"],$json_config);
+						insertarReproduccion($db,$reproducciones["entries"][$i],$json_config);
 					}
 				}
 			}
@@ -87,7 +87,7 @@ if($result!="" || $result != null){
 							for ($t=0; $t < count($canales["entries"]); $t++) {
 								if($canales["entries"][$t]["name"]==$reproducciones["entries"][$i]["channel"]){
 									echo fechaActual().": Nueva reproducción ".$reproducciones["entries"][$i]["id"]."\n";
-									insertarReproduccion($db,$reproducciones["entries"][$i],$canales["entries"][$t]["icon_public_url"],$json_config);
+									insertarReproduccion($db,$reproducciones["entries"][$i],$json_config);
 								}
 							}
 						}
@@ -103,16 +103,14 @@ if($result!="" || $result != null){
 	echo false;
 }
 
-function insertarReproduccion($db, $reproducciones, $logo, $json_config){
-	$logo =$logo;
+function insertarReproduccion($db, $reproducciones, $json_config){
 	$statement="";
 	$id = (int)$reproducciones["id"];
-	$insert = "INSERT INTO registro (usuario, canal, idReproduccion, logo) VALUES (:usuario, :canal, :idReproduccion, :logo)";
+	$insert = "INSERT INTO registro (usuario, canal, idReproduccion) VALUES (:usuario, :canal, :idReproduccion)";
 	$statement = $db->prepare($insert);
 	// Bind parameters to statement variables
 	$statement->bindParam(':usuario', $reproducciones["username"]);
 	$statement->bindParam(':canal', $reproducciones["channel"]);
-	$statement->bindParam(':logo', $logo);
 	$statement->bindParam(':idReproduccion', $id);
 	//var_dump($reproducciones["id"]);
 	$statement->execute();
