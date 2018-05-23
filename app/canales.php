@@ -40,7 +40,6 @@
 					</div>
 				</div>
 				<div class="col-lg-12">
-					<p>Si las imágenes no cargan ve a TVHeadend <a class="enlaceLogueo" href="" target="_blank"></a> y logeate.</p>
 					<div class="table-responsive">
 						<table class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaCanales">
 							<thead>

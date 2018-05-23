@@ -57,13 +57,13 @@ if($result!="" || $result != null){
 			$arrayDiferente2 = array();
 			reset($arrayDiferente);
 			reset($arrayDiferente2);
-			$arrayDiferente = array_diff(array_column($reproducciones2["entries"], 'id'), array_column($reproducciones["entries"], 'id'));
-			$arrayDiferente2 = array_diff(array_column($reproducciones["entries"], 'id'), array_column($reproducciones2["entries"], 'id'));
+			$arrayDiferente = array_values(array_diff(array_column($reproducciones2["entries"], 'id'), array_column($reproducciones["entries"], 'id')));
+			$arrayDiferente2 = array_values(array_diff(array_column($reproducciones["entries"], 'id'), array_column($reproducciones2["entries"], 'id')));
 			// echo "ambos tienen<br>";
 
-			echo fechaActual().": <pre>";
+			echo "<pre>".fechaActual().": ";
 			var_dump($arrayDiferente);
-			echo " - ";
+			echo " ---- \n ";
 			var_dump($arrayDiferente2);
 			echo "</pre>\n";
 
