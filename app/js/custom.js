@@ -38,20 +38,14 @@ $(document).ready(function () {
 
 			if ( $(".pagina-canales").length > 0 ) {
 				importarCanales();
-				tablaCanales();
 				btnImportarCanales();
-				$(".enlaceLogueo").attr("href","http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/extjs.html");
-				$(".enlaceLogueo").html("https://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]);
 			}
 			if ( $(".pagina-usuarios").length > 0 ) {
-				tablaUsuarios();
 				importarUsuarios();
 				btnImportarUsuarios();
 			}
 			if ( $(".pagina-registro").length > 0 ) {
 				tablaRegistro();
-				$(".enlaceLogueo").attr("href","http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/extjs.html");
-				$(".enlaceLogueo").html("https://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]);
 			}
 		}).fail(function( jqxhr, textStatus, error ) {
 			var err = textStatus + ", " + error;
@@ -303,6 +297,7 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data==true){
 					console.log("Canales importados correctamente");
+					tablaCanales();
 				}else if(data=="404"){
 					console.log("error, url no existe");
 				}else if(data=="401"){
@@ -388,6 +383,7 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data==true){
 					console.log("Usuarios importados correctamente");
+					tablaUsuarios();
 				}else if(data=="404"){
 					console.log("error, url no existe");
 				}else if(data=="401"){

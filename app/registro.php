@@ -24,8 +24,7 @@
 				<li class="breadcrumb-item active">Registro</li>
 			</ol>
 			<div class="row mb-2">
-				<div class="col-lg-12">					
-					<p>Si las imágenes no cargan ve a TVHeadend <a class="enlaceLogueo" href="" target="_blank"></a> y logeate.</p>
+				<div class="col-lg-12">
 					<div class="table-responsive">
 						<table  class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaRegistro">
 							<thead>
