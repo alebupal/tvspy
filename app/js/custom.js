@@ -15,6 +15,12 @@ $(document).ready(function () {
 			if ( $(".pagina-configuracion").length > 0 ) {
 				cargarConfiguracion();
 				guardarConfiguracion();
+				btnBackup();
+			}
+			if ( $(".pagina-estadisticas").length > 0 ) {
+				graficaCanales();
+				graficaUsuarios();
+				btnAplicarGrafica();
 			}
 			if ( $(".pagina-inicio").length > 0 ) {
 				descargarFichero();
@@ -524,7 +530,7 @@ $(document).ready(function () {
 		table.select();
 	}
 	function btnBackup(){
-		$( ".btnBackup" ).click(function() {
+		$(".btnBackup").click(function() {
 			$.ajax({
 				type: "POST",
 				url: "acciones/backup.php",
@@ -534,13 +540,252 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
+					
 					if(data==true){
 						console.log("Backup realizado correctamente");
+						window.location.href = "backup.sql";
 					}else{
 						console.log("Error al realizar backup");
 					}
 				}
 			});
+		});
+	}
+	function graficaCanales(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/graficaCanales.php",
+			beforeSend:function(){
+				irArriba();
+				$(".cargando").toggle();
+			},
+			success: function (data) {
+				console.log(data);
+				var chart = AmCharts.makeChart( "graficaCanales", {
+					"type": "serial",
+					"theme": "light",
+					"dataProvider":  JSON.parse(data),
+					"valueAxes": [{
+						"gridColor": "#FFFFFF",
+						"gridAlpha": 0.2,
+						"dashLength": 0
+					}],
+					"gridAboveGraphs": true,
+					"startDuration": 1,
+					"graphs": [ {
+						"balloonText": "[[category]]: <b>[[value]]</b>",
+						"fillAlphas": 0.8,
+						"lineAlpha": 0.2,
+						"type": "column",
+						"valueField": "valor"
+					}],
+					"chartCursor": {
+						"categoryBalloonEnabled": false,
+						"cursorAlpha": 0,
+						"zoomable": false
+					},
+					"categoryField": "canal",
+					"categoryAxis": {
+						"gridPosition": "start",
+						"gridAlpha": 0,
+						"tickPosition": "start",
+						"tickLength": 20
+					},
+					"export": {
+						"enabled": true
+					}
+				});
+			}
+		});
+		
+	}
+	function graficaUsuarios(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/graficaUsuarios.php",
+			beforeSend:function(){
+				irArriba();
+				$(".cargando").toggle();
+			},
+			success: function (data) {
+				console.log(data);
+				var chart = AmCharts.makeChart( "graficaUsuarios", {
+					"type": "serial",
+					"theme": "light",
+					"dataProvider":  JSON.parse(data),
+					"valueAxes": [{
+						"gridColor": "#FFFFFF",
+						"gridAlpha": 0.2,
+						"dashLength": 0
+					}],
+					"gridAboveGraphs": true,
+					"startDuration": 1,
+					"graphs": [ {
+						"balloonText": "[[category]]: <b>[[value]]</b>",
+						"fillAlphas": 0.8,
+						"lineAlpha": 0.2,
+						"type": "column",
+						"valueField": "valor"
+					}],
+					"chartCursor": {
+						"categoryBalloonEnabled": false,
+						"cursorAlpha": 0,
+						"zoomable": false
+					},
+					"categoryField": "usuario",
+					"categoryAxis": {
+						"gridPosition": "start",
+						"gridAlpha": 0,
+						"tickPosition": "start",
+						"tickLength": 20
+					},
+					"export": {
+						"enabled": true
+					}
+				});
+			}
+		});
+		
+	}
+	function btnAplicarGrafica(){
+		getUsuariosSelect();
+		$("#graficaReproducciones").hide();	
+		$(".js-example-basic-single").select2({
+			language: "es"
+		});
+		$('.input-daterange').datepicker({
+			format: "yyyy-mm-dd",
+			todayBtn: "linked",
+			clearBtn: true,
+			language: "es",
+			todayHighlight: true,
+			toggleActive: true,
+		})
+		$(".btnAplicarGrafica" ).click(function() {
+			fechaInicio = $('#fechaInicio').datepicker("getDate");
+			fechaFin = $('#fechaFin').datepicker("getDate");
+			usuario = $("#usuario").val();
+			console.log(fechaFin);
+			console.log(fechaInicio);
+			var startDateServer = moment(fechaFin).format('YYYY-MM-DD');
+    		var endDateServer = moment(fechaInicio).format('YYYY-MM-DD');
+			console.log(startDateServer);
+			console.log(endDateServer);
+			$("#graficaReproducciones").show();
+			graficaReproducciones(fechaInicio,fechaFin,usuario);
+		});
+	}
+	function getUsuariosSelect(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpUsuariosSelect.php",
+			success: function (data) {
+				var obj = JSON.parse(data);
+				opciones ="";		
+				for (var i = 0; i < obj.length; i++) {
+					opciones += '<option value="'+obj[i]["nombre"]+'">'+obj[i]["nombre"]+'</option>'
+				}
+				
+				$("#usuario").append(opciones);
+			}
+		});
+	}
+	function graficaReproducciones(fechaInicio,fechaFin,usuario){
+		var formData = new FormData();
+		formData.append("fechaInicio", fechaInicio);
+		formData.append("fechaFin", fechaFin);
+		formData.append("usuario",usuario);
+		$.ajax({
+			type: "POST",
+			url: "acciones/graficaReproducciones.php",
+			data : formData,
+			contentType : false,
+			processData : false,
+			//async: false,
+			beforeSend:function(){
+				irArriba();
+				$(".cargando").toggle();
+			},
+			success: function (data) {
+				console.log(data);
+				var chart = AmCharts.makeChart("graficaReproducciones", {
+				    "type": "serial",
+				    "theme": "light",
+				    "marginRight": 40,
+				    "marginLeft": 40,
+				    "autoMarginOffset": 20,
+				    "mouseWheelZoomEnabled":true,
+				    "dataDateFormat": "YYYY-MM-DD",
+				    "valueAxes": [{
+				        "id": "v1",
+				        "axisAlpha": 0,
+				        "position": "left",
+				        "ignoreAxisWidth":true
+				    }],
+				    "balloon": {
+				        "borderThickness": 1,
+				        "shadowAlpha": 0
+				    },
+				    "graphs": [{
+				        "id": "g1",
+				        "balloon":{
+				          "drop":true,
+				          "adjustBorderColor":false,
+				          "color":"#ffffff"
+				        },
+				        "bullet": "round",
+				        "bulletBorderAlpha": 1,
+				        "bulletColor": "#FFFFFF",
+				        "bulletSize": 5,
+				        "hideBulletsCount": 50,
+				        "lineThickness": 2,
+				        "title": "red line",
+				        "useLineColorForBulletBorder": true,
+				        "valueField": "valor",
+				        "balloonText": "<span style='font-size:18px;'>[[valor]]</span>"
+				    }],
+				    "chartScrollbar": {
+				        "graph": "g1",
+				        "oppositeAxis":false,
+				        "offset":30,
+				        "scrollbarHeight": 80,
+				        "backgroundAlpha": 0,
+				        "selectedBackgroundAlpha": 0.1,
+				        "selectedBackgroundColor": "#888888",
+				        "graphFillAlpha": 0,
+				        "graphLineAlpha": 0.5,
+				        "selectedGraphFillAlpha": 0,
+				        "selectedGraphLineAlpha": 1,
+				        "autoGridCount":true,
+				        "color":"#AAAAAA"
+				    },
+				    "chartCursor": {
+				        "pan": true,
+				        "valueLineEnabled": true,
+				        "valueLineBalloonEnabled": true,
+				        "cursorAlpha":1,
+				        "cursorColor":"#258cbb",
+				        "limitToGraph":"g1",
+				        "valueLineAlpha":0.2,
+				        "valueZoomable":true
+				    },
+				    "valueScrollbar":{
+				      "oppositeAxis":false,
+				      "offset":50,
+				      "scrollbarHeight":10
+				    },
+				    "categoryField": "fecha",
+				    "categoryAxis": {
+				        "parseDates": true,
+				        "dashLength": 1,
+				        "minorGridEnabled": true
+				    },
+				    "export": {
+				        "enabled": true
+				    },
+				    "dataProvider": JSON.parse(data)
+				});				
+			}
 		});
 	}
 

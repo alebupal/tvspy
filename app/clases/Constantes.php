@@ -4,7 +4,7 @@
  */
 class Constantes {
     const servername = "localhost";
-	const username = "tvspy";
-	const password = "tvspy";
+	const username = "root";
+	const password = "";
 	const dbname = "tvspy";
 }

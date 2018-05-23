@@ -99,7 +99,7 @@
 							</form>
 						</div>
 						<div class="col-md-12 mb-2 mt-2">
-							<a class="btn btn-primary btn-lg btn-block text-white" class="btnBackup">Backup base de datos</a>
+							<a class="btn btn-primary btn-block text-white btnBackup" >Backup base de datos</a>
 						</div>
 					</div>
 				</div>
