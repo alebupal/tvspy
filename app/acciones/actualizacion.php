@@ -1,6 +1,6 @@
 <?php
-//$ruta = "../";
-$ruta = "/var/www/html/";
+$ruta = "../";
+//$ruta = "/var/www/html/";
 require_once $ruta."clases/Constantes.php";
 $db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername."",
 				Constantes::username,
@@ -21,7 +21,7 @@ if($result!="" || $result != null){
 	if(fwrite($fp, json_encode($result))!=false){
 		fclose($fp);
 		$reproducciones  = json_decode($result, true);
-		$canales = json_decode(dameCanales($json_config), true);
+		//$canales = json_decode(dameCanales($json_config), true);
 
 		$archivoReproducciones2 = file_get_contents($ruta."acciones/resultado2.json");
 		$reproducciones2 = json_decode($archivoReproducciones2, true);
@@ -36,7 +36,7 @@ if($result!="" || $result != null){
 			//Insertar fecha de que ha terminado de ver la tv al usuario que haya en resultado2 y actualizo resultado2 respecto a resultado1\n
 			//Se para una reproducción
 			for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
-				echo fechaActual().": Se ha parado la reproducción ".$reproducciones2["entries"][$r]["id"]."\n";
+				echo fechaActual().": Se ha parado la reproducción1 ".$reproducciones2["entries"][$r]["id"]."\n";
 				actualizoReproduccion($db,$reproducciones2["entries"][$r],$json_config);
 			}
 			actualizarResultado2($result, $ruta);
@@ -44,12 +44,8 @@ if($result!="" || $result != null){
 			//No hay nada en resultado2.json, pero hay datos en resultado.json de una nueva reproducción
 			// Insertamos la nueva produccion de reproducciones y actualizo resultado2 respecto a resultado1
 			for ($i=0; $i < count($reproducciones["entries"]) ; $i++) {
-				for ($r=0; $r < count($canales["entries"]); $r++) {
-					if($canales["entries"][$r]["name"]==$reproducciones["entries"][$i]["channel"]){
-						echo fechaActual().": Nueva reproducción ".$reproducciones["entries"][$i]["id"]."\n";
-						insertarReproduccion($db,$reproducciones["entries"][$i],$json_config);
-					}
-				}
+				echo fechaActual().": Nueva reproducción1 ".$reproducciones["entries"][$i]["id"]."\n";
+				insertarReproduccion($db,$reproducciones["entries"][$i],$json_config);
 			}
 			actualizarResultado2($result, $ruta);
 		}else if(count($reproducciones["entries"])!=0 && count($reproducciones2["entries"])!=0){
@@ -73,7 +69,7 @@ if($result!="" || $result != null){
 				for ($i=0; $i < count($arrayDiferente); $i++) {
 					for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
 						if($arrayDiferente[$i]==$reproducciones2["entries"][$r]["id"]){
-							echo fechaActual().": Se ha parado la reproducción ".$reproducciones2["entries"][$r]["id"]."\n";
+							echo fechaActual().": Se ha parado la reproducción2 ".$reproducciones2["entries"][$r]["id"]."\n";
 							actualizoReproduccion($db,$reproducciones2["entries"][$r],$json_config);
 						}
 					}
@@ -84,12 +80,8 @@ if($result!="" || $result != null){
 				for ($i=0; $i < count($arrayDiferente2); $i++) {
 					for ($r=0; $r < count($reproducciones["entries"]); $r++) {
 						if($arrayDiferente2[$i]==$reproducciones["entries"][$r]["id"]){
-							for ($t=0; $t < count($canales["entries"]); $t++) {
-								if($canales["entries"][$t]["name"]==$reproducciones["entries"][$i]["channel"]){
-									echo fechaActual().": Nueva reproducción ".$reproducciones["entries"][$i]["id"]."\n";
-									insertarReproduccion($db,$reproducciones["entries"][$i],$json_config);
-								}
-							}
+							echo fechaActual().": Nueva reproducción2 ".$reproducciones["entries"][$r]["id"]."\n";
+							insertarReproduccion($db,$reproducciones["entries"][$r],$json_config);
 						}
 					}
 				}

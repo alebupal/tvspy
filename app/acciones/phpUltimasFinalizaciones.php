@@ -10,7 +10,7 @@ $db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername
 		  		)
 			);
 // FETCH_ASSOC
-$stmt = $db->prepare("SELECT * FROM registro ORDER BY fin DESC LIMIT 5");
+$stmt = $db->prepare("SELECT * FROM registro WHERE fin IS NOT NULL ORDER BY fin DESC LIMIT 5");
 // Especificamos el fetch mode antes de llamar a fetch()
 $stmt->setFetchMode(PDO::FETCH_ASSOC);
 // Ejecutamos
