@@ -40,6 +40,7 @@
 					</div>
 				</div>
 				<div class="col-lg-12">
+					<p>Si las imágenes no cargan ve a TVHeadend <a class="enlaceLogueo" href="" target="_blank"></a> y logeate.</p>
 					<div class="table-responsive">
 						<table class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaCanales">
 							<thead>
@@ -58,11 +59,11 @@
 					</div>
 				</div>
 			</div>
-			<div class="row mb-2">
+			<!--<div class="row mb-2">
 				<div class="col-md-12">
 					<a class="btn btn-primary btn-block text-white btnImportarCanales">Importar canales de nuevo</a>
 				</div>
-			</div>
+			</div>-->
 
 		</div>
 

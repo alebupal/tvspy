@@ -59,23 +59,47 @@
 						   		</div>
 								<div class="form-row">
 									<div class="form-group col-md-12">
-										<label for="refresco">Tiempo de refresco (segundos)</label>
+										<label for="refresco">Tiempo de refresco (segundos) live página de inicio</label>
 										<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
-							   		</div>
-						   		</div>
+									</div>
+								</div>
 								<div class="form-row">
-									<div class="form-group col-md-6">
-										<label for="refresco">Telegram Bot Token</label>
-										<input type="number" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
-							   		</div>
-									<div class="form-group col-md-6">
-										<label for="refrescoCron">Telegram Chat ID, Group ID, or Channel Username</label>
-										<input type="number" class="form-control" id="id_chat" name="id_chat" placeholder="177537537537375252452" required>
+									<div class="form-group col-md-12">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" value="true" name="notificacion_telegram" id="notificacion_telegram">
+											<label class="form-check-label" for="notificacion_telegram">Notificaciones Telegram</label>
+										</div>
 									</div>
 						   		</div>
-								<input type="hidden" class="form-control" id="importar" name="importar">
+								<div id="configuracionTelegram">									
+									<div class="form-row">
+										<div class="form-group col-md-6">
+											<label for="bot_token">Telegram Bot Token</label>
+											<input type="text" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
+										</div>
+										<div class="form-group col-md-6">
+											<label for="id_chat">Telegram Chat ID, Group ID, or Channel Username</label>
+											<input type="text" class="form-control" id="id_chat" name="id_chat" placeholder="177537537537375252452" required>
+										</div>
+									</div>
+									<div class="form-row">
+										<div class="form-group col-md-6">
+											<label>Texto empieza reprodución</label>
+											<label>Variables: %%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>											
+											<textarea class="form-control" name="texto_empieza" id="texto_empieza" rows="3"></textarea>
+										</div>
+										<div class="form-group col-md-6">										
+											<label>Texto para reprodución</label>
+											<label>Variables: %%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
+											<textarea class="form-control" name="texto_para" id="texto_para" rows="3"></textarea>
+										</div>
+									</div>
+								</div>
 								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
 							</form>
+						</div>
+						<div class="col-md-12 mb-2 mt-2">
+							<a class="btn btn-primary btn-lg btn-block text-white" class="btnBackup">Backup base de datos</a>
 						</div>
 					</div>
 				</div>

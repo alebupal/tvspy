@@ -19,7 +19,6 @@ $(document).ready(function () {
 			if ( $(".pagina-inicio").length > 0 ) {
 				descargarFichero();
 				setInterval(descargarFichero, (arrayConfig["refresco"]*1000));
-				autorizar();
 				usuarioActivo();
 				canalActivo();
 				reproduccionesTotales();
@@ -27,22 +26,27 @@ $(document).ready(function () {
 				ultimasFinalizaciones();
 			}
 
-			if(arrayConfig["importar"]=="false"){
+			/*if(arrayConfig["importar"]=="false"){
 				importarUsuariosCanales();
 
-			}
+			}*/
 
 			if ( $(".pagina-canales").length > 0 ) {
-				autorizar();
+				importarCanales();
 				tablaCanales();
 				btnImportarCanales();
+				$(".enlaceLogueo").attr("href","http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/extjs.html");
+				$(".enlaceLogueo").html("https://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]);
 			}
 			if ( $(".pagina-usuarios").length > 0 ) {
-				tablaUsuarios();
+				tablaUsuarios();				
+				importarUsuarios();
 				btnImportarUsuarios();
 			}
 			if ( $(".pagina-registro").length > 0 ) {
 				tablaRegistro();
+				$(".enlaceLogueo").attr("href","http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/extjs.html");
+				$(".enlaceLogueo").html("https://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]);
 			}
 		}).fail(function( jqxhr, textStatus, error ) {
 			var err = textStatus + ", " + error;
@@ -67,12 +71,30 @@ $(document).ready(function () {
 		$("#pass").val(arrayConfig["pass"]);
 		$("#usuario").val(arrayConfig["usuario"]);
 		$("#refresco").val(arrayConfig["refresco"]);
-		$("#importar").val(arrayConfig["importar"]);
+		$("#refresco").val(arrayConfig["refresco"]);
+		if(arrayConfig["notificacion_telegram"]=="true"){
+			$("#notificacion_telegram").prop('checked', true);
+			$("#configuracionTelegram").show();
+		}else if(arrayConfig["notificacion_telegram"]=="false"){
+			$("#notificacion_telegram").prop('checked', false);			
+			$("#configuracionTelegram").hide();
+		}
+		$("#texto_empieza").val(arrayConfig["texto_empieza"]);
+		$("#texto_para").val(arrayConfig["texto_para"]);
+		
+		//$("#importar").val(arrayConfig["importar"]);
 		$("#bot_token").val(arrayConfig["bot_token"]);
 		$("#id_chat").val(arrayConfig["id_chat"]);
 	}
 
 	function guardarConfiguracion(){
+		$("#notificacion_telegram").click(function() {
+			if ($('#notificacion_telegram').is(":checked")){				
+				$("#configuracionTelegram").show();
+			}else{				
+				$("#configuracionTelegram").hide();
+			}
+		});
 		$('#formConfiguracion').on('submit', function(e){
 			e.preventDefault();
 			var form = $('#formConfiguracion')[0];
@@ -84,6 +106,7 @@ $(document).ready(function () {
 				contentType : false,
 				processData : false,
 				success: function(data) {
+					irArriba();
 					if(data==true){
 						console.log("Configuración guardada correctamente");
 						$(".configuracionGuardada").fadeTo(2000, 500).slideUp(500, function(){
@@ -248,25 +271,11 @@ $(document).ready(function () {
 		});
 	}
 
-
 	function btnImportarCanales(){
 		$( ".btnImportarCanales" ).click(function() {
-			var formData = new FormData();
-			formData.append("ip", arrayConfig["ip"]);
-			formData.append("puerto", arrayConfig["puerto"]);
-			formData.append("pass", arrayConfig["pass"]);
-			formData.append("usuario", arrayConfig["usuario"]);
-			formData.append("refresco", arrayConfig["refresco"]);
-			formData.append("importar", arrayConfig["importar"]);
-			formData.append("bot_token", arrayConfig["bot_token"]);
-			formData.append("id_chat", arrayConfig["id_chat"]);
 			$.ajax({
 				type: "POST",
 				url: "acciones/importarCanales.php",
-				data : formData,
-				contentType : false,
-				processData : false,
-				async: false,
 				beforeSend:function(){
 					irArriba();
 					$(".cargando").toggle();
@@ -288,6 +297,25 @@ $(document).ready(function () {
 					}
 				}
 			});
+		});
+	}
+	
+	function importarCanales(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/importarCanales.php",
+			//async: false,
+			success: function (data) {
+				if(data==true){
+					console.log("Canales importados correctamente");
+				}else if(data=="404"){
+					console.log("error, url no existe");
+				}else if(data=="401"){
+					console.log("error, usuario o contraseña incorrecta");
+				}else{
+					console.log("Error al importar canales");
+				}
+			}
 		});
 	}
 	function tablaCanales(){
@@ -317,6 +345,7 @@ $(document).ready(function () {
 				{data: "1"},
 				{data: null,
                     render: function (data, type, row) {
+						img = "http://"+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+data[2];
                         return '<img width="100" src="http://'+arrayConfig["ip"]+":"+arrayConfig["puerto"]+"/"+data[2]+'">';
                     }
                 },
@@ -337,22 +366,9 @@ $(document).ready(function () {
 
 	function btnImportarUsuarios(){
 		$(".btnImportarUsuarios").click(function() {
-			var formData = new FormData();
-			formData.append("ip", arrayConfig["ip"]);
-			formData.append("puerto", arrayConfig["puerto"]);
-			formData.append("pass", arrayConfig["pass"]);
-			formData.append("usuario", arrayConfig["usuario"]);
-			formData.append("refresco", arrayConfig["refresco"]);
-			formData.append("importar", arrayConfig["importar"]);
-			formData.append("bot_token", arrayConfig["bot_token"]);
-			formData.append("id_chat", arrayConfig["id_chat"]);
 			$.ajax({
 				type: "POST",
 				url: "acciones/importarUsuarios.php",
-				data : formData,
-				contentType : false,
-				processData : false,
-				async: false,
 				beforeSend:function(){
 					irArriba();
 					$(".cargando").toggle();
@@ -374,6 +390,23 @@ $(document).ready(function () {
 					}
 				}
 			});
+		});
+	}
+	function importarUsuarios(){
+		$.ajax({
+			type: "POST",
+			url: "acciones/importarUsuarios.php",
+			success: function (data) {
+				if(data==true){
+					console.log("Usuarios importados correctamente");
+				}else if(data=="404"){
+					console.log("error, url no existe");
+				}else if(data=="401"){
+					console.log("error, usuario o contraseña incorrecta");
+				}else{
+					console.log("Error al importar usuarios");
+				}
+			}
 		});
 	}
 	function tablaUsuarios(){
@@ -415,13 +448,14 @@ $(document).ready(function () {
 		});
 		table.select();
 	}
-	function importarUsuariosCanales(){
+	/*function importarUsuariosCanales(){
 		var formData = new FormData();
 		formData.append("ip", arrayConfig["ip"]);
 		formData.append("puerto", arrayConfig["puerto"]);
 		formData.append("pass", arrayConfig["pass"]);
 		formData.append("usuario", arrayConfig["usuario"]);
 		formData.append("refresco", arrayConfig["refresco"]);
+		formData.append("refrescoCron", arrayConfig["refrescoCron"]);
 		formData.append("bot_token", arrayConfig["bot_token"]);
 		formData.append("id_chat", arrayConfig["id_chat"]);
 		$.ajax({
@@ -430,7 +464,7 @@ $(document).ready(function () {
 			data : formData,
 			contentType : false,
 			processData : false,
-			async: false,
+			//async: false,
 			success: function (data) {
 				if(data==true){
 					console.log("Usuarios y canales importados correctamente");
@@ -445,7 +479,7 @@ $(document).ready(function () {
 				}
 			}
 		});
-	}
+	}*/
 
 	function tablaRegistro(){
 		$('#tablaRegistro tfoot th').each( function () {
@@ -489,24 +523,27 @@ $(document).ready(function () {
 		});
 		table.select();
 	}
-
-	function autorizar(){
-		$.ajax({
-			type: "POST",
-			url: "acciones/phpAutorizar.php",
-			success: function (data) {
-				if(data==true){
-					console.log("Autorizado");
-				}else if(data=="404"){
-					console.log("error, url no existe");
-				}else if(data=="401"){
-					console.log("error, usuario o contraseña incorrecta");
-				}else{
-					console.log("Error desconocido al descargar");
+	function btnBackup(){
+		$( ".btnBackup" ).click(function() {
+			$.ajax({
+				type: "POST",
+				url: "acciones/backup.php",
+				beforeSend:function(){
+					irArriba();
+					$(".cargando").toggle();
+				},
+				success: function (data) {
+					$(".cargando").toggle();
+					if(data==true){
+						console.log("Backup realizado correctamente");
+					}else{
+						console.log("Error al realizar backup");
+					}
 				}
-			}
+			});
 		});
 	}
+
 	function irArriba(){
 		$('body,html').animate({scrollTop : 0}, 500);
 	}

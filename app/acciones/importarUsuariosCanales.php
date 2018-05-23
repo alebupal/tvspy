@@ -60,7 +60,7 @@ try {
 
 		// Bind parameters to statement variables
 		$statementCanales->bindParam(':nombre', $nombre);
-		$statementCanales->bindParam(':nombre', $logo);
+		$statementCanales->bindParam(':logo', $logo);
 
 		//Insert all of the items in the array
 		foreach ($itemsCanales as $item) {
@@ -119,26 +119,7 @@ try {
 				$nombre = $item['nombre'];
 				$statementUsuarios->execute();
 			}
-
-			$array = array(
-			    "ip" => $_POST["ip"],
-			    "puerto" => $_POST["puerto"],
-			    "pass" => $_POST["pass"],
-			    "usuario" => $_POST["usuario"],
-			    "refresco" => $_POST["refresco"],
-			    "refrescoCron" => $_POST["refrescoCron"],
-			    "importar" => "true",
-				"bot_token" => $_POST["bot_token"],
-				"id_chat" => $_POST["id_chat"]
-			);
-			$json = json_encode($array);
-			$fp = fopen('../config.json', 'w');
-			if(fwrite($fp,$json)!=false){
-				fclose($fp);
-				echo true;
-			}else{
-				echo false;
-			}
+			echo true;
 		}
 	}
 

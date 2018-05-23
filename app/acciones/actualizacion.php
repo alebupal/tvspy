@@ -29,30 +29,29 @@ if($result!="" || $result != null){
 
 		if(count($reproducciones["entries"])==0 && count($reproducciones2["entries"])==0){
 			//No hay nada ni en resultado.json ni en resultado2.json
-			echo fechaActual().": No hacemos nada\n";
+			//Ninguna reproducción
+			echo fechaActual().": No hay ninguna reproducción\n";
 		}else if(count($reproducciones["entries"])==0 && count($reproducciones2["entries"])!=0){
-			//No hay nada en resultado.json, pero hay datos en resultado2.json de una reproducción anterior,
-			echo fechaActual().": Insertar fecha de que ha terminado de ver la tv al usuario que haya en resultado2 y actualizo resultado2 respecto a resultado1\n";
-
+			//No hay nada en resultado.json, pero hay datos en resultado2.json de una reproducción anterior
+			//Insertar fecha de que ha terminado de ver la tv al usuario que haya en resultado2 y actualizo resultado2 respecto a resultado1\n
+			//Se para una reproducción
 			for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
-				actualizoReproduccion($db,$reproducciones2["entries"][$r]["id"]);
+				echo fechaActual().": Se ha parado la reproducción ".$reproducciones2["entries"][$r]["id"]."\n";
+				actualizoReproduccion($db,$reproducciones2["entries"][$r],$json_config);
 			}
 			actualizarResultado2($result, $ruta);
 		}else if(count($reproducciones["entries"])!=0 && count($reproducciones2["entries"])==0){
 			//No hay nada en resultado2.json, pero hay datos en resultado.json de una nueva reproducción
-			echo fechaActual().": Insertamos la nueva produccion de reproducciones y actualizo resultado2 respecto a resultado1\n";
+			// Insertamos la nueva produccion de reproducciones y actualizo resultado2 respecto a resultado1
 			for ($i=0; $i < count($reproducciones["entries"]) ; $i++) {
-				//count($canales["entries"]);
-				var_dump(count($canales["entries"]));
 				for ($r=0; $r < count($canales["entries"]); $r++) {
 					if($canales["entries"][$r]["name"]==$reproducciones["entries"][$i]["channel"]){
-						insertarReproduccion($db,$reproducciones["entries"][$i],$canales["entries"][$r]["icon_public_url"]);
+						echo fechaActual().": Nueva reproducción ".$reproducciones["entries"][$i]["id"]."\n";
+						insertarReproduccion($db,$reproducciones["entries"][$i],$canales["entries"][$r]["icon_public_url"],$json_config);
 					}
 				}
 			}
 			actualizarResultado2($result, $ruta);
-
-
 		}else if(count($reproducciones["entries"])!=0 && count($reproducciones2["entries"])!=0){
 			$arrayDiferente = array();
 			$arrayDiferente2 = array();
@@ -61,32 +60,34 @@ if($result!="" || $result != null){
 			$arrayDiferente = array_diff(array_column($reproducciones2["entries"], 'id'), array_column($reproducciones["entries"], 'id'));
 			$arrayDiferente2 = array_diff(array_column($reproducciones["entries"], 'id'), array_column($reproducciones2["entries"], 'id'));
 			// echo "ambos tienen<br>";
+			
 			echo fechaActual().": <pre>";
 			var_dump($arrayDiferente);
 			echo " - ";
 			var_dump($arrayDiferente2);
 			echo "</pre>\n";
+			
 			//ids que estan en resultado2 y hay que actualizar la fecha
+			
 			if(count($arrayDiferente)>0){
-				for ($i=1; $i <= count($arrayDiferente); $i++) {
+				for ($i=0; $i < count($arrayDiferente); $i++) {
 					for ($r=0; $r < count($reproducciones2["entries"]); $r++) {
 						if($arrayDiferente[$i]==$reproducciones2["entries"][$r]["id"]){
-							echo fechaActual().": Igual, updatea\n";
-							actualizoReproduccion($db,$reproducciones2["entries"][$r]["id"]);
+							echo fechaActual().": Se ha parado la reproducción ".$reproducciones2["entries"][$r]["id"]."\n";
+							actualizoReproduccion($db,$reproducciones2["entries"][$r],$json_config);
 						}
 					}
 				}
 			}
-
 			//ids que estan en resultado.json y hay que insertar en la bd
 			if(count($arrayDiferente2)>0){
-				for ($i=1; $i <= count($arrayDiferente2); $i++) {
+				for ($i=0; $i < count($arrayDiferente2); $i++) {
 					for ($r=0; $r < count($reproducciones["entries"]); $r++) {
 						if($arrayDiferente2[$i]==$reproducciones["entries"][$r]["id"]){
 							for ($t=0; $t < count($canales["entries"]); $t++) {
 								if($canales["entries"][$t]["name"]==$reproducciones["entries"][$i]["channel"]){
-									echo fechaActual().": Igual, inserta\n";
-									insertarReproduccion($db,$reproducciones["entries"][$i],$canales["entries"][$t]["icon_public_url"]);
+									echo fechaActual().": Nueva reproducción ".$reproducciones["entries"][$i]["id"]."\n";
+									insertarReproduccion($db,$reproducciones["entries"][$i],$canales["entries"][$t]["icon_public_url"],$json_config);
 								}
 							}
 						}
@@ -102,8 +103,7 @@ if($result!="" || $result != null){
 	echo false;
 }
 
-function insertarReproduccion($db, $reproducciones, $logo){
-	var_dump($logo);
+function insertarReproduccion($db, $reproducciones, $logo, $json_config){
 	$logo =$logo;
 	$statement="";
 	$id = (int)$reproducciones["id"];
@@ -117,19 +117,33 @@ function insertarReproduccion($db, $reproducciones, $logo){
 	//var_dump($reproducciones["id"]);
 	$statement->execute();
 	$statement->closeCursor();
+	
+	$mensaje = str_replace("%%usuario%%",$reproducciones["username"],$json_config["texto_empieza"]);
+	$mensaje = str_replace("%%canal%%",$reproducciones["channel"],$mensaje);
+	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
+	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);	
+	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
+	enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
 
 }
-function actualizoReproduccion($db, $idReproduccion){
+function actualizoReproduccion($db, $reproducciones, $json_config){
 	$statement="";
-
+	$fecha_actual = fechaActual();
 	$update = "UPDATE registro SET fin = :fechaActual WHERE idReproduccion=:idReproduccion";
 	$statement = $db->prepare($update);
 	// Bind parameters to statement variables
-	$statement->bindParam(':idReproduccion', $idReproduccion);
-	$statement->bindParam(':fechaActual', fechaActual());
+	$statement->bindParam(':idReproduccion', $reproducciones["id"]);
+	$statement->bindParam(':fechaActual', $fecha_actual);
 
 	$statement->execute();
 	$statement->closeCursor();
+
+	$mensaje = str_replace("%%usuario%%",$reproducciones["username"],$json_config["texto_para"]);
+	$mensaje = str_replace("%%canal%%",$reproducciones["channel"],$mensaje);
+	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
+	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
+	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
+	enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
 
 }
 function actualizarResultado2($result, $ruta){
@@ -139,13 +153,7 @@ function actualizarResultado2($result, $ruta){
 		echo fechaActual().": resultado.json copiado a resultado2.json\n";
 	}
 }
-function fechaActual(){
-	$tz = 'Europe/Madrid';
-	$timestamp = time();
-	$dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
-	$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
-	return $dt->format('Y-m-d H:i:s');
-}
+
 function dameCanales($json_config){
 	$ipuerto =  $json_config["ip"].":".$json_config["puerto"];
 	$url = "http://".$ipuerto."/api/channel/grid?limit=100000";
@@ -213,6 +221,25 @@ function dameReproducciones($json_config){
 		curl_close($ch);
 		return $result;
 	}
+	
+}
+function enviarTelegram($TOKEN, $chat_id, $mensaje){
+	$TELEGRAM = "https://api.telegram.org:443/bot".$TOKEN; 
+	$query = http_build_query([
+		'chat_id'=> $chat_id,
+		'text'=> $mensaje,
+		'parse_mode'=> "HTML", 
+	]);
+	
+	$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
+	return $response;
+}
+function fechaActual(){
+	$tz = 'Europe/Madrid';
+	$timestamp = time();
+	$dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
+	$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
+	return $dt->format('Y-m-d H:i:s');
 }
 
 ?>
