@@ -6,4 +6,7 @@
 <link href="css/sb-admin.css" rel="stylesheet">
 <!-- Datatable-->
 <link rel="stylesheet" type="text/css" href="vendor/datatables/datatables.min.css"/>
+
+<link rel="stylesheet" href="vendor/amcharts/plugins/export/export.css" type="text/css" media="all" />
+
 <link href="css/custom.css" rel="stylesheet">

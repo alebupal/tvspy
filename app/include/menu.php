@@ -12,7 +12,7 @@
 				</a>
 			</li>
 			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estadisticas">
-				<a class="nav-link" href="#">
+				<a class="nav-link" href="estadisticas.php">
 					<i class="fa fa-fw fa-area-chart"></i>
 					<span class="nav-link-text">Estadisticas</span>
 				</a>

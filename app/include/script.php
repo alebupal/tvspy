@@ -8,4 +8,12 @@
 <script src="js/sb-admin.min.js"></script>
 <!-- Datatable-->
 <script src="vendor/datatables/datatables.min.js"></script>
+
+
+
+<script src="vendor/amcharts/amcharts.js"></script>
+<script src="vendor/amcharts/serial.js"></script>
+<script src="vendor/amcharts/plugins/export/export.min.js"></script>
+<script src="vendor/amcharts/themes/light.js"></script>
+
 <script src="js/custom.js"></script>
