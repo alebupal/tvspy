@@ -1,6 +1,6 @@
 <?php
-$ruta = "../";
-//$ruta = "/var/www/html/";
+//$ruta = "../";
+$ruta = "/var/www/html/";
 require_once $ruta."clases/Constantes.php";
 $db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername."",
 				Constantes::username,
