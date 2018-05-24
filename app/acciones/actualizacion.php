@@ -113,9 +113,7 @@ function insertarReproduccion($db, $reproducciones, $json_config){
 	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
 	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
 	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
-	echo $json_config["notificacion_telegram"];
 	if($json_config["notificacion_telegram"]!= "false"){
-		echo $mensaje;
 		enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
 	}
 
@@ -137,9 +135,7 @@ function actualizoReproduccion($db, $reproducciones, $json_config){
 	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
 	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
 	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
-	echo $json_config["notificacion_telegram"];
 	if($json_config["notificacion_telegram"]!= "false"){
-		echo $mensaje;
 		enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
 	}
 
