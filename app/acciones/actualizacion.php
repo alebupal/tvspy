@@ -1,7 +1,9 @@
 <?php
-//$ruta = "../";
-$ruta = "/var/www/html/";
-require_once $ruta."clases/Constantes.php";
+require_once "../clases/Util.php";
+$configuracion = Util::cargarConfiguracion();
+var_dump(Util::arrayBonito($configuracion));
+//$ruta = "/var/www/html/";
+/*require_once $ruta."clases/Constantes.php";
 $db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername."",
 				Constantes::username,
 				Constantes::password,
@@ -14,8 +16,10 @@ $db = new PDO("mysql:dbname=".Constantes::dbname.";host=".Constantes::servername
 $config = file_get_contents($ruta."config.json");
 $json_config = json_decode($config, true);
 
-$result = dameReproducciones($json_config);
-
+$reproducciones = dameReproducciones($json_config);
+var_dump($reproducciones);*/
+//Logica reproducciones
+/*
 if($result!="" || $result != null){
 	$fp = fopen($ruta.'acciones/resultado.json', 'w');
 	if(fwrite($fp, json_encode($result))!=false){
@@ -95,28 +99,72 @@ if($result!="" || $result != null){
 	echo false;
 }
 
+*/
+//Logica tiempo
+//notificarTiempo($db, $json_config);
+
+
+function notificarTiempo($db, $json_config){
+	$stmt = $db->prepare("SELECT * FROM registro WHERE fin IS NULL ORDER BY inicio DESC LIMIT 5");
+	// Especificamos el fetch mode antes de llamar a fetch()
+	$stmt->setFetchMode(PDO::FETCH_ASSOC);
+	// Ejecutamos
+	$stmt->execute();
+	// Mostramos los resultados
+	$row = $stmt->fetchAll();
+	for ($i=0; $i < count($row) ; $i++) {
+		$fecha1 = fechaActual();
+		$fecha2 = $row[$i]["inicio"];
+		$minutos = (strtotime($fecha1) - strtotime($fecha2))/60;
+		if($minutos>$json_config["telegram_tiempo_limite"]){
+			echo "envia notificacion a ".$row[$i]["usuario"];
+			if($json_config["notificacion_telegram"]!= "false"){
+				if($json_config["telegram_tiempo"]!= "false"){
+					$mensaje = str_replace("%%usuario%%",$usuario,$row[$i]["usuario"]);
+					$mensaje = str_replace("%%canal%%",$row[$i]["canal"],$mensaje);
+					$mensaje = str_replace("%%fecha%%",$fecha_actual,$mensaje);
+					$mensaje = str_replace("%%reproductor%%",$row[$i]["reproductor"],$mensaje);
+					$mensaje = str_replace("%%hostname%%",$row[$i]["hostname"],$mensaje);
+					$mensaje = str_replace("%%tiempo%%",$minutos,$mensaje);
+					enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+				}
+			}
+		}
+	}
+}
+
+
 function insertarReproduccion($db, $reproducciones, $json_config){
 	$statement="";
+	$fecha_actual = fechaActual();
 	$id = (int)$reproducciones["id"];
-	$insert = "INSERT INTO registro (usuario, canal, idReproduccion) VALUES (:usuario, :canal, :idReproduccion)";
+	$insert = "INSERT INTO registro (usuario, canal, idReproduccion, inicio) VALUES (:usuario, :canal, :idReproduccion, :inicio)";
 	$statement = $db->prepare($insert);
 	// Bind parameters to statement variables
-	$statement->bindParam(':usuario', $reproducciones["username"]);
+	if (isset($reproducciones["username"])) {
+		$usuario = $reproducciones["username"];
+	}else{
+		$usuario = "Sin usuario";
+	}
+
+	$statement->bindParam(':usuario', $usuario);
 	$statement->bindParam(':canal', $reproducciones["channel"]);
 	$statement->bindParam(':idReproduccion', $id);
+	$statement->bindParam(':inicio', $fecha_actual);
 	//var_dump($reproducciones["id"]);
 	$statement->execute();
 	$statement->closeCursor();
 
-	$mensaje = str_replace("%%usuario%%",$reproducciones["username"],$json_config["texto_empieza"]);
-	$mensaje = str_replace("%%canal%%",$reproducciones["channel"],$mensaje);
-	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
-	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
-	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
 	if($json_config["notificacion_telegram"]!= "false"){
-		enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+		if($json_config["telegram_empieza"]!= "false"){
+			$mensaje = str_replace("%%usuario%%",$usuario,$json_config["texto_empieza"]);
+			$mensaje = str_replace("%%canal%%",$reproducciones["channel"],$mensaje);
+			$mensaje = str_replace("%%fecha%%",$fecha_actual,$mensaje);
+			$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
+			$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
+			enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+		}
 	}
-
 }
 function actualizoReproduccion($db, $reproducciones, $json_config){
 	$statement="";
@@ -130,13 +178,21 @@ function actualizoReproduccion($db, $reproducciones, $json_config){
 	$statement->execute();
 	$statement->closeCursor();
 
-	$mensaje = str_replace("%%usuario%%",$reproducciones["username"],$json_config["texto_para"]);
-	$mensaje = str_replace("%%canal%%",$reproducciones["channel"],$mensaje);
-	$mensaje = str_replace("%%fecha%%",fechaActual(),$mensaje);
-	$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
-	$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
 	if($json_config["notificacion_telegram"]!= "false"){
-		enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+		if (isset($reproducciones["username"])) {
+			$usuario = $reproducciones["username"];
+		}else{
+			$usuario = "Sin usuario";
+		}
+
+		if($json_config["telegram_para"]!= "false"){
+			$mensaje = str_replace("%%usuario%%",$usuario,$json_config["texto_para"]);
+			$mensaje = str_replace("%%canal%%",$reproducciones["channel"],$mensaje);
+			$mensaje = str_replace("%%fecha%%",$fecha_actual,$mensaje);
+			$mensaje = str_replace("%%reproductor%%",$reproducciones["title"],$mensaje);
+			$mensaje = str_replace("%%hostname%%",$reproducciones["hostname"],$mensaje);
+			enviarTelegram($json_config["bot_token"], $json_config["id_chat"], $mensaje);
+		}
 	}
 
 }
@@ -228,12 +284,6 @@ function enviarTelegram($TOKEN, $chat_id, $mensaje){
 	$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
 	return $response;
 }
-function fechaActual(){
-	$tz = 'Europe/Madrid';
-	$timestamp = time();
-	$dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
-	$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
-	return $dt->format('Y-m-d H:i:s');
-}
+
 
 ?>

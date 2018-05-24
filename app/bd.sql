@@ -44,7 +44,10 @@ CREATE TABLE `registro` (
   `id` int(11) NOT NULL,
   `usuario` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `canal` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `inicio` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `reproductor` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `hostname` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `tiempo` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `inicio` datetime DEFAULT NULL,,
   `fin` datetime DEFAULT NULL,
   `idReproduccion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;

@@ -56,11 +56,11 @@
 					</div>
 				</div>
 			</div>
-			<!--<div class="row mb-2">
+			<div class="row mb-2">
 				<div class="col-md-12">
-					<a class="btn btn-primary btn-block text-white btnImportarCanales">Importar canales de nuevo</a>
+					<a class="btn btn-primary btn-block text-white btnImportarCanales">Importar canales</a>
 				</div>
-			</div>-->
+			</div>
 
 		</div>
 
