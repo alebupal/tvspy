@@ -18,7 +18,7 @@ No garantizo que funcione con menos de 30 segundos.
 
 Siempre que se instala de nuevo es recomendable hacer una copia de la base de datos con phpmyadmin para no perder el registro de datos. Despues con volver a importarla desde phpmyadmin no habrá problemas.
 
-Gracias a @Spufy por su ayuda a montar la imagen.
+Gracias a @Spufy por sus consejos para montar la imagen.
 
 --
 
@@ -33,13 +33,25 @@ I do not guarantee that it works with less than 30 seconds.
 
 Whenever it is installed again it is advisable to make a copy of the database with phpmyadmin so as not to lose the data record. Then with re-import from phpmyadmin there will be no problems.
 
-Thanks to @Spufy for his help in assembling the image.
+Thanks to @Spufy for his advice to assemble the image.
 
 --
 
 USER phpmyadmin: tvspy
 PASS phpmyadmin: tvspy
 db: tvspy
+
+
+```
+docker run -d \
+	--name="tvspy" \
+	-e TIME_CRON = 30
+	-e PHPMYADMIN_VERSION=4.8.0.1
+	-e TZ = Europe/Madrid
+	-p XXXX:80 \
+	-p XXXX:3306 \
+	alebupal/tvspy/
+```
 
 ## Donate - Donación
 [![paypal](https://www.paypalobjects.com/es_ES/ES/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7M4FFLM5WMKWQ)
