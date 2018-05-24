@@ -293,8 +293,13 @@ $(document).ready(function () {
 		$.ajax({
 			type: "POST",
 			url: "acciones/importarCanales.php",
+			beforeSend:function(){
+				irArriba();
+				$(".cargando").toggle();
+			},
 			//async: false,
-			success: function (data) {
+			success: function (data) {				
+				$(".cargando").toggle();
 				if(data==true){
 					console.log("Canales importados correctamente");
 					tablaCanales();
@@ -380,7 +385,12 @@ $(document).ready(function () {
 		$.ajax({
 			type: "POST",
 			url: "acciones/importarUsuarios.php",
-			success: function (data) {
+			beforeSend:function(){
+				irArriba();
+				$(".cargando").toggle();
+			},
+			success: function (data) {				
+				$(".cargando").toggle();
 				if(data==true){
 					console.log("Usuarios importados correctamente");
 					tablaUsuarios();
