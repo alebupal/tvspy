@@ -8,7 +8,7 @@ The application is made in PHP, MYSQL and JS. There is a cron that runs every so
 
 ## Instalación - Installing
 Para utilizarla basta con instalar la imagen de docker https://hub.docker.com/r/alebupal/tvspy/ y configurar la aplicación con la ip y puerto de TvHeadend en la opción configuración.
-Para crear la imagen de docker me he basado en https://github.com/mattrayner/docker-lamp . 
+Para crear la imagen de docker me he basado en https://github.com/mattrayner/docker-lamp .
 La imagen tiene PHP 7.2, MYSQL, PHPMyAdmin y apache.
 Para acceder a PHPMyAdmin la ruta es: http://IP_DOCKER:PORT_DOCKER/phpmyadmin y para acceder a la aplicación http://IP_DOCKER:PORT_DOCKER
 
@@ -20,6 +20,7 @@ Siempre que se instala de nuevo es recomendable hacer una copia de la base de da
 
 Gracias a @Spufy por sus consejos para montar la imagen.
 
+[Capturas](https://github.com/alebupal/tvspy/tree/master/capturas)
 --
 
 To use it, simply install the docker image https://hub.docker.com/r/alebupal/tvspy/ and configure the application with the ip and port of TvHeadend in the configuration option.
@@ -35,6 +36,7 @@ Whenever it is installed again it is advisable to make a copy of the database wi
 
 Thanks to @Spufy for his advice to assemble the image.
 
+[Screenshots](https://github.com/alebupal/tvspy/tree/master/capturas)
 --
 
 USER phpmyadmin: tvspy

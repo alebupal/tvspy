@@ -1,12 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
+-- version 4.5.1
+-- http://www.phpmyadmin.net
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-05-2018 a las 12:30:37
--- Versión del servidor: 10.1.21-MariaDB
--- Versión de PHP: 7.1.1
-
+-- Tiempo de generación: 25-05-2018 a las 17:04:50
+-- Versión del servidor: 10.1.8-MariaDB
+-- Versión de PHP: 5.6.14
 create database tvspy;
 use tvspy;
 
@@ -37,6 +36,38 @@ CREATE TABLE `canales` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `configuracion`
+--
+
+CREATE TABLE `configuracion` (
+  `id` int(11) NOT NULL,
+  `ip` varchar(100) NOT NULL,
+  `puerto` int(11) NOT NULL,
+  `usuario` varchar(100) NOT NULL,
+  `contrasena` varchar(100) NOT NULL,
+  `refresco` int(11) NOT NULL,
+  `notificacion_telegram` tinyint(1) NOT NULL,
+  `texto_empieza` varchar(500) NOT NULL,
+  `texto_para` varchar(500) NOT NULL,
+  `texto_tiempo` varchar(500) NOT NULL,
+  `telegram_empieza` tinyint(1) NOT NULL,
+  `telegram_para` tinyint(1) NOT NULL,
+  `telegram_tiempo` tinyint(1) NOT NULL,
+  `telegram_tiempo_limite` int(11) NOT NULL,
+  `bot_token` varchar(500) NOT NULL,
+  `id_chat` varchar(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `configuracion`
+--
+
+INSERT INTO `configuracion` (`id`, `ip`, `puerto`, `usuario`, `contrasena`, `refresco`, `notificacion_telegram`, `texto_empieza`, `texto_para`, `texto_tiempo`, `telegram_empieza`, `telegram_para`, `telegram_tiempo`, `telegram_tiempo_limite`, `bot_token`, `id_chat`) VALUES
+(1, '192.168.1.1', 9981, 'usuario', 'contraseña', 20, 1, '%%fecha%%: El usuario <b>%%usuario%%</b> ha empezado a reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha parado de reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha pasado el límite de tiempo (%%tiempo%%) y está reproduciendo <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', 1, 1, 1, 350, 'token', 'id chat');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `registro`
 --
 
@@ -44,12 +75,14 @@ CREATE TABLE `registro` (
   `id` int(11) NOT NULL,
   `usuario` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `canal` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `reproductor` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `hostname` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `tiempo` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `inicio` datetime DEFAULT NULL,,
+  `inicio` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fin` datetime DEFAULT NULL,
-  `idReproduccion` int(11) NOT NULL
+  `idReproduccion` int(11) NOT NULL,
+  `hostname` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `reproductor` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `errores` int(11) NOT NULL,
+  `tiempo` int(11) NOT NULL,
+  `notificacion_tiempo` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
@@ -73,6 +106,14 @@ CREATE TABLE `usuarios` (
 ALTER TABLE `canales`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `id` (`id`);
+
+--
+-- Indices de la tabla `configuracion`
+--
+ALTER TABLE `configuracion`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `id` (`id`),
+  ADD KEY `id_2` (`id`);
 
 --
 -- Indices de la tabla `registro`

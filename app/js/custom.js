@@ -98,7 +98,7 @@ $(document).ready(function () {
 				}
 			}
 		});
-	}	
+	}
 	function usuarioActivo(){
 		$.ajax({
 			type: "POST",
@@ -161,7 +161,7 @@ $(document).ready(function () {
 								'</div>'+
 							'</div>'+
 						'</a>';
-					}	
+					}
 					$(".ultimasReproducciones").html(texto);
 				}else{
 					texto+='<a class="list-group-item list-group-item-action">'+
@@ -194,7 +194,7 @@ $(document).ready(function () {
 							'</div>'+
 						'</a>';
 					}
-	
+
 					$(".ultimasFinalizaciones").html(texto);
 				}else{
 					texto+='<a class="list-group-item list-group-item-action">'+
@@ -209,7 +209,7 @@ $(document).ready(function () {
 			}
 		});
 	}
-	
+
 	/*** Página configuración ***/
 	function cargarConfiguracionFormulario(arrayConfiguracion){
 		$("#ip").val(arrayConfiguracion["ip"]);
@@ -378,8 +378,8 @@ $(document).ready(function () {
 				type: 'POST'
 			},
 			dom: "<'row'<'col-md-3'l><'col-md-6'B><'col-md-3'>>rtip",
-			responsive: true,
-			destroy: true,
+			responsive: false,
+			//destroy: true,
 			iDisplayLength: 5,
 			lengthMenu: [
 				[5, 10, 25, 50, 100, -1],
@@ -472,7 +472,7 @@ $(document).ready(function () {
 				type: 'POST'
 			},
 			dom: "<'row'<'col-md-3'l><'col-md-6'B><'col-md-3'>>rtip",
-			responsive: true,
+			responsive: false,
 			/*destroy: true,
 			processing: true,*/
 			destroy: true,
@@ -501,7 +501,7 @@ $(document).ready(function () {
 		});
 		table.select();
 	}
-	
+
 	/*** Página Registro ***/
 	function tablaRegistro(){
 		$('#tablaRegistro tfoot th').each( function () {
@@ -520,7 +520,7 @@ $(document).ready(function () {
 				type: 'POST'
 			},
 			dom: "<'row'<'col-md-3'l><'col-md-6'B><'col-md-3'>>rtip",
-			responsive: true,
+			responsive: false,
 			/*destroy: true,
 			processing: true,*/
 			destroy: true,
@@ -532,7 +532,7 @@ $(document).ready(function () {
 			buttons: [
 				'colvis',
 			],
-			order: [[ 0, "asc" ]],
+			order: [[ 2, "desc" ]],
 			columns: [
 				{data: "1"},
 				{data: "2"},
@@ -594,6 +594,7 @@ $(document).ready(function () {
 					"categoryAxis": {
 						"gridPosition": "start",
 						"gridAlpha": 0,
+						"fontSize": 7,
 						"tickPosition": "start",
 						"tickLength": 20
 					},
@@ -603,7 +604,7 @@ $(document).ready(function () {
 				});
 			}
 		});
-	
+
 	}
 	function graficaUsuarios(){
 		$.ajax({
@@ -642,7 +643,8 @@ $(document).ready(function () {
 						"gridPosition": "start",
 						"gridAlpha": 0,
 						"tickPosition": "start",
-						"tickLength": 20
+						"tickLength": 20,
+						"fontSize": 7
 					},
 					"export": {
 						"enabled": true
@@ -650,7 +652,7 @@ $(document).ready(function () {
 				});
 			}
 		});
-	
+
 	}
 	function btnAplicarGrafica(){
 		getUsuariosSelect();
@@ -782,12 +784,12 @@ $(document).ready(function () {
 				opciones ="";
 				for (var i = 0; i < data.length; i++) {
 					opciones += '<option value="'+data[i]["nombre"]+'">'+data[i]["nombre"]+'</option>'
-				}	
+				}
 				$("#usuario").append(opciones);
 			}
 		});
 	}
-	
+
 	function abrirNav(){
 		$("body").removeClass("sidenav-toggled");
 	}

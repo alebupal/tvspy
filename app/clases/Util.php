@@ -166,7 +166,7 @@ class Util{
 			return true;
 		}
 	}
-	
+
 	static function ultimasReproducciones(){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -241,7 +241,7 @@ class Util{
 		// Ejecutamos
 		$stmt->execute();
 		// Mostramos los resultados
-		$row = $stmt->fetch();		
+		$row = $stmt->fetch();
 		echo json_encode($row);
 	}
 	static function usuarioActivo(){
@@ -260,13 +260,13 @@ class Util{
 		// Ejecutamos
 		$stmt->execute();
 		// Mostramos los resultados
-		$row = $stmt->fetch();		
+		$row = $stmt->fetch();
 		echo json_encode($row);
 	}
 	static function reproduccionesActivas(){
 		echo json_encode(self::reproduccionesActivasAPI());
 	}
-	
+
 	static function usuarios(){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -283,7 +283,7 @@ class Util{
 		// Ejecutamos
 		$stmt->execute();
 		// Mostramos los resultados
-		$row = $stmt->fetchAll();		
+		$row = $stmt->fetchAll();
 		echo json_encode($row);
 	}
 	static function graficaCanales(){
@@ -303,8 +303,8 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
-		
-		$array  = array();		
+
+		$array  = array();
 		for ($i=0; $i < count($row); $i++) {
 			$item  = array(
 				"canal" => $row[$i]["canal"],
@@ -331,9 +331,9 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
-		
+
 		$array  = array();
-		
+
 		for ($i=0; $i < count($row); $i++) {
 			$item  = array(
 				"usuario" => $row[$i]["usuario"],
@@ -360,7 +360,7 @@ class Util{
 		}
 		$stmt->bindParam(':fechaInicio', $fechaInicio);
 		$stmt->bindParam(':fechaFin', $fechaFin);
-		
+
 		$stmt->execute();
 		$stmt->closeCursor();
 		// Especificamos el fetch mode antes de llamar a fetch()
@@ -369,7 +369,7 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
-		
+
 		$array  = array();
 		for ($i=0; $i < count($row); $i++) {
 			$item  = array(
@@ -380,7 +380,7 @@ class Util{
 		}
 		echo json_encode($array);
 	}
-	
+
 	static function obtenerReproduccionesBD(){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -433,9 +433,9 @@ class Util{
 			)
 		);
 		$stmt = $db->prepare("SELECT * FROM registro WHERE idReproduccion = :idReproduccion");
-		
+
 		$stmt->bindParam(':idReproduccion', $id);
-		
+
 		$stmt->execute();
 		$stmt->closeCursor();
 		// Especificamos el fetch mode antes de llamar a fetch()
@@ -447,7 +447,6 @@ class Util{
 		return $row;
 	}
 	static function insertarReproduccion($reproduccion, $configuracion){
-		echo"asdasd";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
@@ -465,7 +464,7 @@ class Util{
 		}else{
 			$usuario = "Sin usuario";
 		}
-		$fechaActual =  self::fechaActual(); 
+		$fechaActual =  self::fechaActual();
 		$statement->bindParam(':usuario', $usuario);
 		$statement->bindParam(':canal', $reproduccion["channel"]);
 		$statement->bindParam(':idReproduccion', $id);
@@ -475,9 +474,9 @@ class Util{
 		$statement->bindParam(':errores', $reproduccion["errors"]);
 		$statement->execute();
 		$statement->closeCursor();
-	
-		if($configuracion["notificacion_telegram"]!= 0){
-			if($configuracion["telegram_empieza"]!= 0){
+
+		if((int)$configuracion["notificacion_telegram"]!= 0){
+			if((int)$configuracion["telegram_empieza"]!= 0){
 				$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
 				$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 				$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
@@ -488,12 +487,10 @@ class Util{
 		}
 	}
 	static function actualizarTiempoReproduccion($reproduccion, $configuracion){
-		$configuracion = self::cargarConfiguracion();
-
 		$inicio = $reproduccion["inicio"];
 		$fechaActual =  self::fechaActual();
 		$minutos = (strtotime($fechaActual) - strtotime($inicio))/60;
-		
+
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
@@ -502,33 +499,58 @@ class Util{
 				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
 			)
 		);
-		$configuracion = self::cargarConfiguracion();
 		$update = "UPDATE registro SET tiempo = :tiempo WHERE idReproduccion=:idReproduccion";
 		$statement = $db->prepare($update);
 		// Bind parameters to statement variables
 		$statement->bindParam(':idReproduccion', $reproduccion["idReproduccion"]);
 		$statement->bindParam(':tiempo', $minutos);
-	
+
 		$statement->execute();
 		$statement->closeCursor();
-		
-		if($configuracion["notificacion_telegram"]!= "false"){
-			if($configuracion["telegram_tiempo"]!= "false"){
-				if($minutos>$configuracion["telegram_tiempo_limite"]){
-					$mensaje = str_replace("%%usuario%%",$reproduccion["usuario"],$configuracion["texto_empieza"]);
-					$mensaje = str_replace("%%canal%%",$reproduccion["canal"],$mensaje);
-					$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
-					$mensaje = str_replace("%%reproductor%%",$reproduccion["reproductor"],$mensaje);
-					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
-					$mensaje = str_replace("%%tiempo%%",$minutos,$mensaje);
-					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+		if((int)$reproduccion["notificacion_tiempo"]== 0){
+			if((int)$configuracion["notificacion_telegram"]!= 0){
+				if((int)$configuracion["telegram_tiempo"]!= 0){
+					if((int)$minutos>$configuracion["telegram_tiempo_limite"]){
+						$mensaje = str_replace("%%usuario%%",$reproduccion["usuario"],$configuracion["texto_tiempo"]);
+						$mensaje = str_replace("%%canal%%",$reproduccion["canal"],$mensaje);
+						$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
+						$mensaje = str_replace("%%reproductor%%",$reproduccion["reproductor"],$mensaje);
+						$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+						$mensaje = str_replace("%%tiempo%%",round($minutos)." minutos",$mensaje);
+						var_dump($reproduccion);
+						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+						self::actualizarTelegramTiempoLimite($reproduccion, $configuracion);
+					}
 				}
 			}
 		}
-	
+
 	}
-	static function actualizarFechaFinReproduccion($reproduccion){
-		echo $reproduccion["idReproduccion"];
+	static function actualizarTelegramTiempoLimite($reproduccion, $configuracion){
+		$estado = true;
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		$update = "UPDATE registro SET notificacion_tiempo = :notificacion_tiempo WHERE idReproduccion=:idReproduccion";
+		$statement = $db->prepare($update);
+		// Bind parameters to statement variables
+		$statement->bindParam(':idReproduccion', $reproduccion["idReproduccion"]);
+		$statement->bindParam(':notificacion_tiempo', $estado);
+
+		$statement->execute();
+		$statement->closeCursor();
+
+	}
+	static function actualizarFechaFinReproduccion($reproduccion,$configuracion){
+		$inicio = $reproduccion["inicio"];
+		$fechaActual =  self::fechaActual();
+		$minutos = (strtotime($fechaActual) - strtotime($inicio))/60;
+
 		$fechaActual = self::fechaActual();
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -538,18 +560,18 @@ class Util{
 				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
 			)
 		);
-		$configuracion = self::cargarConfiguracion();
-		$update = "UPDATE registro SET fin = :fin WHERE idReproduccion=:idReproduccion";
+		$update = "UPDATE registro SET fin = :fin, tiempo = :tiempo WHERE idReproduccion=:idReproduccion";
 		$statement = $db->prepare($update);
 		// Bind parameters to statement variables
 		$statement->bindParam(':idReproduccion',$reproduccion["idReproduccion"]);
 		$statement->bindParam(':fin', $fechaActual);
-	
+		$statement->bindParam(':tiempo', $minutos);
+
 		$statement->execute();
 		$statement->closeCursor();
-	
-		if($configuracion["notificacion_telegram"]!= 0){
-			if($configuracion["telegram_para"]!= 0){
+
+		if((int)$configuracion["notificacion_telegram"]!= 0){
+			if((int)$configuracion["telegram_para"]!= 0){
 				$mensaje = str_replace("%%usuario%%",$reproduccion["usuario"],$configuracion["texto_para"]);
 				$mensaje = str_replace("%%canal%%",$reproduccion["canal"],$mensaje);
 				$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
@@ -558,9 +580,9 @@ class Util{
 				self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 			}
 		}
-	
+
 	}
-	
+
 	/*** API ***/
 	function canalesAPI(){
 		$configuracion = self::cargarConfiguracion();
@@ -654,7 +676,7 @@ class Util{
 			$respuesta = json_decode($respuesta_json, true);
 		}
 		return $respuesta;
-		
+
 	}
 	/*** Otros ***/
 	static function enviarTelegram($TOKEN, $chat_id, $mensaje){
@@ -664,7 +686,7 @@ class Util{
 			'text'=> $mensaje,
 			'parse_mode'=> "HTML"
 		]);
-	
+
 		$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
 		return $response;
 	}
