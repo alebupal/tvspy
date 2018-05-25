@@ -4,8 +4,8 @@
  */
 class Util{
 	public static $servidor= "localhost";
-	public static $usuario= "root";
-	public static $contrasena = "";
+	public static $usuarioBD= "root";
+	public static $contrasenaBD = "";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -16,8 +16,8 @@ class Util{
 	/*** Base datos ***/
 	static function cargarConfiguracion(){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
-						self::$usuario,
-						self::$contrasena,
+						self::$usuarioBD,
+						self::$contrasenaBD,
 						array(
 							PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 							PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
@@ -34,8 +34,8 @@ class Util{
 	}
 	static function guardarConfiguracion($arrayConfiguracion){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
-						self::$usuario,
-						self::$contrasena,
+						self::$usuarioBD,
+						self::$contrasenaBD,
 						array(
 							PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 							PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
@@ -78,8 +78,8 @@ class Util{
 	}
 	static function cargarRegistro(){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
-						self::$usuario,
-						self::$contrasena,
+						self::$usuarioBD,
+						self::$contrasenaBD,
 						array(
 							PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 							PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
@@ -101,8 +101,8 @@ class Util{
 			return false;
 		}else{
 			$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
-				self::$usuario,
-				self::$contrasena,
+				self::$usuarioBD,
+				self::$contrasenaBD,
 				array(
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
@@ -137,8 +137,8 @@ class Util{
 			return false;
 		}else{
 			$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
-				self::$usuario,
-				self::$contrasena,
+				self::$usuarioBD,
+				self::$contrasenaBD,
 				array(
 					PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 					PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
@@ -166,6 +166,401 @@ class Util{
 			return true;
 		}
 	}
+	
+	static function ultimasReproducciones(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT * FROM registro ORDER BY inicio DESC LIMIT 5");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();
+		echo json_encode($row);
+
+	}
+	static function ultimasFinalizaciones(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT * FROM registro WHERE fin IS NOT NULL ORDER BY fin DESC LIMIT 5");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();
+		echo json_encode($row);
+	}
+	static function reproduccionesTotales(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT COUNT(*) as total FROM registro");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetch();
+		echo json_encode($row);
+	}
+	static function canalActivo(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT registro.canal, COUNT(1) AS total FROM registro GROUP BY registro.canal HAVING COUNT(1) > 1");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetch();		
+		echo json_encode($row);
+	}
+	static function usuarioActivo(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT registro.usuario, COUNT(1) AS total FROM registro GROUP BY registro.usuario HAVING COUNT(1) > 1");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetch();		
+		echo json_encode($row);
+	}
+	static function reproduccionesActivas(){
+		echo json_encode(self::reproduccionesActivasAPI());
+	}
+	
+	static function usuarios(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT * from usuarios");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();		
+		echo json_encode($row);
+	}
+	static function graficaCanales(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT canal, COUNT(1) as valor FROM registro GROUP BY canal");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();
+		
+		$array  = array();		
+		for ($i=0; $i < count($row); $i++) {
+			$item  = array(
+				"canal" => $row[$i]["canal"],
+				"valor" => (int) $row[$i]["valor"]
+			);
+			array_push($array, $item);
+		}
+		echo json_encode($array);
+	}
+	static function graficaUsuarios(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT usuario, COUNT(1) as valor FROM registro GROUP BY usuario");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();
+		
+		$array  = array();
+		
+		for ($i=0; $i < count($row); $i++) {
+			$item  = array(
+				"usuario" => $row[$i]["usuario"],
+				"valor" => (int) $row[$i]["valor"]
+			);
+			array_push($array, $item);
+		}
+		echo json_encode($array);
+	}
+	static function graficaReproducciones($usuario, $fechaInicio, $fechaFin){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		if($usuario=="todos"){
+			$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY DATE(inicio)");
+		}else{
+			$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) AND usuario=:usuario GROUP BY DATE(inicio)");
+			$stmt->bindParam(':usuario', $usuario);
+		}
+		$stmt->bindParam(':fechaInicio', $fechaInicio);
+		$stmt->bindParam(':fechaFin', $fechaFin);
+		
+		$stmt->execute();
+		$stmt->closeCursor();
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();
+		
+		$array  = array();
+		for ($i=0; $i < count($row); $i++) {
+			$item  = array(
+				"fecha" => $row[$i]["fecha"],
+				"valor" => (int) $row[$i]["valor"]
+			);
+			array_push($array, $item);
+		}
+		echo json_encode($array);
+	}
+	
+	static function obtenerReproduccionesBD(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT * FROM registro");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();
+		return $row;
+	}
+	static function reproduccionesBDFin(){
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		// FETCH_ASSOC
+		$stmt = $db->prepare("SELECT * FROM registro where fin IS NULL");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetchAll();
+		return $row;
+	}
+	static function obtenerReproduccionesActivas(){
+		return self::reproduccionesActivasAPI();
+	}
+	static function obtenerReproduccion($idReproduccion){
+		$id = (int)$idReproduccion;
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		$stmt = $db->prepare("SELECT * FROM registro WHERE idReproduccion = :idReproduccion");
+		
+		$stmt->bindParam(':idReproduccion', $id);
+		
+		$stmt->execute();
+		$stmt->closeCursor();
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row = $stmt->fetch();
+		return $row;
+	}
+	static function insertarReproduccion($reproduccion, $configuracion){
+		echo"asdasd";
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		$id = (int)$reproduccion["id"];
+		$insert = "INSERT INTO registro (usuario, canal, idReproduccion, inicio, hostname, reproductor, errores) VALUES (:usuario, :canal, :idReproduccion, :inicio, :hostname, :reproductor, :errores)";
+		$statement = $db->prepare($insert);
+		// Bind parameters to statement variables
+		if (isset($reproduccion["username"])) {
+			$usuario = $reproduccion["username"];
+		}else{
+			$usuario = "Sin usuario";
+		}
+		$fechaActual =  self::fechaActual(); 
+		$statement->bindParam(':usuario', $usuario);
+		$statement->bindParam(':canal', $reproduccion["channel"]);
+		$statement->bindParam(':idReproduccion', $id);
+		$statement->bindParam(':inicio', $fechaActual);
+		$statement->bindParam(':hostname', $reproduccion["hostname"]);
+		$statement->bindParam(':reproductor', $reproduccion["title"]);
+		$statement->bindParam(':errores', $reproduccion["errors"]);
+		$statement->execute();
+		$statement->closeCursor();
+	
+		if($configuracion["notificacion_telegram"]!= 0){
+			if($configuracion["telegram_empieza"]!= 0){
+				$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
+				$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
+				$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
+				$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
+				$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+				self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+			}
+		}
+	}
+	static function actualizarTiempoReproduccion($reproduccion, $configuracion){
+		$configuracion = self::cargarConfiguracion();
+
+		$inicio = $reproduccion["inicio"];
+		$fechaActual =  self::fechaActual();
+		$minutos = (strtotime($fechaActual) - strtotime($inicio))/60;
+		
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		$configuracion = self::cargarConfiguracion();
+		$update = "UPDATE registro SET tiempo = :tiempo WHERE idReproduccion=:idReproduccion";
+		$statement = $db->prepare($update);
+		// Bind parameters to statement variables
+		$statement->bindParam(':idReproduccion', $reproduccion["idReproduccion"]);
+		$statement->bindParam(':tiempo', $minutos);
+	
+		$statement->execute();
+		$statement->closeCursor();
+		
+		if($configuracion["notificacion_telegram"]!= "false"){
+			if($configuracion["telegram_tiempo"]!= "false"){
+				if($minutos>$configuracion["telegram_tiempo_limite"]){
+					$mensaje = str_replace("%%usuario%%",$reproduccion["usuario"],$configuracion["texto_empieza"]);
+					$mensaje = str_replace("%%canal%%",$reproduccion["canal"],$mensaje);
+					$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
+					$mensaje = str_replace("%%reproductor%%",$reproduccion["reproductor"],$mensaje);
+					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+					$mensaje = str_replace("%%tiempo%%",$minutos,$mensaje);
+					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+				}
+			}
+		}
+	
+	}
+	static function actualizarFechaFinReproduccion($reproduccion){
+		echo $reproduccion["idReproduccion"];
+		$fechaActual = self::fechaActual();
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		$configuracion = self::cargarConfiguracion();
+		$update = "UPDATE registro SET fin = :fin WHERE idReproduccion=:idReproduccion";
+		$statement = $db->prepare($update);
+		// Bind parameters to statement variables
+		$statement->bindParam(':idReproduccion',$reproduccion["idReproduccion"]);
+		$statement->bindParam(':fin', $fechaActual);
+	
+		$statement->execute();
+		$statement->closeCursor();
+	
+		if($configuracion["notificacion_telegram"]!= 0){
+			if($configuracion["telegram_para"]!= 0){
+				$mensaje = str_replace("%%usuario%%",$reproduccion["usuario"],$configuracion["texto_para"]);
+				$mensaje = str_replace("%%canal%%",$reproduccion["canal"],$mensaje);
+				$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
+				$mensaje = str_replace("%%reproductor%%",$reproduccion["reproductor"],$mensaje);
+				$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+				self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+			}
+		}
+	
+	}
+	
 	/*** API ***/
 	function canalesAPI(){
 		$configuracion = self::cargarConfiguracion();
@@ -229,7 +624,50 @@ class Util{
 		}
 		return $respuesta;
 	}
+	function reproduccionesActivasAPI(){
+		$configuracion = self::cargarConfiguracion();
+		$ipuerto =  $configuracion["ip"].":".$configuracion["puerto"];
+
+		$url = "http://".$ipuerto."/api/status/subscriptions";
+		//  Initiate curl
+		$ch = curl_init();
+		// Disable SSL verification
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		// Will return the response, if false it print the response
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		// Set the url
+		curl_setopt($ch, CURLOPT_URL,$url);
+
+
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERPWD, $configuracion["usuario"].":".$configuracion["contrasena"]);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+
+		$respuesta_json=curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$respuesta ="";
+		if($httpCode == 404) {
+			$respuesta = false;
+		}else if($httpCode == 401) {
+			$respuesta = false;
+		}else{
+			$respuesta = json_decode($respuesta_json, true);
+		}
+		return $respuesta;
+		
+	}
 	/*** Otros ***/
+	static function enviarTelegram($TOKEN, $chat_id, $mensaje){
+		$TELEGRAM = "https://api.telegram.org:443/bot".$TOKEN;
+		$query = http_build_query([
+			'chat_id'=> $chat_id,
+			'text'=> $mensaje,
+			'parse_mode'=> "HTML"
+		]);
+	
+		$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
+		return $response;
+	}
 	static function fechaActual(){
 		$tz = 'Europe/Madrid';
 		$timestamp = time();

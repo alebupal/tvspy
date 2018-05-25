@@ -42,5 +42,4 @@
 	);
 	$configuracion = Util::guardarConfiguracion($arrayConfiguracion);
 	echo true;
-
 ?>

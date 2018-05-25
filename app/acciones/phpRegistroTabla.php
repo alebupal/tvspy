@@ -39,7 +39,11 @@ $columns = array(
 	array( 'db' => 'usuario', 'dt' => 1 ),
 	array( 'db' => 'canal', 'dt' => 2 ),
 	array( 'db' => 'inicio', 'dt' => 3 ),
-	array( 'db' => 'fin', 'dt' => 4 )
+	array( 'db' => 'fin', 'dt' => 4 ),
+	array( 'db' => 'hostname', 'dt' => 5 ),
+	array( 'db' => 'reproductor', 'dt' => 6 ),
+	array( 'db' => 'tiempo', 'dt' => 7 ),
+	array( 'db' => 'errores', 'dt' => 8 )
 );
 
 /*

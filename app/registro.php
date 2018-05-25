@@ -33,6 +33,10 @@
 									<th>Canal</th>
 									<th>Inicio</th>
 									<th>Fin</th>
+									<th>Hostname</th>
+									<th>Reproductor</th>
+									<th>Tiempo</th>
+									<th>Errores</th>
 								</tr>
 							</thead>
 							<tfoot>
@@ -41,6 +45,10 @@
 									<th>Canal</th>
 									<th>Inicio</th>
 									<th>Fin</th>
+									<th>Hostname</th>
+									<th>Reproductor</th>
+									<th>Tiempo (MIN)</th>
+									<th>Errores</th>
 								</tr>
 							</tfoot>
 						</table>
