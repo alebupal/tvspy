@@ -22,7 +22,7 @@
  * @author alebupal
 */
 
-require_once "../clases/Constantes.php";
+require_once "../clases/Util.php";
 
 // DB table to use
 $table = 'usuarios';
@@ -45,11 +45,12 @@ $sql_details = array(
 );
 */
 $sql_details = array(
-	'user' => Constantes::username,
-	'pass' => Constantes::password,
-	'db'   => Constantes::dbname,
-	'host' => Constantes::servername
+	'user' => Util::$usuarioBD,
+	'pass' => Util::$contrasenaBD,
+	'db'   => Util::$base_datos,
+	'host' => Util::$servidor
 );
+
 
 
 

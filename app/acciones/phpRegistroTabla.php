@@ -22,7 +22,7 @@
  * @author alebupal
 */
 
-require_once "../clases/Constantes.php";
+require_once "../clases/Util.php";
 
 // DB table to use
 $table = 'registro';
@@ -39,7 +39,11 @@ $columns = array(
 	array( 'db' => 'usuario', 'dt' => 1 ),
 	array( 'db' => 'canal', 'dt' => 2 ),
 	array( 'db' => 'inicio', 'dt' => 3 ),
-	array( 'db' => 'fin', 'dt' => 4 )
+	array( 'db' => 'fin', 'dt' => 4 ),
+	array( 'db' => 'hostname', 'dt' => 5 ),
+	array( 'db' => 'reproductor', 'dt' => 6 ),
+	array( 'db' => 'tiempo', 'dt' => 7 ),
+	array( 'db' => 'errores', 'dt' => 8 )
 );
 
 /*
@@ -48,10 +52,10 @@ $sql_details = array(
 );
 */
 $sql_details = array(
-	'user' => Constantes::username,
-	'pass' => Constantes::password,
-	'db'   => Constantes::dbname,
-	'host' => Constantes::servername
+	'user' => Util::$usuarioBD,
+	'pass' => Util::$contrasenaBD,
+	'db'   => Util::$base_datos,
+	'host' => Util::$servidor
 );
 
 
