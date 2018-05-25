@@ -21,6 +21,7 @@ Siempre que se instala de nuevo es recomendable hacer una copia de la base de da
 Gracias a @Spufy por sus consejos para montar la imagen.
 
 [Capturas](https://github.com/alebupal/tvspy/tree/master/capturas)
+
 --
 
 To use it, simply install the docker image https://hub.docker.com/r/alebupal/tvspy/ and configure the application with the ip and port of TvHeadend in the configuration option.
@@ -37,6 +38,7 @@ Whenever it is installed again it is advisable to make a copy of the database wi
 Thanks to @Spufy for his advice to assemble the image.
 
 [Screenshots](https://github.com/alebupal/tvspy/tree/master/capturas)
+
 --
 
 USER phpmyadmin: tvspy
