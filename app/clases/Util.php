@@ -44,6 +44,7 @@ class Util{
 		// FETCH_ASSOC
 		$update = "UPDATE configuracion SET bot_token = :bot_token,
 											contrasena = :contrasena,
+											id_chat = :id_chat,
 											ip = :ip,
 											refresco = :refresco,
 											notificacion_telegram = :notificacion_telegram,
@@ -60,6 +61,7 @@ class Util{
 		$stmt = $db->prepare($update);
 		// Bind parameters to statement variables
 		$stmt->bindParam(':bot_token', $arrayConfiguracion["bot_token"]);
+		$stmt->bindParam(':id_chat', $arrayConfiguracion["id_chat"]);
 		$stmt->bindParam(':contrasena', $arrayConfiguracion["contrasena"]);
 		$stmt->bindParam(':ip', $arrayConfiguracion["ip"]);
 		$stmt->bindParam(':refresco', $arrayConfiguracion["refresco"]);
