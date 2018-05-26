@@ -25,6 +25,24 @@
 				<li class="breadcrumb-item active">Escritorio</li>
 			</ol>
 			<!-- Icon Cards-->
+
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="alert alert-success urlCorrecta oculto" role="alert">
+						URL y login TvHeadend correcta
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="alert alert-danger errorURL oculto" role="alert">
+						URL o puerto de TvHeadend incorrecta
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="alert alert-danger errorLogin oculto" role="alert">
+						Login incorrecto en tvhedend
+					</div>
+				</div>
+			</div>
 			<div class="row divReproduccion">
 
 			</div>

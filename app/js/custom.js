@@ -13,7 +13,8 @@ $(document).ready(function () {
 				if ( $(".pagina-configuracion").length > 0 ) {
 					cargarConfiguracionFormulario(arrayConfiguracion);
 					guardarConfiguracionFormulario();
-					btnTest();
+					btnTestTelegram();
+					btnTestTvheadend();
 				}
 				if ( $(".pagina-canales").length > 0 ) {
 					//importarCanales();
@@ -29,8 +30,8 @@ $(document).ready(function () {
 					tablaRegistro();
 				}
 				if ( $(".pagina-inicio").length > 0 ) {
-					actualizarInicio();
-					setInterval(actualizarInicio, (arrayConfiguracion["refresco"]*1000));
+					actualizarInicio(arrayConfiguracion)
+					setInterval(function() { actualizarInicio(arrayConfiguracion); }, (arrayConfiguracion["refresco"]*1000));
 				}
 				if ( $(".pagina-estadisticas").length > 0 ) {
 					graficaCanales();
@@ -57,13 +58,40 @@ $(document).ready(function () {
 	}
 
 	/*** Página inicio ***/
-	function actualizarInicio(){
-		reproduccionesActivas();
-		usuarioActivo();
-		canalActivo();
-		reproduccionesTotales();
-		ultimasReproducciones();
-		ultimasFinalizaciones();
+	function actualizarInicio(arrayConfiguracion){
+		var formData = new FormData();
+		formData.append("ip", arrayConfiguracion["ip"]);
+		formData.append("puerto", arrayConfiguracion["puerto"]);
+		formData.append("usuario", arrayConfiguracion["usuario"]);
+		formData.append("contrasena", arrayConfiguracion["contrasena"]);
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpTestTvheadend.php",
+			data : formData,
+			contentType : false,
+			processData : false,
+			success: function (data) {
+				if(data == 404){
+					console.log("404");
+					$(".errorURL").fadeTo(2000, 500).slideUp(500, function(){
+						$(".errorURL").slideUp(500);
+					});
+				}else if (data == 401){
+					console.log("401");
+					$(".errorLogin").fadeTo(2000, 500).slideUp(500, function(){
+						$(".errorLogin").slideUp(500);
+					});
+				}else if (data == 200){
+					reproduccionesActivas();
+					usuarioActivo();
+					canalActivo();
+					reproduccionesTotales();
+					ultimasReproducciones();
+					ultimasFinalizaciones();
+				}
+			}
+		});
+
 	}
 	function reproduccionesActivas(){
 		$.ajax({
@@ -315,8 +343,8 @@ $(document).ready(function () {
 		});
 	}
 
-	function btnTest(){
-		$( ".btnTest" ).click(function() {
+	function btnTestTelegram(){
+		$( ".btnTestTelegram" ).click(function() {
 			var formData = new FormData();
 			formData.append("bot_token", $("#bot_token").val());
 			formData.append("id_chat", $("#id_chat").val());
@@ -340,6 +368,45 @@ $(document).ready(function () {
 			});
 		});
 	}
+	function btnTestTvheadend(){
+		$( ".btnTestTvheadend" ).click(function() {
+			var formData = new FormData();
+			formData.append("ip", $("#ip").val());
+			formData.append("puerto", $("#puerto").val());
+			formData.append("usuario", $("#usuario").val());
+			formData.append("contrasena", $("#contrasena").val());
+			$.ajax({
+				type: "POST",
+				url: "acciones/phpTestTvheadend.php",
+				data : formData,
+				contentType : false,
+				processData : false,
+				beforeSend:function(){
+					irArriba();
+					$(".cargando").toggle();
+				},
+				success: function (data) {
+					$(".cargando").toggle();
+					if(data == 404){
+						console.log("404");
+						$(".errorURL").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorURL").slideUp(500);
+						});
+					}else if (data == 401){
+						console.log("401");
+						$(".errorLogin").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorLogin").slideUp(500);
+						});
+					}else if (data == 200){
+						console.log("200");
+						$(".urlCorrecta").fadeTo(2000, 500).slideUp(500, function(){
+							$(".urlCorrecta").slideUp(500);
+						});
+					}
+				}
+			});
+		});
+	}
 	/*** Página Canales ***/
 	function btnImportarCanales(){
 		$( ".btnImportarCanales" ).click(function() {
@@ -352,14 +419,22 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
-					if(data==true){
+					if(data == 404){
+						console.log("404");
+						$(".errorURL").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorURL").slideUp(500);
+						});
+					}else if (data == 401){
+						console.log("401");
+						$(".errorLogin").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorLogin").slideUp(500);
+						});
+					}else if(data==true){
 						console.log("Canales importados correctamente");
 						$(".canalesImportados").fadeTo(2000, 500).slideUp(500, function(){
 							$(".canalesImportados").slideUp(500);
 						});
 						tablaCanales();
-					}else{
-						console.log("Error al importar canales");
 					}
 				}
 			});
@@ -375,14 +450,22 @@ $(document).ready(function () {
 			},
 			success: function (data) {
 				$(".cargando").toggle();
-				if(data==true){
+				if(data == 404){
+					console.log("404");
+					$(".errorURL").fadeTo(2000, 500).slideUp(500, function(){
+						$(".errorURL").slideUp(500);
+					});
+				}else if (data == 401){
+					console.log("401");
+					$(".errorLogin").fadeTo(2000, 500).slideUp(500, function(){
+						$(".errorLogin").slideUp(500);
+					});
+				}else if(data==true){
 					console.log("Canales importados correctamente");
 					$(".canalesImportados").fadeTo(2000, 500).slideUp(500, function(){
 						$(".canalesImportados").slideUp(500);
 					});
 					tablaCanales();
-				}else{
-					console.log("Error al importar canales");
 				}
 			}
 		});
@@ -444,15 +527,22 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
-					tablaUsuarios();
-					if(data==true){
+					if(data == 404){
+						console.log("404");
+						$(".errorURL").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorURL").slideUp(500);
+						});
+					}else if (data == 401){
+						console.log("401");
+						$(".errorLogin").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorLogin").slideUp(500);
+						});
+					}else if(data==true){
 						console.log("Usuarios importados correctamente");
 						$(".usuariosImportados").fadeTo(2000, 500).slideUp(500, function(){
 							$(".usuariosImportados").slideUp(500);
 						});
 						tablaUsuarios();
-					}else{
-						console.log("Error al importar usuarios");
 					}
 				}
 			});

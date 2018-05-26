@@ -36,6 +36,30 @@
 					</div>
 				</div>
 				<div class="col-lg-12">
+					<div class="alert alert-success urlCorrecta oculto" role="alert">
+						URL y login TvHeadend correcta
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="alert alert-danger errorURL oculto" role="alert">
+						URL o puerto de TvHeadend incorrecta
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="alert alert-danger errorLogin oculto" role="alert">
+						Login incorrecto en tvhedend
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="text-center mt-5 oculto cargando">
+						<div class="progress">
+							<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+						</div>
+						<br>
+						<a class="text-white"><i class="fas fa-spinner fa-pulse"></i> Cargando</a>
+					</div>
+				</div>
+				<div class="col-lg-12">
 					<!-- Example Notifications Card-->
 					<div class="card mb-3">
 						<div class="card-header">
@@ -44,27 +68,31 @@
 							<form id="formConfiguracion" method="post">
 								<div class="form-row">
 									<div class="form-group col-md-6">
-										<label for="ip">IP</label>
+										<label for="ip">IP TvHeadend</label>
 										<input type="text" class="form-control" id="ip" name="ip" placeholder="192.168.1.1" required>
 							   		</div>
 							    	<div class="form-group col-md-6">
-								 		<label for="puerto">Puerto</label>
+								 		<label for="puerto">Puerto TvHeadend</label>
 									 	<input type="number" class="form-control" id="puerto" name="puerto" placeholder="9981" required>
 							   		</div>
 						   		</div>
 								<div class="form-row">
 									<div class="form-group col-md-6">
-										<label for="usuario">Usuario</label>
+										<label for="usuario">Usuario TvHeadend</label>
 										<input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario" required>
 							   		</div>
 							    	<div class="form-group col-md-6">
-								 		<label for="contrasena">Contraseña</label>
+								 		<label for="contrasena">Contraseña TvHeadend</label>
 									 	<input type="password" class="form-control" id="contrasena" name="contrasena" placeholder="Contraseña" required>
 							   		</div>
 						   		</div>
+								<div class="mb-4 mt-2">
+									<a class="btn btn-info btn-block text-white btn-sm btnTestTvheadend">Comprobar conexion</a>
+									<small>Hay que guardar para aplicar los cambios</small>
+								</div>
 								<div class="form-row">
 									<div class="form-group col-md-12">
-										<label for="refresco">Tiempo de refresco (segundos) live página de inicio</label>
+										<label for="refresco">Tiempo de refresco (segundos) página de inicio</label>
 										<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
 									</div>
 								</div>
@@ -89,7 +117,8 @@
 										</div>
 									</div>
 									<div class="mb-4 mt-2">
-										<a class="btn btn-info btn-block text-white btn-sm btnTest">Enviar mensaje de prueba</a>
+										<a class="btn btn-info btn-block text-white btn-sm btnTestTelegram">Enviar mensaje de prueba</a>
+										<small>Hay que guardar para aplicar los cambios</small>
 									</div>
 									<div class="form-row">
 										<div class="form-group col-md-6">

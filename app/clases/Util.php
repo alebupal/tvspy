@@ -4,8 +4,8 @@
  */
 class Util{
 	public static $servidor= "localhost";
-	public static $usuarioBD= "root";
-	public static $contrasenaBD = "";
+	public static $usuarioBD= "tvspy";
+	public static $contrasenaBD = "tvspy";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -99,8 +99,10 @@ class Util{
 	}
 	static function importarCanales(){
 		$array_canales = self::canalesAPI();
-		if($array_canales == false){
-			return false;
+		if($array_canales == 404){
+			echo $array_canales;
+		}else if($array_canales == 401){
+			echo $array_canales;
 		}else{
 			$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 				self::$usuarioBD,
@@ -135,9 +137,12 @@ class Util{
 	}
 	static function importarUsuarios(){
 		$array_usuarios = self::usuariosAPI();
-		if($array_usuarios == false){
-			return false;
+		if($array_usuarios == 404){
+			echo $array_usuarios;
+		}else if($array_usuarios == 401){
+			echo $array_usuarios;
 		}else{
+
 			$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 				self::$usuarioBD,
 				self::$contrasenaBD,
@@ -586,95 +591,82 @@ class Util{
 	}
 
 	/*** API ***/
-	function canalesAPI(){
+
+	static function testTvheadend($ip, $puerto, $usuario, $contrasena){
+		$ipuerto =  $ip.":".$puerto;
+
+		$url = "http://".$ipuerto."/api/serverinfo";
+		//  Initiate curl
+		$ch = curl_init();
+		// Disable SSL verification
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
+		// Will return the response, if false it print the response
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		// Set the url
+		curl_setopt($ch, CURLOPT_URL,$url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_USERPWD, $usuario.":".$contrasena);
+		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		$respuesta_json=curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		$respuesta ="";
+		if($httpCode == 404) {
+			$respuesta = 404;
+		}if($httpCode == 0) {
+			$respuesta = 404;
+		}else if($httpCode == 401) {
+			$respuesta = 401;
+		}else if($httpCode == 200) {
+			$respuesta = 200;
+		}
+		return $respuesta;
+
+	}
+
+	static function canalesAPI(){
 		$configuracion = self::cargarConfiguracion();
 		$ipuerto =  $configuracion["ip"].":".$configuracion["puerto"];
-
 		$url = "http://".$ipuerto."/api/channel/grid?limit=100000";
-		//  Initiate curl
-		$ch = curl_init();
-		// Disable SSL verification
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		// Will return the response, if false it print the response
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		// Set the url
-		curl_setopt($ch, CURLOPT_URL,$url);
-
-
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $configuracion["usuario"].":".$configuracion["contrasena"]);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
-		$respuesta_json=curl_exec($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$respuesta ="";
-		if($httpCode == 404) {
-			$respuesta = false;
-		}else if($httpCode == 401) {
-			$respuesta = false;
-		}else{
-			$respuesta = json_decode($respuesta_json, true);
-		}
-		return $respuesta;
+		return self::peticionAPI($url,$configuracion["usuario"],$configuracion["contrasena"]);;
 	}
-	function usuariosAPI(){
+	static function usuariosAPI(){
 		$configuracion = self::cargarConfiguracion();
 		$ipuerto =  $configuracion["ip"].":".$configuracion["puerto"];
-
 		$url = "http://".$ipuerto."/api/access/entry/grid";
-		//  Initiate curl
-		$ch = curl_init();
-		// Disable SSL verification
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		// Will return the response, if false it print the response
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		// Set the url
-		curl_setopt($ch, CURLOPT_URL,$url);
-
-
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $configuracion["usuario"].":".$configuracion["contrasena"]);
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
-		$respuesta_json=curl_exec($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$respuesta ="";
-		if($httpCode == 404) {
-			$respuesta = false;
-		}else if($httpCode == 401) {
-			$respuesta = false;
-		}else{
-			$respuesta = json_decode($respuesta_json, true);
-		}
-		return $respuesta;
+		return self::peticionAPI($url,$configuracion["usuario"],$configuracion["contrasena"]);;
 	}
-	function reproduccionesActivasAPI(){
+	static function reproduccionesActivasAPI(){
 		$configuracion = self::cargarConfiguracion();
 		$ipuerto =  $configuracion["ip"].":".$configuracion["puerto"];
-
 		$url = "http://".$ipuerto."/api/status/subscriptions";
+		return self::peticionAPI($url,$configuracion["usuario"],$configuracion["contrasena"]);;
+	}
+	static function peticionAPI($url, $usuario, $contrasena){
 		//  Initiate curl
 		$ch = curl_init();
 		// Disable SSL verification
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
 		// Will return the response, if false it print the response
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		// Set the url
 		curl_setopt($ch, CURLOPT_URL,$url);
-
-
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_USERPWD, $configuracion["usuario"].":".$configuracion["contrasena"]);
+		curl_setopt($ch, CURLOPT_USERPWD, $usuario.":".$contrasena);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-
 		$respuesta_json=curl_exec($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
 		$respuesta ="";
 		if($httpCode == 404) {
-			$respuesta = false;
+			$respuesta = 404;
+		}if($httpCode == 0) {
+			$respuesta = 404;
 		}else if($httpCode == 401) {
-			$respuesta = false;
-		}else{
+			$respuesta = 401;
+		}else if($httpCode == 200) {
 			$respuesta = json_decode($respuesta_json, true);
 		}
 		return $respuesta;

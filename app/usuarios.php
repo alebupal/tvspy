@@ -40,6 +40,21 @@
 					</div>
 				</div>
 				<div class="col-lg-12">
+					<div class="alert alert-success urlCorrecta oculto" role="alert">
+						URL y login TvHeadend correcta
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="alert alert-danger errorURL oculto" role="alert">
+						URL o puerto de TvHeadend incorrecta
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="alert alert-danger errorLogin oculto" role="alert">
+						Login incorrecto en tvhedend
+					</div>
+				</div>
+				<div class="col-lg-12">
 					<div class="table-responsive">
 						<table  class="display dataTable table table-striped table-hover table-bordered" width="100%" id="tablaUsuarios">
 							<thead>
