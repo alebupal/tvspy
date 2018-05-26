@@ -81,7 +81,7 @@ CREATE TABLE `registro` (
   `hostname` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `reproductor` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `errores` int(11) NOT NULL,
-  `tiempo` int(11) NOT NULL,
+  `tiempo` int(11) NOT NULL DEFAULT '0',
   `notificacion_tiempo` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 

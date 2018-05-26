@@ -379,7 +379,7 @@ $(document).ready(function () {
 			},
 			dom: "<'row'<'col-md-3'l><'col-md-6'B><'col-md-3'>>rtip",
 			responsive: false,
-			//destroy: true,
+			destroy: true,
 			iDisplayLength: 5,
 			lengthMenu: [
 				[5, 10, 25, 50, 100, -1],
@@ -473,8 +473,6 @@ $(document).ready(function () {
 			},
 			dom: "<'row'<'col-md-3'l><'col-md-6'B><'col-md-3'>>rtip",
 			responsive: false,
-			/*destroy: true,
-			processing: true,*/
 			destroy: true,
 			iDisplayLength: 5,
 			lengthMenu: [
