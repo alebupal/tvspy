@@ -317,9 +317,15 @@ $(document).ready(function () {
 
 	function btnTest(){
 		$( ".btnTest" ).click(function() {
+			var formData = new FormData();
+			formData.append("bot_token", $("#bot_token").val());
+			formData.append("id_chat", $("#id_chat").val());
 			$.ajax({
 				type: "POST",
 				url: "acciones/phpTestTelegram.php",
+				data : formData,
+				contentType : false,
+				processData : false,
 				beforeSend:function(){
 					irArriba();
 					$(".cargando").toggle();
