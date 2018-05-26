@@ -47,7 +47,11 @@ db: tvspy
 
 
 ```
-docker create --name=tvspy -p 32775:80 -p 32776:3306 -e TIME_CRON=30 -e PHPMYADMIN_VERSION=4.8.0.1 -e TZ=Europe/Madrid alebupal/tvspy
+docker create --name=tvspy -p xxxxx:80 -p xxxxx:3306 -e TIME_CRON=30 -e PHPMYADMIN_VERSION=4.8.0.1 -e TZ=Europe/Madrid alebupal/tvspy
+```
+
+```
+docker create --name=tvspy -p xxxxx:80 -p xxxxx:3306 -e TIME_CRON=30 -e PHPMYADMIN_VERSION=4.8.0.1 -e TZ=Europe/Madrid alebupal/tvspy
 ```
 
 ## Donate - Donación
