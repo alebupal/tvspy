@@ -13,6 +13,7 @@ $(document).ready(function () {
 				if ( $(".pagina-configuracion").length > 0 ) {
 					cargarConfiguracionFormulario(arrayConfiguracion);
 					guardarConfiguracionFormulario();
+					btnTest();
 				}
 				if ( $(".pagina-canales").length > 0 ) {
 					//importarCanales();
@@ -314,6 +315,25 @@ $(document).ready(function () {
 		});
 	}
 
+	function btnTest(){
+		$( ".btnTest" ).click(function() {
+			$.ajax({
+				type: "POST",
+				url: "acciones/phpTestTelegram.php",
+				beforeSend:function(){
+					irArriba();
+					$(".cargando").toggle();
+				},
+				success: function (data) {
+					$(".cargando").toggle();
+					console.log("Mensaje enviado");
+					$(".testEnviado").fadeTo(2000, 500).slideUp(500, function(){
+						$(".testEnviado").slideUp(500);
+					});
+				}
+			});
+		});
+	}
 	/*** Página Canales ***/
 	function btnImportarCanales(){
 		$( ".btnImportarCanales" ).click(function() {

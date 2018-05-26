@@ -27,7 +27,12 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="alert alert-success configuracionGuardada oculto" role="alert">
-					  Configuración cargada correctamente
+						Configuración cargada correctamente
+					</div>
+				</div>
+				<div class="col-lg-12">
+					<div class="alert alert-success testEnviado oculto" role="alert">
+						Mensaje enviado correctamente
 					</div>
 				</div>
 				<div class="col-lg-12">
@@ -82,6 +87,9 @@
 											<label for="id_chat">Telegram Chat ID, Group ID, or Channel Username</label>
 											<input type="text" class="form-control" id="id_chat" name="id_chat" placeholder="177537537537375252452" required>
 										</div>
+									</div>
+									<div class="mb-4 mt-2">
+										<a class="btn btn-info btn-block text-white btn-sm btnTest">Enviar mensaje de prueba</a>
 									</div>
 									<div class="form-row">
 										<div class="form-group col-md-6">
