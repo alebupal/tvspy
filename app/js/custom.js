@@ -117,6 +117,7 @@ $(document).ready(function () {
 									'<span><b>IP</b>: '+data["entries"][i]["hostname"]+'</span><br>'+
 									'<span><b>Service</b>: '+data["entries"][i]["service"]+'</span><br>'+
 									'<span><b>Profile</b>: '+data["entries"][i]["profile"]+'</span>'+
+									'<span><b>Errors</b>: '+data["entries"][i]["errors"]+'</span>'+
 									'</div>'+
 							'</div>'+
 						'</div>';
