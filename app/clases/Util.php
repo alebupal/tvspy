@@ -506,7 +506,7 @@ class Util{
 				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
 			)
 		);
-		$update = "UPDATE registro SET tiempo = :tiempo WHERE idReproduccion=:idReproduccion";
+		$update = "UPDATE registro SET tiempo=:tiempo WHERE idReproduccion=:idReproduccion";
 		$statement = $db->prepare($update);
 		// Bind parameters to statement variables
 		$statement->bindParam(':idReproduccion', $reproduccion["idReproduccion"]);
