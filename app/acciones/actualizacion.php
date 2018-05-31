@@ -24,7 +24,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	// No hay nada en la bd, pero hay una reprodución activa
 	// Insertamos la nueva produccion de reproducciones
 	for ($i=0; $i < count($reproduccionesActivas["entries"]) ; $i++) {
-		if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando"){
+		if($reproduccionesActivas["entries"][$i]["state"]=="Funcionando"){
 			echo Util::fechaActual().": Nueva reproducción1 ".$reproduccionesActivas["entries"][$i]["id"]."\n";
 			Util::insertarReproduccion($reproduccionesActivas["entries"][$i], $configuracion);
 		}
