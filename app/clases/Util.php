@@ -4,8 +4,8 @@
  */
 class Util{
 	public static $servidor= "localhost";
-	public static $usuarioBD= "tvspy";
-	public static $contrasenaBD = "tvspy";
+	public static $usuarioBD= "root";
+	public static $contrasenaBD = "";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -294,6 +294,8 @@ class Util{
 		echo json_encode($row);
 	}
 	static function graficaCanales($fechaInicio, $fechaFin){
+		$fechaInicio = $fechaInicio." 23:59:59";
+		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
@@ -324,6 +326,8 @@ class Util{
 		echo json_encode($array);
 	}
 	static function graficaUsuarios($fechaInicio, $fechaFin){
+		$fechaInicio = $fechaInicio." 23:59:59";
+		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
@@ -355,6 +359,8 @@ class Util{
 		echo json_encode($array);
 	}
 	static function graficaReproducciones($usuario, $fechaInicio, $fechaFin){
+		$fechaInicio = $fechaInicio." 23:59:59";
+		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
