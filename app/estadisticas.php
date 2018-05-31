@@ -29,9 +29,23 @@
 					<!-- Example Notifications Card-->
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fa fa-television" aria-hidden="true"></i> Canales
+							<i class="fa fa-television" aria-hidden="true"></i> Tiempo reproducido por canal (minutos)
 						</div>
 						<div class="list-group list-group-flush small">
+							<div class="col-12 mt-2">
+								<div class="input-daterange" id="datepicker">
+									<div class="input-group">
+										<input type="text" class="form-control campo" id="fechaInicioCanal" name="fechaInicioCanal" >
+										<div class="input-group-append">
+											<span class="input-group-text">hasta</span>
+										</div>
+										<input type="text" class="form-control campo" id="fechaFinCanal" name="fechaFinCanal">
+									</div>
+								</div>
+							</div>
+							<div class="col-12 mt-2">
+								<a class="btn btn-primary btn-block btnAplicarGraficaCanal text-white">Aplicar</a>
+							</div>
 							<div id="graficaCanales"></div>
 						</div>
 					</div>
@@ -42,9 +56,23 @@
 					<!-- Example Notifications Card-->
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fa fa-user-circle-o" aria-hidden="true"></i> Usuarios
+							<i class="fa fa-user-circle-o" aria-hidden="true"></i> Tiempo reproducido por usuarios (minutos)
 						</div>
 						<div class="list-group list-group-flush small">
+							<div class="col-12 mt-2">
+								<div class="input-daterange" id="datepicker">
+									<div class="input-group">
+										<input type="text" class="form-control campo" id="fechaInicioUsuarios" name="fechaInicioUsuarios" >
+										<div class="input-group-append">
+											<span class="input-group-text">hasta</span>
+										</div>
+										<input type="text" class="form-control campo" id="fechaFinUsuarios" name="fechaFinUsuarios"   >
+									</div>
+								</div>
+							</div>
+							<div class="col-12 mt-2">
+								<a class="btn btn-primary btn-block btnAplicarGraficaUsuario text-white">Aplicar</a>
+							</div>
 							<div id="graficaUsuarios"></div>
 						</div>
 					</div>
@@ -55,25 +83,25 @@
 					<!-- Example Notifications Card-->
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fa fa-television" aria-hidden="true"></i> Reproducciones totales
+							<i class="fa fa-television" aria-hidden="true"></i> Tiempo reproducido por días (minutos)
 						</div>
 						<div class="list-group list-group-flush small">
 							<div class="col-12 mt-2">
-		                        <div class="input-daterange" id="datepicker">
-		                            <div class="input-group">
-		                                <input type="text" class="form-control campo" id="fechaInicio" name="fechaInicio" >
-		                                <div class="input-group-append">
-		                                    <span class="input-group-text">hasta</span>
-		                                </div>
-		                                <input type="text" class="form-control campo" id="fechaFin" name="fechaFin"   >
+								<div class="input-daterange" id="datepicker">
+									<div class="input-group">
+										<input type="text" class="form-control campo" id="fechaInicioDias" name="fechaInicioDias" >
+										<div class="input-group-append">
+											<span class="input-group-text">hasta</span>
+										</div>
+										<input type="text" class="form-control campo" id="fechaFinDias" name="fechaFinDias"   >
 										<select class="js-example-basic-single custom-select" name="usuario" id="usuario">
-					                    	<option value="todos">Todos</option>
-					                    </select>
-		                            </div>
-		                        </div>
-		                    </div>
+											<option value="todos">Todos</option>
+										</select>
+									</div>
+								</div>
+							</div>
 							<div class="col-12 mt-2">
-								<a class="btn btn-primary btn-block btnAplicarGrafica text-white">Aplicar</a>
+								<a class="btn btn-primary btn-block btnAplicarGraficaDias text-white">Aplicar</a>
 							</div>
 							<div id="graficaReproducciones"></div>
 						</div>

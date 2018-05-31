@@ -1,4 +1,4 @@
-# TVSPY
+# TVSPY 1.1.0
 
 Aplicación web sobre Monitorizacion para tvheadend - Web application about Monitoring for tvheadend.
 
@@ -22,6 +22,14 @@ Gracias a @Spufy por sus consejos para montar la imagen.
 
 [Capturas](https://github.com/alebupal/tvspy/tree/master/capturas)
 
+Si la configuración sale sin valores, prueba a iniciar apache y mysql dentro del contenedor
+```
+/etc/init.d/mysql start
+```
+```
+/etc/init.d/apache2 start
+```
+
 --
 
 To use it, simply install the docker image https://hub.docker.com/r/alebupal/tvspy/ and configure the application with the ip and port of TvHeadend in the configuration option.
@@ -39,17 +47,30 @@ Thanks to @Spufy for his advice to assemble the image.
 
 [Screenshots](https://github.com/alebupal/tvspy/tree/master/capturas)
 
+If the configuration comes out without values, try to start apache and mysql inside the container
+```
+/etc/init.d/mysql start
+```
+```
+/etc/init.d/apache2 start
+```
+
 --
 
-USER phpmyadmin: tvspy
-PASS phpmyadmin: tvspy
+USER phpmyadmin: tvspy<br/>
+PASS phpmyadmin: tvspy<br/>
 db: tvspy
 
 ```
 docker create --name=tvspy -p xxxxx:80 -p xxxxx:3306 -e TIME_CRON=30 -e PHPMYADMIN_VERSION=4.8.0.1 -e TZ=Europe/Madrid alebupal/tvspy
 ```
 
+
+
 ## Donate - Donación
 [![paypal](https://www.paypalobjects.com/es_ES/ES/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7M4FFLM5WMKWQ)
+
+
+## Changelog (https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md)
 
 ## License

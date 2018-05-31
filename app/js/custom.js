@@ -34,9 +34,28 @@ $(document).ready(function () {
 					setInterval(function() { actualizarInicio(arrayConfiguracion); }, (arrayConfiguracion["refresco"]*1000));
 				}
 				if ( $(".pagina-estadisticas").length > 0 ) {
-					graficaCanales();
+
+					$(".js-example-basic-single").select2({
+						language: "es"
+					});
+					$('.input-daterange').datepicker({
+						format: "yyyy-mm-dd",
+						todayBtn: "linked",
+						clearBtn: true,
+						language: "es",
+						todayHighlight: true,
+						toggleActive: true,
+					})
+
+
 					graficaUsuarios();
-					btnAplicarGrafica();
+					btnAplicarGraficaUsuarios();
+
+					graficaCanales();
+					btnAplicarGraficaCanales();
+
+					graficaDias();
+					btnAplicarGraficaDias();
 				}
 			}
 		});
@@ -102,25 +121,27 @@ $(document).ready(function () {
 					data = $.parseJSON(data);
 					var html="";
 					for (var i = 0; i < data["totalCount"]; i++) {
-						usuario = "";
-						if(data["entries"][i]["username"]== undefined){
-							usuario = "Sin usuario";
-						}else{
-							usuario = data["entries"][i]["username"];
-						}
-						html +='<div class="col-xl-4 col-sm-6 mb-3">'+
+						if(data["entries"][i]["state"]=="Funcionando"){
+							usuario = "";
+							if(data["entries"][i]["username"]== undefined){
+								usuario = "Sin usuario";
+							}else{
+								usuario = data["entries"][i]["username"];
+							}
+							html +='<div class="col-xl-4 col-sm-6 mb-3">'+
 							'<div class="card">'+
-								'<div class="card-body">'+
-									'<h6 class="card-title"><b>'+usuario+'</b> está reproduciendo <b>'+data["entries"][i]["channel"]+'</b></h6>'+
-									'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
-									'<span><b>State</b>: '+data["entries"][i]["state"]+'</span><br>'+
-									'<span><b>IP</b>: '+data["entries"][i]["hostname"]+'</span><br>'+
-									'<span><b>Service</b>: '+data["entries"][i]["service"]+'</span><br>'+
-									'<span><b>Profile</b>: '+data["entries"][i]["profile"]+'</span><br>'+
-									'<span><b>Errors</b>: '+data["entries"][i]["errors"]+'</span>'+
-									'</div>'+
+							'<div class="card-body">'+
+							'<h6 class="card-title"><b>'+usuario+'</b> está reproduciendo <b>'+data["entries"][i]["channel"]+'</b></h6>'+
+							'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
+							'<span><b>State</b>: '+data["entries"][i]["state"]+'</span><br>'+
+							'<span><b>IP</b>: '+data["entries"][i]["hostname"]+'</span><br>'+
+							'<span><b>Service</b>: '+data["entries"][i]["service"]+'</span><br>'+
+							'<span><b>Profile</b>: '+data["entries"][i]["profile"]+'</span><br>'+
+							'<span><b>Errors</b>: '+data["entries"][i]["errors"]+'</span>'+
 							'</div>'+
-						'</div>';
+							'</div>'+
+							'</div>';
+						}
 					}
 					$(".divReproduccion").html(html);
 				}else{
@@ -674,11 +695,32 @@ $(document).ready(function () {
 
 	/*** Página Estadisticas ***/
 	function graficaCanales(){
+		var semanaAnterior = new Date();
+		semanaAnterior.setDate(semanaAnterior.getDate()-7);
+		$("#fechaInicioCanal").datepicker("update", semanaAnterior);
+		$("#fechaFinCanal").datepicker("update", new Date());
+		fechaInicioCanal = moment($('#fechaInicioCanal').datepicker("getDate")).format('YYYY-MM-DD');
+		fechaFinCanal = moment($('#fechaFinCanal').datepicker("getDate")).format('YYYY-MM-DD');
+		obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal);
+	}
+	function btnAplicarGraficaCanales(){
+		$(".btnAplicarGraficaCanal" ).click(function() {
+			fechaInicioCanal = moment($('#fechaInicioCanal').datepicker("getDate")).format('YYYY-MM-DD');
+			fechaFinCanal = moment($('#fechaFinCanal').datepicker("getDate")).format('YYYY-MM-DD');
+			obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal);
+		});
+	}
+	function obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal){
+		var formData = new FormData();
+		formData.append("fechaInicio", fechaInicioCanal);
+		formData.append("fechaFin", fechaFinCanal);
 		$.ajax({
 			type: "POST",
 			url: "acciones/phpGraficaCanales.php",
+			data : formData,
+			contentType : false,
+			processData : false,
 			beforeSend:function(){
-				irArriba();
 				$(".cargando").toggle();
 			},
 			success: function (data) {
@@ -709,7 +751,8 @@ $(document).ready(function () {
 					"categoryAxis": {
 						"gridPosition": "start",
 						"gridAlpha": 0,
-						"fontSize": 7,
+						"labelRotation": 70,
+						"fontSize": 10,
 						"tickPosition": "start",
 						"tickLength": 20
 					},
@@ -721,12 +764,35 @@ $(document).ready(function () {
 		});
 
 	}
+
 	function graficaUsuarios(){
+		var semanaAnterior = new Date();
+		semanaAnterior.setDate(semanaAnterior.getDate()-7);
+		$("#fechaInicioUsuarios").datepicker("update", semanaAnterior);
+		$("#fechaFinUsuarios").datepicker("update", new Date());
+		fechaInicioUsuarios = moment($('#fechaInicioUsuarios').datepicker("getDate")).format('YYYY-MM-DD');
+		fechaFinUsuarios = moment($('#fechaFinUsuarios').datepicker("getDate")).format('YYYY-MM-DD');
+		obtenerGraficaUsuarios(fechaInicioUsuarios,fechaFinUsuarios);
+
+	}
+	function btnAplicarGraficaUsuarios(){
+		$(".btnAplicarGraficaDias" ).click(function() {
+			fechaInicioUsuarios = moment($('#fechaInicioUsuarios').datepicker("getDate")).format('YYYY-MM-DD');
+			fechaFinUsuarios = moment($('#fechaFinUsuarios').datepicker("getDate")).format('YYYY-MM-DD');
+			obtenerGraficaUsuarios(fechaInicioUsuarios,fechaFinUsuarios);
+		});
+	}
+	function obtenerGraficaUsuarios(fechaInicioUsuarios,fechaFinUsuarios){
+		var formData = new FormData();
+		formData.append("fechaInicio", fechaInicioUsuarios);
+		formData.append("fechaFin", fechaFinUsuarios);
 		$.ajax({
 			type: "POST",
 			url: "acciones/phpGraficaUsuarios.php",
-			beforeSend:function(){
-				irArriba();
+			data : formData,
+			contentType : false,
+			processData : false,
+			beforeSend:function(){+
 				$(".cargando").toggle();
 			},
 			success: function (data) {
@@ -759,7 +825,8 @@ $(document).ready(function () {
 						"gridAlpha": 0,
 						"tickPosition": "start",
 						"tickLength": 20,
-						"fontSize": 7
+						"labelRotation": 70,
+						"fontSize": 10
 					},
 					"export": {
 						"enabled": true
@@ -769,34 +836,31 @@ $(document).ready(function () {
 		});
 
 	}
-	function btnAplicarGrafica(){
+
+	function graficaDias(){
 		getUsuariosSelect();
-		$("#graficaReproducciones").hide();
-		$(".js-example-basic-single").select2({
-			language: "es"
-		});
-		$('.input-daterange').datepicker({
-			format: "yyyy-mm-dd",
-			todayBtn: "linked",
-			clearBtn: true,
-			language: "es",
-			todayHighlight: true,
-			toggleActive: true,
-		})
-		$("#fechaInicio").datepicker("update", new Date());
-		$("#fechaFin").datepicker("update", new Date());
-		$(".btnAplicarGrafica" ).click(function() {
-			fechaInicio = moment($('#fechaInicio').datepicker("getDate")).format('YYYY-MM-DD');
-			fechaFin = moment($('#fechaFin').datepicker("getDate")).format('YYYY-MM-DD');
+		var semanaAnterior = new Date();
+		semanaAnterior.setDate(semanaAnterior.getDate()-7);
+		$("#fechaInicioDias").datepicker("update", semanaAnterior);
+		$("#fechaFinDias").datepicker("update", new Date());
+		fechaInicioDias = moment($('#fechaInicioDias').datepicker("getDate")).format('YYYY-MM-DD');
+		fechaFinDias = moment($('#fechaFinDias').datepicker("getDate")).format('YYYY-MM-DD');
+		usuario = $("#usuario").val();
+		obtenerGraficaDias(fechaInicioDias,fechaFinDias,usuario);
+
+	}
+	function btnAplicarGraficaDias(){
+		$(".btnAplicarGraficaDias" ).click(function() {
+			fechaInicioDias = moment($('#fechaInicioDias').datepicker("getDate")).format('YYYY-MM-DD');
+			fechaFinDias = moment($('#fechaFinDias').datepicker("getDate")).format('YYYY-MM-DD');
 			usuario = $("#usuario").val();
-			$("#graficaReproducciones").show();
-			graficaReproducciones(fechaInicio,fechaFin,usuario);
+			obtenerGraficaDias(fechaInicioDias,fechaFinDias,usuario);
 		});
 	}
-	function graficaReproducciones(fechaInicio,fechaFin,usuario){
+	function obtenerGraficaDias(fechaInicioDias,fechaFinDias,usuario){
 		var formData = new FormData();
-		formData.append("fechaInicio", fechaInicio);
-		formData.append("fechaFin", fechaFin);
+		formData.append("fechaInicio", fechaInicioDias);
+		formData.append("fechaFin", fechaFinDias);
 		formData.append("usuario",usuario);
 		$.ajax({
 			type: "POST",
@@ -890,6 +954,7 @@ $(document).ready(function () {
 			}
 		});
 	}
+
 	function getUsuariosSelect(){
 		$.ajax({
 			type: "POST",
@@ -905,6 +970,7 @@ $(document).ready(function () {
 		});
 	}
 
+	/*** Otros ***/
 	function abrirNav(){
 		$("body").removeClass("sidenav-toggled");
 	}

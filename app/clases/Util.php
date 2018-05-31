@@ -4,8 +4,8 @@
  */
 class Util{
 	public static $servidor= "localhost";
-	public static $usuarioBD= "tvspy";
-	public static $contrasenaBD = "tvspy";
+	public static $usuarioBD= "root";
+	public static $contrasenaBD = "";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -242,7 +242,7 @@ class Util{
 			)
 		);
 		// FETCH_ASSOC
-		$stmt = $db->prepare("SELECT registro.canal, COUNT(1) AS total FROM registro GROUP BY registro.canal HAVING COUNT(1) > 1");
+		$stmt = $db->prepare("SELECT registro.canal, sum(tiempo) as tiempoTotal, COUNT(1) AS total FROM registro GROUP BY registro.canal HAVING COUNT(1) > 1 ORDER BY tiempoTotal DESC LIMIT 1");
 		// Especificamos el fetch mode antes de llamar a fetch()
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		// Ejecutamos
@@ -261,7 +261,7 @@ class Util{
 			)
 		);
 		// FETCH_ASSOC
-		$stmt = $db->prepare("SELECT registro.usuario, COUNT(1) AS total FROM registro GROUP BY registro.usuario HAVING COUNT(1) > 1");
+		$stmt = $db->prepare("SELECT registro.usuario, sum(tiempo) as tiempoTotal, COUNT(1) AS total FROM registro GROUP BY registro.usuario HAVING COUNT(1) > 1 ORDER BY tiempoTotal DESC LIMIT 1");
 		// Especificamos el fetch mode antes de llamar a fetch()
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		// Ejecutamos
@@ -293,7 +293,7 @@ class Util{
 		$row = $stmt->fetchAll();
 		echo json_encode($row);
 	}
-	static function graficaCanales(){
+	static function graficaCanales($fechaInicio, $fechaFin){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
@@ -303,9 +303,11 @@ class Util{
 			)
 		);
 		// FETCH_ASSOC
-		$stmt = $db->prepare("SELECT canal, COUNT(1) as valor FROM registro GROUP BY canal");
+		$stmt = $db->prepare("SELECT canal, sum(tiempo) as tiempoTotal, COUNT(*) as totalCanales FROM registro  WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY canal ORDER BY tiempoTotal DESC");
 		// Especificamos el fetch mode antes de llamar a fetch()
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		$stmt->bindParam(':fechaInicio', $fechaInicio);
+		$stmt->bindParam(':fechaFin', $fechaFin);
 		// Ejecutamos
 		$stmt->execute();
 		// Mostramos los resultados
@@ -315,13 +317,13 @@ class Util{
 		for ($i=0; $i < count($row); $i++) {
 			$item  = array(
 				"canal" => $row[$i]["canal"],
-				"valor" => (int) $row[$i]["valor"]
+				"valor" => (int) $row[$i]["tiempoTotal"]
 			);
 			array_push($array, $item);
 		}
 		echo json_encode($array);
 	}
-	static function graficaUsuarios(){
+	static function graficaUsuarios($fechaInicio, $fechaFin){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
@@ -331,9 +333,11 @@ class Util{
 			)
 		);
 		// FETCH_ASSOC
-		$stmt = $db->prepare("SELECT usuario, COUNT(1) as valor FROM registro GROUP BY usuario");
+		$stmt = $db->prepare("SELECT usuario, sum(tiempo) as tiempoTotal, COUNT(*) as totalUsuarios FROM registro  WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY usuario ORDER BY tiempoTotal DESC");
 		// Especificamos el fetch mode antes de llamar a fetch()
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		$stmt->bindParam(':fechaInicio', $fechaInicio);
+		$stmt->bindParam(':fechaFin', $fechaFin);
 		// Ejecutamos
 		$stmt->execute();
 		// Mostramos los resultados
@@ -344,7 +348,7 @@ class Util{
 		for ($i=0; $i < count($row); $i++) {
 			$item  = array(
 				"usuario" => $row[$i]["usuario"],
-				"valor" => (int) $row[$i]["valor"]
+				"valor" => (int) $row[$i]["tiempoTotal"]
 			);
 			array_push($array, $item);
 		}
@@ -360,9 +364,9 @@ class Util{
 			)
 		);
 		if($usuario=="todos"){
-			$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY DATE(inicio)");
+			$stmt = $db->prepare("SELECT DATE(inicio) fecha, sum(tiempo) as tiempoTotal, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY DATE(inicio)");
 		}else{
-			$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) AND usuario=:usuario GROUP BY DATE(inicio)");
+			$stmt = $db->prepare("SELECT DATE(inicio) fecha, sum(tiempo) as tiempoTotal, COUNT(DISTINCT canal) valor FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) AND usuario=:usuario GROUP BY DATE(inicio)");
 			$stmt->bindParam(':usuario', $usuario);
 		}
 		$stmt->bindParam(':fechaInicio', $fechaInicio);
@@ -381,7 +385,7 @@ class Util{
 		for ($i=0; $i < count($row); $i++) {
 			$item  = array(
 				"fecha" => $row[$i]["fecha"],
-				"valor" => (int) $row[$i]["valor"]
+				"valor" => (int) $row[$i]["tiempoTotal"]
 			);
 			array_push($array, $item);
 		}

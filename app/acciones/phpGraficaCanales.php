@@ -1,4 +1,6 @@
 <?php
 require_once "../clases/Util.php";
-echo Util::graficaCanales();
+$fechaInicio = $_POST["fechaInicio"];
+$fechaFin = $_POST["fechaFin"];
+echo Util::graficaCanales($fechaInicio, $fechaFin);
 ?>

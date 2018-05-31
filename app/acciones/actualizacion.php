@@ -24,8 +24,10 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	// No hay nada en la bd, pero hay una reprodución activa
 	// Insertamos la nueva produccion de reproducciones
 	for ($i=0; $i < count($reproduccionesActivas["entries"]) ; $i++) {
-		echo Util::fechaActual().": Nueva reproducción1 ".$reproduccionesActivas["entries"][$i]["id"]."\n";
-		Util::insertarReproduccion($reproduccionesActivas["entries"][$i], $configuracion);
+		if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando"){
+			echo Util::fechaActual().": Nueva reproducción1 ".$reproduccionesActivas["entries"][$i]["id"]."\n";
+			Util::insertarReproduccion($reproduccionesActivas["entries"][$i], $configuracion);
+		}
 	}
 }else if(count($reproduccionesActivas["entries"])!=0 && count($reproduccionesBDFin)!=0){
 	$arrayDiferente = array();
@@ -42,16 +44,14 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	// echo "</pre>\n";
 
 	if(count($reproduccionesActivas["entries"])>0){
-	   for ($i=0; $i < count($reproduccionesActivas["entries"]); $i++) {
-		   $obtenerReproduccion = Util::obtenerReproduccion($reproduccionesActivas["entries"][$i]["id"]);
-		   if($obtenerReproduccion != false){
-			   echo Util::fechaActual().": Actualiza tiempo reproducción ".$reproduccionesActivas["entries"][$i]["id"]."\n";
-			   Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion);
-		   }
-	   }
-   }
-
-
+		for ($i=0; $i < count($reproduccionesActivas["entries"]); $i++) {
+			$obtenerReproduccion = Util::obtenerReproduccion($reproduccionesActivas["entries"][$i]["id"]);
+			if($obtenerReproduccion != false){
+				echo Util::fechaActual().": Actualiza tiempo reproducción ".$reproduccionesActivas["entries"][$i]["id"]."\n";
+				Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion);
+			}
+		}
+	}
 	//ids que estan en la bd y hay que actualizar la fecha
 	if(count($arrayDiferente)>0){
 		for ($i=0; $i < count($arrayDiferente); $i++) {
@@ -68,8 +68,10 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 		for ($i=0; $i < count($arrayDiferente2); $i++) {
 			for ($r=0; $r < count($reproduccionesActivas["entries"]); $r++) {
 				if((int)$arrayDiferente2[$i]==(int)$reproduccionesActivas["entries"][$r]["id"]){
-					echo Util::fechaActual().": Nueva reproducción2 ".$reproduccionesActivas["entries"][$r]["id"]."\n";
-					Util::insertarReproduccion($reproduccionesActivas["entries"][$r], $configuracion);
+					if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando"){
+						echo Util::fechaActual().": Nueva reproducción2 ".$reproduccionesActivas["entries"][$r]["id"]."\n";
+						Util::insertarReproduccion($reproduccionesActivas["entries"][$r], $configuracion);
+					}
 				}
 			}
 		}
