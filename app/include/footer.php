@@ -1,7 +1,7 @@
 <footer class="sticky-footer">
 	<div class="container">
 		<div class="text-center">
-			<small>alebupal - <a href="https://github.com/alebupal/tvspy" target="_blank">https://github.com/alebupal/tvspy</a></small>
+			<small>alebupal - <a href="https://github.com/alebupal/tvspy" target="_blank">TVSPY 1.2.0</a> - <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7M4FFLM5WMKWQ" target="_blank">Donación PayPal</a></small>
 		</div>
 	</div>
 </footer>
