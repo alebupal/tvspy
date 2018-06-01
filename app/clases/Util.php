@@ -298,7 +298,7 @@ class Util{
 		echo json_encode($row);
 	}
 	static function graficaCanales($fechaInicio, $fechaFin, $configuracion){
-		$fechaInicio = $fechaInicio." 23:59:59";
+		$fechaInicio = $fechaInicio." 00:00:00";
 		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -340,7 +340,7 @@ class Util{
 		echo json_encode($array);
 	}
 	static function graficaUsuarios($fechaInicio, $fechaFin, $configuracion){
-		$fechaInicio = $fechaInicio." 23:59:59";
+		$fechaInicio = $fechaInicio." 00:00:00";
 		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -382,7 +382,7 @@ class Util{
 		echo json_encode($array);
 	}
 	static function graficaReproducciones($usuario, $fechaInicio, $fechaFin, $configuracion){
-		$fechaInicio = $fechaInicio." 23:59:59";
+		$fechaInicio = $fechaInicio." 00:00:00";
 		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
