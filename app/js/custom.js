@@ -27,7 +27,7 @@ $(document).ready(function () {
 					tablaUsuarios();
 				}
 				if ( $(".pagina-registro").length > 0 ) {
-					tablaRegistro();
+					tablaRegistro(arrayConfiguracion);
 				}
 				if ( $(".pagina-inicio").length > 0 ) {
 					actualizarInicio(arrayConfiguracion)
@@ -47,6 +47,7 @@ $(document).ready(function () {
 						toggleActive: true,
 					})
 
+					$(".unidadTiempoEstadisticas").html(arrayConfiguracion["unidadTiempo"]);
 
 					graficaUsuarios();
 					btnAplicarGraficaUsuarios();
@@ -268,6 +269,7 @@ $(document).ready(function () {
 		$("#contrasena").val(arrayConfiguracion["contrasena"]);
 		$("#usuario").val(arrayConfiguracion["usuario"]);
 		$("#refresco").val(arrayConfiguracion["refresco"]);
+		$("#tiempoMinimo").val(arrayConfiguracion["tiempoMinimo"]);
 
 		if(arrayConfiguracion["notificacion_telegram"]==1){
 			$("#notificacion_telegram").prop('checked', true);
@@ -299,6 +301,20 @@ $(document).ready(function () {
 		}else if(arrayConfiguracion["telegram_tiempo"]==0){
 			$("#telegram_tiempo").prop('checked', false);
 			$("#div_telegram_tiempo").hide();
+		}
+
+		if(arrayConfiguracion["unidadTiempo"]=="Horas"){
+			$("#unidadTiempo option[value='Horas']").attr('selected',true);
+			$("#unidadTiempo option[value='Minutos']").attr('selected',false);
+			$("#unidadTiempo option[value='Segundos']").attr('selected',false);
+		}else if(arrayConfiguracion["unidadTiempo"]=="Minutos"){
+			$("#unidadTiempo option[value='Horas']").attr('selected',false);
+			$("#unidadTiempo option[value='Minutos']").attr('selected',true);
+			$("#unidadTiempo option[value='Segundos']").attr('selected',false);
+		}else if(arrayConfiguracion["unidadTiempo"]=="Segundos"){
+			$("#unidadTiempo option[value='Horas']").attr('selected',false);
+			$("#unidadTiempo option[value='Minutos']").attr('selected',false);
+			$("#unidadTiempo option[value='Segundos']").attr('selected',true);
 		}
 
 		$("#texto_empieza").val(arrayConfiguracion["texto_empieza"]);
@@ -639,7 +655,7 @@ $(document).ready(function () {
 	}
 
 	/*** Página Registro ***/
-	function tablaRegistro(){
+	function tablaRegistro(arrayConfiguracion){
 		$('#tablaRegistro tfoot th').each( function () {
 			var title = $('#tablaRegistro thead th').eq( $(this).index() ).text();
 			$(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
@@ -676,8 +692,20 @@ $(document).ready(function () {
 				{data: "4"},
 				{data: "5"},
 				{data: "6"},
-				{data: "7"},
-				{data: "8"}
+				{data: null,
+					render: function (data, type, row) {
+						divisionTiempo=1;
+						if(arrayConfiguracion["unidadTiempo"]=="Horas"){
+							divisionTiempo = 3600;
+						}else if(arrayConfiguracion["unidadTiempo"]=="Minutos"){
+							divisionTiempo = 60;
+						}else if(arrayConfiguracion["unidadTiempo"]=="Segundos"){
+							divisionTiempo = 1;
+						}
+						return data[7]/divisionTiempo;
+					}
+				},
+				{data: "8"},
 			],
 			initComplete: function() {
 				table.columns().every( function (){

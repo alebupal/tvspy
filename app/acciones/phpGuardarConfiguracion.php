@@ -29,6 +29,7 @@
 		"contrasena" => $_POST["contrasena"],
 		"usuario" => $_POST["usuario"],
 		"refresco" => $_POST["refresco"],
+		"tiempoMinimo" => $_POST["tiempoMinimo"],
 		"texto_empieza" => $_POST["texto_empieza"],
 		"texto_para" => $_POST["texto_para"],
 		"texto_tiempo" => $_POST["texto_tiempo"],
@@ -38,7 +39,8 @@
 		"telegram_tiempo_limite" => $_POST["telegram_tiempo_limite"],
 		"notificacion_telegram" => $notificacion_telegram,
 		"bot_token" => $_POST["bot_token"],
-		"id_chat" => $_POST["id_chat"]
+		"id_chat" => $_POST["id_chat"],
+		"unidadTiempo" => $_POST["unidadTiempo"]
 	);
 	$configuracion = Util::guardarConfiguracion($arrayConfiguracion);
 	echo true;

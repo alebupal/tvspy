@@ -25,8 +25,13 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	// Insertamos la nueva produccion de reproducciones
 	for ($i=0; $i < count($reproduccionesActivas["entries"]) ; $i++) {
 		if($reproduccionesActivas["entries"][$i]["state"]=="Funcionando"){
-			echo Util::fechaActual().": Nueva reproducción1 ".$reproduccionesActivas["entries"][$i]["id"]."\n";
-			Util::insertarReproduccion($reproduccionesActivas["entries"][$i], $configuracion);
+			$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$i]["start"]), 'Y-m-d H:i:s');
+			$fechaActual =  self::fechaActual();
+			$segundos = (strtotime($fechaActual) - strtotime($fechaInicio));
+			if($segundos>$configuracion["tiempoMinimo"]){
+				echo Util::fechaActual().": Nueva reproducción1 ".$reproduccionesActivas["entries"][$i]["id"]."\n";
+				Util::insertarReproduccion($reproduccionesActivas["entries"][$i], $configuracion);
+			}
 		}
 	}
 }else if(count($reproduccionesActivas["entries"])!=0 && count($reproduccionesBDFin)!=0){
@@ -69,8 +74,13 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 			for ($r=0; $r < count($reproduccionesActivas["entries"]); $r++) {
 				if((int)$arrayDiferente2[$i]==(int)$reproduccionesActivas["entries"][$r]["id"]){
 					if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando"){
-						echo Util::fechaActual().": Nueva reproducción2 ".$reproduccionesActivas["entries"][$r]["id"]."\n";
-						Util::insertarReproduccion($reproduccionesActivas["entries"][$r], $configuracion);
+						$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$r]["start"]), 'Y-m-d H:i:s');
+						$fechaActual =  self::fechaActual();
+						$segundos = (strtotime($fechaActual) - strtotime($fechaInicio));
+						if($segundos>$configuracion["tiempoMinimo"]){
+							echo Util::fechaActual().": Nueva reproducción2 ".$reproduccionesActivas["entries"][$r]["id"]."\n";
+							Util::insertarReproduccion($reproduccionesActivas["entries"][$r], $configuracion);
+						}
 					}
 				}
 			}

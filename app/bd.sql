@@ -46,6 +46,7 @@ CREATE TABLE `configuracion` (
   `usuario` varchar(100) NOT NULL,
   `contrasena` varchar(100) NOT NULL,
   `refresco` int(11) NOT NULL,
+  `tiempoMinimo` int(11) NOT NULL,
   `notificacion_telegram` tinyint(1) NOT NULL,
   `texto_empieza` varchar(500) NOT NULL,
   `texto_para` varchar(500) NOT NULL,
@@ -55,15 +56,16 @@ CREATE TABLE `configuracion` (
   `telegram_tiempo` tinyint(1) NOT NULL,
   `telegram_tiempo_limite` int(11) NOT NULL,
   `bot_token` varchar(500) NOT NULL,
-  `id_chat` varchar(500) NOT NULL
+  `id_chat` varchar(500) NOT NULL,
+  `unidadTiempo` varchar(500) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `configuracion`
 --
 
-INSERT INTO `configuracion` (`id`, `ip`, `puerto`, `usuario`, `contrasena`, `refresco`, `notificacion_telegram`, `texto_empieza`, `texto_para`, `texto_tiempo`, `telegram_empieza`, `telegram_para`, `telegram_tiempo`, `telegram_tiempo_limite`, `bot_token`, `id_chat`) VALUES
-(1, '192.168.1.50', 9981, 'usuario', 'contraseña', 20, 1, '%%fecha%%: El usuario <b>%%usuario%%</b> ha empezado a reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha parado de reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha pasado el límite de tiempo (%%tiempo%%) y está reproduciendo <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', 1, 1, 1, 350, 'token', 'id chat');
+INSERT INTO `configuracion` (`id`, `ip`, `puerto`, `usuario`, `contrasena`, `refresco`, `tiempoMinimo`, `notificacion_telegram`, `texto_empieza`, `texto_para`, `texto_tiempo`, `telegram_empieza`, `telegram_para`, `telegram_tiempo`, `telegram_tiempo_limite`, `bot_token`, `id_chat`, `unidadTiempo`) VALUES
+(1, '192.168.1.50', 9981, 'usuario', 'contraseña', 20, 3, 1, '%%fecha%%: El usuario <b>%%usuario%%</b> ha empezado a reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha parado de reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha pasado el límite de tiempo (%%tiempo%%) y está reproduciendo <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', 1, 1, 1, 350, 'token', 'id chat', 'Minutos');
 
 -- --------------------------------------------------------
 

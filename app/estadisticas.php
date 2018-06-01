@@ -29,7 +29,7 @@
 					<!-- Example Notifications Card-->
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fa fa-television" aria-hidden="true"></i> Tiempo reproducido por canal (minutos)
+							<i class="fa fa-television" aria-hidden="true"></i> Tiempo reproducido por canal (<span class="unidadTiempoEstadisticas"></span>)
 						</div>
 						<div class="list-group list-group-flush small">
 							<div class="col-12 mt-2">
@@ -56,7 +56,7 @@
 					<!-- Example Notifications Card-->
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fa fa-user-circle-o" aria-hidden="true"></i> Tiempo reproducido por usuarios (minutos)
+							<i class="fa fa-user-circle-o" aria-hidden="true"></i> Tiempo reproducido por usuarios (<span class="unidadTiempoEstadisticas"></span>)
 						</div>
 						<div class="list-group list-group-flush small">
 							<div class="col-12 mt-2">
@@ -83,7 +83,7 @@
 					<!-- Example Notifications Card-->
 					<div class="card mb-3">
 						<div class="card-header">
-							<i class="fa fa-television" aria-hidden="true"></i> Tiempo reproducido por días (minutos)
+							<i class="fa fa-television" aria-hidden="true"></i> Tiempo reproducido por días (<span class="unidadTiempoEstadisticas"></span>)
 						</div>
 						<div class="list-group list-group-flush small">
 							<div class="col-12 mt-2">

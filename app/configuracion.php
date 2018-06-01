@@ -90,12 +90,26 @@
 									<a class="btn btn-info btn-block text-white btn-sm btnTestTvheadend">Comprobar conexion</a>
 									<small>Hay que guardar para aplicar los cambios</small>
 								</div>
+								<hr>
 								<div class="form-row">
-									<div class="form-group col-md-12">
+									<div class="form-group col-md-4">
 										<label for="refresco">Tiempo de refresco (segundos) página de inicio</label>
 										<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
 									</div>
+									<div class="form-group col-md-4">
+										<label for="tiempoMinimo">Tiempo mínimo para registro (segundos)</label>
+										<input type="number" class="form-control" id="tiempoMinimo" name="tiempoMinimo" placeholder="1" required>
+									</div>
+									<div class="form-group col-md-4">
+										<label for="unidadTiempo">Unidad de tiempo visualización</label>
+										<select class="form-control" id="unidadTiempo" name="unidadTiempo">
+											<option value="Horas">Horas</option>
+											<option value="Minutos">Minutos</option>
+											<option value="Segundos">Segundos</option>
+										</select>
+									</div>
 								</div>
+								<hr>
 								<div class="form-row">
 									<div class="form-group col-md-12">
 										<div class="form-check">

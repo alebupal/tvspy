@@ -47,6 +47,7 @@ class Util{
 											id_chat = :id_chat,
 											ip = :ip,
 											refresco = :refresco,
+											tiempoMinimo = :tiempoMinimo,
 											notificacion_telegram = :notificacion_telegram,
 											puerto = :puerto,
 											telegram_empieza = :telegram_empieza,
@@ -56,7 +57,8 @@ class Util{
 											texto_empieza = :texto_empieza,
 											texto_para = :texto_para,
 											texto_tiempo = :texto_tiempo,
-											usuario = :usuario
+											usuario = :usuario,
+											unidadTiempo = :unidadTiempo
 										WHERE id=1";
 		$stmt = $db->prepare($update);
 		// Bind parameters to statement variables
@@ -65,6 +67,7 @@ class Util{
 		$stmt->bindParam(':contrasena', $arrayConfiguracion["contrasena"]);
 		$stmt->bindParam(':ip', $arrayConfiguracion["ip"]);
 		$stmt->bindParam(':refresco', $arrayConfiguracion["refresco"]);
+		$stmt->bindParam(':tiempoMinimo', $arrayConfiguracion["tiempoMinimo"]);
 		$stmt->bindParam(':notificacion_telegram', $arrayConfiguracion["notificacion_telegram"]);
 		$stmt->bindParam(':puerto', $arrayConfiguracion["puerto"]);
 		$stmt->bindParam(':telegram_empieza', $arrayConfiguracion["telegram_empieza"]);
@@ -75,6 +78,7 @@ class Util{
 		$stmt->bindParam(':texto_para', $arrayConfiguracion["texto_para"]);
 		$stmt->bindParam(':texto_tiempo', $arrayConfiguracion["texto_tiempo"]);
 		$stmt->bindParam(':usuario', $arrayConfiguracion["usuario"]);
+		$stmt->bindParam(':unidadTiempo', $arrayConfiguracion["unidadTiempo"]);
 
 		$stmt->execute();
 	}
@@ -293,7 +297,7 @@ class Util{
 		$row = $stmt->fetchAll();
 		echo json_encode($row);
 	}
-	static function graficaCanales($fechaInicio, $fechaFin){
+	static function graficaCanales($fechaInicio, $fechaFin, $configuracion){
 		$fechaInicio = $fechaInicio." 23:59:59";
 		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
@@ -315,17 +319,27 @@ class Util{
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
 
+		$divisionTiempo=1;
+		if($configuracion["unidadTiempo"]=="Horas"){
+			$divisionTiempo = 3600;
+		}else if($configuracion["unidadTiempo"]=="Minutos"){
+			$divisionTiempo = 60;
+		}else if($configuracion["unidadTiempo"]=="Segundos"){
+			$divisionTiempo = 1;
+		}
+
 		$array  = array();
 		for ($i=0; $i < count($row); $i++) {
+			$tiempo = $row[$i]["tiempoTotal"]/$divisionTiempo;
 			$item  = array(
 				"canal" => $row[$i]["canal"],
-				"valor" => (int) $row[$i]["tiempoTotal"]
+				"valor" => (int) $tiempo
 			);
 			array_push($array, $item);
 		}
 		echo json_encode($array);
 	}
-	static function graficaUsuarios($fechaInicio, $fechaFin){
+	static function graficaUsuarios($fechaInicio, $fechaFin, $configuracion){
 		$fechaInicio = $fechaInicio." 23:59:59";
 		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
@@ -347,18 +361,27 @@ class Util{
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
 
-		$array  = array();
+		$divisionTiempo=1;
+		if($configuracion["unidadTiempo"]=="Horas"){
+			$divisionTiempo = 3600;
+		}else if($configuracion["unidadTiempo"]=="Minutos"){
+			$divisionTiempo = 60;
+		}else if($configuracion["unidadTiempo"]=="Segundos"){
+			$divisionTiempo = 1;
+		}
 
+		$array  = array();
 		for ($i=0; $i < count($row); $i++) {
+			$tiempo = $row[$i]["tiempoTotal"]/$divisionTiempo;
 			$item  = array(
 				"usuario" => $row[$i]["usuario"],
-				"valor" => (int) $row[$i]["tiempoTotal"]
+				"valor" => (int) $tiempo
 			);
 			array_push($array, $item);
 		}
 		echo json_encode($array);
 	}
-	static function graficaReproducciones($usuario, $fechaInicio, $fechaFin){
+	static function graficaReproducciones($usuario, $fechaInicio, $fechaFin, $configuracion){
 		$fechaInicio = $fechaInicio." 23:59:59";
 		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
@@ -387,11 +410,21 @@ class Util{
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
 
+		$divisionTiempo=1;
+		if($configuracion["unidadTiempo"]=="Horas"){
+			$divisionTiempo = 3600;
+		}else if($configuracion["unidadTiempo"]=="Minutos"){
+			$divisionTiempo = 60;
+		}else if($configuracion["unidadTiempo"]=="Segundos"){
+			$divisionTiempo = 1;
+		}
+
 		$array  = array();
 		for ($i=0; $i < count($row); $i++) {
+			$tiempo = $row[$i]["tiempoTotal"]/$divisionTiempo;
 			$item  = array(
 				"fecha" => $row[$i]["fecha"],
-				"valor" => (int) $row[$i]["tiempoTotal"]
+				"valor" => (int) $tiempo
 			);
 			array_push($array, $item);
 		}
@@ -481,11 +514,11 @@ class Util{
 		}else{
 			$usuario = "Sin usuario";
 		}
-		$fechaActual =  self::fechaActual();
+		$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccion["start"]), 'Y-m-d H:i:s');
 		$statement->bindParam(':usuario', $usuario);
 		$statement->bindParam(':canal', $reproduccion["channel"]);
 		$statement->bindParam(':idReproduccion', $id);
-		$statement->bindParam(':inicio', $fechaActual);
+		$statement->bindParam(':inicio', $fechaInicio);
 		$statement->bindParam(':hostname', $reproduccion["hostname"]);
 		$statement->bindParam(':reproductor', $reproduccion["title"]);
 		$statement->bindParam(':errores', $reproduccion["errors"]);
@@ -506,7 +539,7 @@ class Util{
 	static function actualizarTiempoReproduccion($reproduccion, $configuracion){
 		$inicio = $reproduccion["inicio"];
 		$fechaActual =  self::fechaActual();
-		$minutos = (strtotime($fechaActual) - strtotime($inicio))/60;
+		$segundos = (strtotime($fechaActual) - strtotime($inicio));
 
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -520,7 +553,7 @@ class Util{
 		$statement = $db->prepare($update);
 		// Bind parameters to statement variables
 		$statement->bindParam(':idReproduccion', $reproduccion["idReproduccion"]);
-		$statement->bindParam(':tiempo', $minutos);
+		$statement->bindParam(':tiempo', $segundos);
 
 		$statement->execute();
 		$statement->closeCursor();
@@ -566,7 +599,7 @@ class Util{
 	static function actualizarFechaFinReproduccion($reproduccion,$configuracion){
 		$inicio = $reproduccion["inicio"];
 		$fechaActual =  self::fechaActual();
-		$minutos = (strtotime($fechaActual) - strtotime($inicio))/60;
+		$segundos = (strtotime($fechaActual) - strtotime($inicio));
 
 		$fechaActual = self::fechaActual();
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
@@ -582,7 +615,7 @@ class Util{
 		// Bind parameters to statement variables
 		$statement->bindParam(':idReproduccion',$reproduccion["idReproduccion"]);
 		$statement->bindParam(':fin', $fechaActual);
-		$statement->bindParam(':tiempo', $minutos);
+		$statement->bindParam(':tiempo', $segundos);
 
 		$statement->execute();
 		$statement->closeCursor();
