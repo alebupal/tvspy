@@ -5,7 +5,7 @@ CMD ["/sbin/my_init"]
 MAINTAINER alebupal <alebupal@gmail.com>
 
 #Tiempo de actualizacion a la api en segundos
-ENV TIME_CRON 30
+ENV TIME_CRON 15
 
 #Para evitar ventanas de pedir datos
 #ARG DEBIAN_FRONTEND=noninteractive

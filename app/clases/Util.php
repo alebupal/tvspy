@@ -726,7 +726,7 @@ class Util{
 			'parse_mode'=> "HTML"
 		]);
 
-		if(get_http_response_code($TELEGRAM."/sendMessage?".$query) == "200"){
+		if(self::get_http_response_code($TELEGRAM."/sendMessage?".$query) == "200"){
 			$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
 		}
 		return $response;

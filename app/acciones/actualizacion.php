@@ -17,7 +17,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	//Insertar fecha de que ha terminado de ver la tv al usuario que haya en la bd
 	//Se para una reproducción
 	for ($r=0; $r < count($reproduccionesBDFin); $r++) {
-		echo Util::fechaActual().": Parada la reproducción1 ".$reproduccionesBDFin[$r]["id"]."\n";
+		echo Util::fechaActual().": Parada la reproducción1 ".$reproduccionesBDFin[$r]["idReproduccion"]."\n";
 		Util::actualizarFechaFinReproduccion($reproduccionesBDFin[$r], $configuracion);
 	}
 }else if(count($reproduccionesActivas["entries"])!=0 && count($reproduccionesBDFin)==0){
