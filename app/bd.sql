@@ -65,7 +65,7 @@ CREATE TABLE `configuracion` (
 --
 
 INSERT INTO `configuracion` (`id`, `ip`, `puerto`, `usuario`, `contrasena`, `refresco`, `tiempoMinimo`, `notificacion_telegram`, `texto_empieza`, `texto_para`, `texto_tiempo`, `telegram_empieza`, `telegram_para`, `telegram_tiempo`, `telegram_tiempo_limite`, `bot_token`, `id_chat`, `unidadTiempo`) VALUES
-(1, '192.168.1.50', 9981, 'usuario', 'contraseña', 20, 3, 1, '%%fecha%%: El usuario <b>%%usuario%%</b> ha empezado a reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha parado de reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha pasado el límite de tiempo (%%tiempo%%) y está reproduciendo <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', 1, 1, 1, 350, 'token', 'id chat', 'Minutos');
+(1, '192.168.1.50', 9981, 'usuario', 'contraseña', 10, 180, 1, '%%fecha%%: El usuario <b>%%usuario%%</b> ha empezado a reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha parado de reproducir <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', '%%fecha%%: El usuario <b>%%usuario%%</b> ha pasado el límite de tiempo (%%tiempo%%) y está reproduciendo <b>%%canal%%</b> en %%reproductor%% (%%hostname%%)', 1, 1, 1, 350, 'token', 'id chat', 'Minutos');
 
 -- --------------------------------------------------------
 

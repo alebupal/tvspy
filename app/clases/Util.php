@@ -718,7 +718,7 @@ class Util{
 	}
 	/*** Otros ***/
 	static function enviarTelegram($TOKEN, $chat_id, $mensaje){
-
+		$response = "";
 		$TELEGRAM = "https://api.telegram.org:443/bot".$TOKEN;
 		$query = http_build_query([
 			'chat_id'=> $chat_id,

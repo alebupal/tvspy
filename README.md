@@ -14,7 +14,7 @@ Para acceder a PHPMyAdmin la ruta es: http://IP_DOCKER:PORT_DOCKER/phpmyadmin y 
 
 Se puede cambiar el tiempo de actualización de la base de datos con datos de televisión con la variable de entorno: TIME_CRON
 Tiempo en segundos.
-No garantizo que funcione con menos de 30 segundos.
+No garantizo que funcione con menos de 15 segundos.
 
 Siempre que se instala de nuevo es recomendable hacer una copia de la base de datos con phpmyadmin para no perder el registro de datos. Despues con volver a importarla desde phpmyadmin no habrá problemas.
 
@@ -39,7 +39,7 @@ To access PHPMyAdmin the route is: http://IP_DOCKER:PORT_DOCKER/phpmyadmin and t
 
 You can change the update time of the database with tvheadend data with the environment variable: TIME_CRON
 Time in seconds.
-I do not guarantee that it works with less than 30 seconds.
+I do not guarantee that it works with less than 15 seconds.
 
 Whenever it is installed again it is advisable to make a copy of the database with phpmyadmin so as not to lose the data record. Then with re-import from phpmyadmin there will be no problems.
 
@@ -62,7 +62,7 @@ PASS phpmyadmin: tvspy<br/>
 db: tvspy
 
 ```
-docker create --name=tvspy -p xxxxx:80 -p xxxxx:3306 -e TIME_CRON=30 -e PHPMYADMIN_VERSION=4.8.0.1 -e TZ=Europe/Madrid alebupal/tvspy
+docker create --name=tvspy -p xxxxx:80 -p xxxxx:3306 -e TIME_CRON=15 -e PHPMYADMIN_VERSION=4.8.0.1 -e TZ=Europe/Madrid alebupal/tvspy
 ```
 
 ## Docker (https://hub.docker.com/r/alebupal/tvspy/)
