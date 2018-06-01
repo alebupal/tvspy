@@ -1,3 +1,6 @@
+## [1.2.1] - 2018-06-01
+- Correción, no salía la fecha en el mensaje de telegram
+
 ## [1.2.0] - 2018-06-01
 - El tiempo en la base de datos ahora se guarda en segundos
 - Posibilidad de seleccionar unidad de tiempo a utilizar en la web

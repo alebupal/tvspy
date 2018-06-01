@@ -529,7 +529,7 @@ class Util{
 			if((int)$configuracion["telegram_empieza"]!= 0){
 				$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
 				$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
-				$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
+				$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
 				$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
 				$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
 				self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);

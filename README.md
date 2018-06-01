@@ -1,4 +1,4 @@
-# TVSPY 1.2.0
+# TVSPY 1.2.1
 
 Aplicación web sobre Monitorizacion para tvheadend - Web application about Monitoring for tvheadend.
 
