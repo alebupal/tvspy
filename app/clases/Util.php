@@ -540,6 +540,7 @@ class Util{
 		$inicio = $reproduccion["inicio"];
 		$fechaActual =  self::fechaActual();
 		$segundos = (strtotime($fechaActual) - strtotime($inicio));
+		$minutos = (strtotime($fechaActual) - strtotime($inicio))/60;
 
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -717,6 +718,7 @@ class Util{
 	}
 	/*** Otros ***/
 	static function enviarTelegram($TOKEN, $chat_id, $mensaje){
+
 		$TELEGRAM = "https://api.telegram.org:443/bot".$TOKEN;
 		$query = http_build_query([
 			'chat_id'=> $chat_id,
@@ -724,7 +726,9 @@ class Util{
 			'parse_mode'=> "HTML"
 		]);
 
-		$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
+		if(get_http_response_code($TELEGRAM."/sendMessage?".$query) == "200"){
+			$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
+		}
 		return $response;
 	}
 	static function fechaActual(){
@@ -734,5 +738,10 @@ class Util{
 		$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
 		return $dt->format('Y-m-d H:i:s');
 	}
+	static function get_http_response_code($url) {
+		$headers = get_headers($url);
+		return substr($headers[0], 9, 3);
+	}
+
 
 }

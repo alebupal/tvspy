@@ -1,3 +1,6 @@
+## [1.2.2] - 2018-06-01
+- Correción notificación tiempo de más
+
 ## [1.2.1] - 2018-06-01
 - Correción, no salía la fecha en el mensaje de telegram
 
