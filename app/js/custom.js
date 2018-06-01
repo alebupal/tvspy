@@ -27,6 +27,7 @@ $(document).ready(function () {
 					tablaUsuarios();
 				}
 				if ( $(".pagina-registro").length > 0 ) {
+					$(".unidadTiempoEstadisticas").html(arrayConfiguracion["unidadTiempo"]);
 					tablaRegistro(arrayConfiguracion);
 				}
 				if ( $(".pagina-inicio").length > 0 ) {

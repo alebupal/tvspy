@@ -35,7 +35,7 @@
 									<th>Fin</th>
 									<th>Hostname</th>
 									<th>Reproductor</th>
-									<th>Tiempo (MIN)</th>
+									<th>Tiempo (<span class="unidadTiempoEstadisticas"></span>)</th>
 									<th>Errores</th>
 								</tr>
 							</thead>
@@ -47,7 +47,7 @@
 									<th>Fin</th>
 									<th>Hostname</th>
 									<th>Reproductor</th>
-									<th>Tiempo (MIN)</th>
+									<th>Tiempo (<span class="unidadTiempoEstadisticas"></span>)</th>
 									<th>Errores</th>
 								</tr>
 							</tfoot>
