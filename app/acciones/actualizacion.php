@@ -26,7 +26,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	for ($i=0; $i < count($reproduccionesActivas["entries"]) ; $i++) {
 		if($reproduccionesActivas["entries"][$i]["state"]=="Funcionando"){
 			$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$i]["start"]), 'Y-m-d H:i:s');
-			$fechaActual =  self::fechaActual();
+			$fechaActual =  Util::fechaActual();
 			$segundos = (strtotime($fechaActual) - strtotime($fechaInicio));
 			if($segundos>$configuracion["tiempoMinimo"]){
 				echo Util::fechaActual().": Nueva reproducción1 ".$reproduccionesActivas["entries"][$i]["id"]."\n";
@@ -75,7 +75,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 				if((int)$arrayDiferente2[$i]==(int)$reproduccionesActivas["entries"][$r]["id"]){
 					if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando"){
 						$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$r]["start"]), 'Y-m-d H:i:s');
-						$fechaActual =  self::fechaActual();
+						$fechaActual =  Util::fechaActual();
 						$segundos = (strtotime($fechaActual) - strtotime($fechaInicio));
 						if($segundos>$configuracion["tiempoMinimo"]){
 							echo Util::fechaActual().": Nueva reproducción2 ".$reproduccionesActivas["entries"][$r]["id"]."\n";

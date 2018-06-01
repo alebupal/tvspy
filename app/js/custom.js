@@ -130,11 +130,14 @@ $(document).ready(function () {
 							}else{
 								usuario = data["entries"][i]["username"];
 							}
+							fechaInicio=data["entries"][i]["start"];
+
 							html +='<div class="col-xl-4 col-sm-6 mb-3">'+
 							'<div class="card">'+
 							'<div class="card-body">'+
 							'<h6 class="card-title"><b>'+usuario+'</b> está reproduciendo <b>'+data["entries"][i]["channel"]+'</b></h6>'+
 							'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
+							'<span><b>Inicio</b>: '+unixToDate(fechaInicio)+'</span><br>'+
 							'<span><b>State</b>: '+data["entries"][i]["state"]+'</span><br>'+
 							'<span><b>IP</b>: '+data["entries"][i]["hostname"]+'</span><br>'+
 							'<span><b>Service</b>: '+data["entries"][i]["service"]+'</span><br>'+
@@ -1000,6 +1003,24 @@ $(document).ready(function () {
 	}
 
 	/*** Otros ***/
+	function unixToDate(unixTimeStamp){
+		var timestampInMilliSeconds = unixTimeStamp*1000; //as JavaScript uses milliseconds; convert the UNIX timestamp(which is in seconds) to milliseconds.
+		var date = new Date(timestampInMilliSeconds); //create the date object
+
+		var day = (date.getDate() < 10 ? '0' : '') + date.getDate(); //adding leading 0 if date less than 10 for the required dd format
+		var month = (date.getMonth() < 9 ? '0' : '') + (date.getMonth() + 1); //adding leading 0 if month less than 10 for mm format. Used less than 9 because javascriptmonths are 0 based.
+		var year = date.getFullYear(); //full year in yyyy format
+
+		//var hours = ((date.getHours() % 12 || 12) < 10 ? '0' : '') + (date.getHours() % 12 || 12); //converting 24h to 12h and using 12 instead of 0. also appending 0 if hour less than 10 for the required hh format
+		var hours = date.getHours(); //converting 24h to 12h and using 12 instead of 0. also appending 0 if hour less than 10 for the required hh format
+		var minutes = (date.getMinutes() < 10 ? '0' : '') + date.getMinutes(); //adding 0 if minute less than 10 for the required mm format
+		var seconds = (date.getSeconds() < 10 ? '0' : '') + date.getSeconds(); //adding 0 if second less than 10 for the required mm format
+		var meridiem = (date.getHours() >= 12) ? 'pm' : 'am'; //setting meridiem if hours24 greater than 12
+
+		var formattedDate = year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+		;
+		return formattedDate;
+	}
 	function abrirNav(){
 		$("body").removeClass("sidenav-toggled");
 	}
