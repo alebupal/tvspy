@@ -724,10 +724,7 @@ class Util{
 			'text'=> $mensaje,
 			'parse_mode'=> "HTML"
 		]);
-
-		if(self::get_http_response_code($TELEGRAM."/sendMessage") == "200"){
-			$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
-		}
+		$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
 		return $response;
 	}
 	static function fechaActual(){
@@ -736,10 +733,6 @@ class Util{
 		$dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
 		$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
 		return $dt->format('Y-m-d H:i:s');
-	}
-	static function get_http_response_code($url) {
-		$headers = get_headers($url);
-		return substr($headers[0], 9, 3);
 	}
 
 
