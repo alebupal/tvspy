@@ -1,3 +1,6 @@
+## [1.2.3] - 2018-06-01
+- Correción notificación doble
+
 ## [1.2.2] - 2018-06-01
 - Correción notificación tiempo de más
 

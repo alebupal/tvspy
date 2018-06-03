@@ -568,7 +568,6 @@ class Util{
 						$mensaje = str_replace("%%reproductor%%",$reproduccion["reproductor"],$mensaje);
 						$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
 						$mensaje = str_replace("%%tiempo%%",round($minutos)." minutos",$mensaje);
-						var_dump($reproduccion);
 						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 						self::actualizarTelegramTiempoLimite($reproduccion, $configuracion);
 					}
@@ -726,7 +725,7 @@ class Util{
 			'parse_mode'=> "HTML"
 		]);
 
-		if(self::get_http_response_code($TELEGRAM."/sendMessage?".$query) == "200"){
+		if(self::get_http_response_code($TELEGRAM."/sendMessage") == "200"){
 			$response = file_get_contents($TELEGRAM."/sendMessage?".$query);
 		}
 		return $response;
