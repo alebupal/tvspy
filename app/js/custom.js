@@ -699,14 +699,20 @@ $(document).ready(function () {
 				{data: null,
 					render: function (data, type, row) {
 						divisionTiempo=1;
+						abr="h";
 						if(arrayConfiguracion["unidadTiempo"]=="Horas"){
 							divisionTiempo = 3600;
+							abr="h";
 						}else if(arrayConfiguracion["unidadTiempo"]=="Minutos"){
 							divisionTiempo = 60;
+							abr="min";
 						}else if(arrayConfiguracion["unidadTiempo"]=="Segundos"){
 							divisionTiempo = 1;
+							abr="seg";
 						}
-						return data[7]/divisionTiempo;
+						tiempo = data[7]/divisionTiempo;
+						redondeo = Math.round(tiempo * 100) / 100;
+						return redondeo + " " +abr;
 					}
 				},
 				{data: "8"},

@@ -1,3 +1,9 @@
+## [1.2.4] - 2018-06-21
+- La API de TVHeadend repite id, por lo que a partir de ahora para identificar las reproducciones se utiliza el id y el tiempo de Inicio
+- Redondeo del tiempo en la tabla Registro
+- Cambiado el title del menú Inicio
+- Ahora el idReproduccion de la BD es un varchar 200
+
 ## [1.2.3] - 2018-06-01
 - Correción notificación doble
 

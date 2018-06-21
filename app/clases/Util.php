@@ -473,7 +473,7 @@ class Util{
 		return self::reproduccionesActivasAPI();
 	}
 	static function obtenerReproduccion($idReproduccion){
-		$id = (int)$idReproduccion;
+		$id = $idReproduccion;
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
 			self::$contrasenaBD,
@@ -505,7 +505,7 @@ class Util{
 				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
 			)
 		);
-		$id = (int)$reproduccion["id"];
+		$id = $reproduccion["id"];
 		$insert = "INSERT INTO registro (usuario, canal, idReproduccion, inicio, hostname, reproductor, errores) VALUES (:usuario, :canal, :idReproduccion, :inicio, :hostname, :reproductor, :errores)";
 		$statement = $db->prepare($insert);
 		// Bind parameters to statement variables

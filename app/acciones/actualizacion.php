@@ -8,7 +8,10 @@ $reproduccionesActivas = Util::obtenerReproduccionesActivas();
 $reproduccionesBD = Util::obtenerReproduccionesBD();
 $reproduccionesBDFin = Util::reproduccionesBDFin();
 
-
+//Modifico id con la fecha para evitar que registros duplicados
+for ($i=0; $i < count($reproduccionesActivas["entries"]) ; $i++) {
+ $reproduccionesActivas["entries"][$i]["id"]=$reproduccionesActivas["entries"][$i]["id"]."-".$reproduccionesActivas["entries"][$i]["start"];
+}
 if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0) {
 	//Ninguna reproducción
 	echo Util::fechaActual().": No hay ninguna reproducción\n";
@@ -23,7 +26,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 }else if(count($reproduccionesActivas["entries"])!=0 && count($reproduccionesBDFin)==0){
 	// No hay nada en la bd, pero hay una reprodución activa
 	// Insertamos la nueva produccion de reproducciones
-	for ($i=0; $i < count($reproduccionesActivas["entries"]) ; $i++) {
+	for ($i=0; $i < count($reproduccionesActivas["entries"]); $i++) {
 		if($reproduccionesActivas["entries"][$i]["state"]=="Funcionando"){
 			$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$i]["start"]), 'Y-m-d H:i:s');
 			$fechaActual =  Util::fechaActual();
@@ -42,26 +45,26 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	$arrayDiferente = array_values(array_diff(array_column($reproduccionesBDFin, 'idReproduccion'), array_column($reproduccionesActivas["entries"], 'id')));
 	$arrayDiferente2 = array_values(array_diff(array_column($reproduccionesActivas["entries"], 'id'), array_column($reproduccionesBDFin, 'idReproduccion')));
 
-	// echo "<pre>".Util::fechaActual().": ";
-	// var_dump($arrayDiferente);
-	// echo " ---- \n ";
-	// var_dump($arrayDiferente2);
-	// echo "</pre>\n";
+	echo "<pre>".Util::fechaActual().": ";
+	var_dump($arrayDiferente);
+	echo " ---- \n ";
+	var_dump($arrayDiferente2);
+	echo "</pre>\n";
 
-	if(count($reproduccionesActivas["entries"])>0){
-		for ($i=0; $i < count($reproduccionesActivas["entries"]); $i++) {
-			$obtenerReproduccion = Util::obtenerReproduccion($reproduccionesActivas["entries"][$i]["id"]);
-			if($obtenerReproduccion != false){
-				echo Util::fechaActual().": Actualiza tiempo reproducción ".$reproduccionesActivas["entries"][$i]["id"]."\n";
-				Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion);
-			}
+	//Actualizar tiempo de reprodución
+	for ($i=0; $i < count($reproduccionesActivas["entries"]); $i++) {$reproduccionesActivas["entries"][$i]["start"];
+		$obtenerReproduccion = Util::obtenerReproduccion($reproduccionesActivas["entries"][$i]["id"]);
+		if($obtenerReproduccion != false){
+			echo Util::fechaActual().": Actualiza tiempo reproducción ".$reproduccionesActivas["entries"][$i]["id"]."\n";
+			Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion);
 		}
 	}
+
 	//ids que estan en la bd y hay que actualizar la fecha
 	if(count($arrayDiferente)>0){
 		for ($i=0; $i < count($arrayDiferente); $i++) {
 			for ($r=0; $r < count($reproduccionesBDFin); $r++) {
-				if((int)$arrayDiferente[$i]==(int)$reproduccionesBDFin[$r]["idReproduccion"]){
+				if($arrayDiferente[$i]==$reproduccionesBDFin[$r]["idReproduccion"]){
 					echo Util::fechaActual().": Parada reproducción2 ".$reproduccionesBDFin[$r]["idReproduccion"]."\n";
 					Util::actualizarFechaFinReproduccion($reproduccionesBDFin[$r], $configuracion);
 				}
@@ -72,7 +75,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	if(count($arrayDiferente2)>0){
 		for ($i=0; $i < count($arrayDiferente2); $i++) {
 			for ($r=0; $r < count($reproduccionesActivas["entries"]); $r++) {
-				if((int)$arrayDiferente2[$i]==(int)$reproduccionesActivas["entries"][$r]["id"]){
+				if($arrayDiferente2[$i]==$reproduccionesActivas["entries"][$r]["id"]){
 					if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando"){
 						$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$r]["start"]), 'Y-m-d H:i:s');
 						$fechaActual =  Util::fechaActual();
