@@ -30,6 +30,8 @@ Si la configuración sale sin valores, prueba a iniciar apache y mysql dentro de
 /etc/init.d/apache2 start
 ```
 
+Si no hay conexión entre tvspy y tvheadend, os sale constatemente login incorrecto o sale algo como "505 HTTP/RTSP Version Not Supported" hay que asegurarse de que en configuración>general>base>HTTP Server Settings>Authentication type debe estar seleccionado "Both plain and digest"
+
 --
 
 To use it, simply install the docker image https://hub.docker.com/r/alebupal/tvspy/ and configure the application with the ip and port of TvHeadend in the configuration option.
@@ -54,6 +56,8 @@ If the configuration comes out without values, try to start apache and mysql ins
 ```
 /etc/init.d/apache2 start
 ```
+
+If there is no connection between tvspy and tvheadend, you get a wrong login or something like "505 HTTP / RTSP Version Not Supported" you have to make sure that in configuration> general> base> HTTP Server Settings> Authentication type must be selected "Both plain and digest"
 
 --
 

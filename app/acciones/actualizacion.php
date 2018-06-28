@@ -45,11 +45,11 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	$arrayDiferente = array_values(array_diff(array_column($reproduccionesBDFin, 'idReproduccion'), array_column($reproduccionesActivas["entries"], 'id')));
 	$arrayDiferente2 = array_values(array_diff(array_column($reproduccionesActivas["entries"], 'id'), array_column($reproduccionesBDFin, 'idReproduccion')));
 
-	echo "<pre>".Util::fechaActual().": ";
-	var_dump($arrayDiferente);
-	echo " ---- \n ";
-	var_dump($arrayDiferente2);
-	echo "</pre>\n";
+	// echo "<pre>".Util::fechaActual().": ";
+	// var_dump($arrayDiferente);
+	// echo " ---- \n ";
+	// var_dump($arrayDiferente2);
+	// echo "</pre>\n";
 
 	//Actualizar tiempo de reprodución
 	for ($i=0; $i < count($reproduccionesActivas["entries"]); $i++) {$reproduccionesActivas["entries"][$i]["start"];
