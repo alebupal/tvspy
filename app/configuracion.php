@@ -61,11 +61,12 @@
 				</div>
 				<div class="col-lg-12">
 					<!-- Example Notifications Card-->
-					<div class="card mb-3">
-						<div class="card-header">
-							<i class="fa fa-cog"></i> Configuración general</div>
-						<div class="col-md-12 mb-2 mt-2">
-							<form id="formConfiguracion" method="post">
+					<form id="formConfiguracion" method="post">
+						<div class="card mb-3">
+							<div class="card-header">
+								<i class="fa fa-cog"></i> Configuración TvHeadend
+							</div>
+							<div class="col-md-12 mb-2 mt-2">
 								<div class="form-row">
 									<div class="form-group col-md-6">
 										<label for="ip">IP TvHeadend</label>
@@ -90,7 +91,13 @@
 									<a class="btn btn-info btn-block text-white btn-sm btnTestTvheadend">Comprobar conexion</a>
 									<small>Hay que guardar para aplicar los cambios</small>
 								</div>
-								<hr>
+							</div>
+						</div>
+						<div class="card mb-3">
+							<div class="card-header">
+								<i class="fa fa-area-chart"></i> Configuración Gráfica
+							</div>
+							<div class="col-md-12 mb-2 mt-2">
 								<div class="form-row">
 									<div class="form-group col-md-4">
 										<label for="refresco">Tiempo de refresco (segundos) página de inicio</label>
@@ -109,88 +116,97 @@
 										</select>
 									</div>
 								</div>
-								<hr>
+							</div>
+						</div>
+						<div class="card mb-3">
+							<div class="card-header">
+								<i class="fa fa-telegram"></i> Configuración Telegram
+							</div>
+							<div class="col-md-12 mb-2 mt-2" id="configuracionTelegram">
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="bot_token">Telegram Bot Token</label>
+										<input type="text" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
+									</div>
+									<div class="form-group col-md-6">
+										<label for="id_chat">Telegram Chat ID, Group ID, or Channel Username</label>
+										<input type="text" class="form-control" id="id_chat" name="id_chat" placeholder="177537537537375252452" required>
+									</div>
+								</div>
+								<div class="mb-4 mt-2">
+									<a class="btn btn-info btn-block text-white btn-sm btnTestTelegram">Enviar mensaje de prueba</a>
+									<small>Hay que guardar para aplicar los cambios</small>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<div class="form-row">
+											<div class="form-group col-md-12">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="true" name="telegram_empieza" id="telegram_empieza">
+													<label class="form-check-label" for="telegram_empieza">Notificaciones empezar reprodución Telegram</label>
+												</div>
+											</div>
+										</div>
+										<div id="div_texto_empieza">
+											<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
+											<textarea class="form-control" name="texto_empieza" id="texto_empieza" rows="3"></textarea>
+										</div>
+									</div>
+									<div class="form-group col-md-6">
+										<div class="form-row">
+											<div class="form-group col-md-12">
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" value="true" name="telegram_para" id="telegram_para">
+													<label class="form-check-label" for="telegram_para">Notificaciones parar reproducción Telegram</label>
+												</div>
+											</div>
+										</div>
+										<div id="div_texto_para">
+											<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
+											<textarea class="form-control" name="texto_para" id="texto_para" rows="3"></textarea>
+										</div>
+									</div>
+								</div>
 								<div class="form-row">
 									<div class="form-group col-md-12">
 										<div class="form-check">
-											<input class="form-check-input" type="checkbox" value="true" name="notificacion_telegram" id="notificacion_telegram">
-											<label class="form-check-label" for="notificacion_telegram">Notificaciones Telegram</label>
+											<input class="form-check-input" type="checkbox" value="true" name="telegram_tiempo" id="telegram_tiempo">
+											<label class="form-check-label" for="telegram_tiempo">Notificaciones cuando pase x tiempo en Telegram</label>
 										</div>
 									</div>
 								</div>
-
-								<div id="configuracionTelegram">
-									<div class="form-row">
-										<div class="form-group col-md-6">
-											<label for="bot_token">Telegram Bot Token</label>
-											<input type="text" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
-										</div>
-										<div class="form-group col-md-6">
-											<label for="id_chat">Telegram Chat ID, Group ID, or Channel Username</label>
-											<input type="text" class="form-control" id="id_chat" name="id_chat" placeholder="177537537537375252452" required>
-										</div>
+								<div class="form-row" id="div_telegram_tiempo">
+									<div class="form-group col-md-8">
+										<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%, %%tiempo%%</label>
+										<textarea class="form-control" name="texto_tiempo" id="texto_tiempo" rows="3"></textarea>
 									</div>
-									<div class="mb-4 mt-2">
-										<a class="btn btn-info btn-block text-white btn-sm btnTestTelegram">Enviar mensaje de prueba</a>
-										<small>Hay que guardar para aplicar los cambios</small>
+									<div class="form-group col-md-4">
+										<label>Tiempo límite (minutos)</label>
+										<input type="number" class="form-control" id="telegram_tiempo_limite" name="telegram_tiempo_limite" placeholder="1" required>
 									</div>
-									<div class="form-row">
-										<div class="form-group col-md-6">
-											<div class="form-row">
-												<div class="form-group col-md-12">
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="true" name="telegram_empieza" id="telegram_empieza">
-														<label class="form-check-label" for="telegram_empieza">Notificaciones empezar reprodución Telegram</label>
-													</div>
-												</div>
-											</div>
-											<div id="div_texto_empieza">
-												<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
-												<textarea class="form-control" name="texto_empieza" id="texto_empieza" rows="3"></textarea>
-											</div>
-										</div>
-										<div class="form-group col-md-6">
-											<div class="form-row">
-												<div class="form-group col-md-12">
-													<div class="form-check">
-														<input class="form-check-input" type="checkbox" value="true" name="telegram_para" id="telegram_para">
-														<label class="form-check-label" for="telegram_para">Notificaciones parar reproducción Telegram</label>
-													</div>
-												</div>
-											</div>
-											<div id="div_texto_para">
-												<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
-												<textarea class="form-control" name="texto_para" id="texto_para" rows="3"></textarea>
-											</div>
-										</div>
-									</div>
-									<div class="form-row">
-										<div class="form-group col-md-12">
-											<div class="form-check">
-												<input class="form-check-input" type="checkbox" value="true" name="telegram_tiempo" id="telegram_tiempo">
-												<label class="form-check-label" for="telegram_tiempo">Notificaciones cuando pase x tiempo en Telegram</label>
-											</div>
-										</div>
-									</div>
-									<div class="form-row" id="div_telegram_tiempo">
-										<div class="form-group col-md-8">
-											<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%, %%tiempo%%</label>
-											<textarea class="form-control" name="texto_tiempo" id="texto_tiempo" rows="3"></textarea>
-										</div>
-										<div class="form-group col-md-4">
-											<label>Tiempo límite (minutos)</label>
-											<input type="number" class="form-control" id="telegram_tiempo_limite" name="telegram_tiempo_limite" placeholder="1" required>
-										</div>
-									</div>
-
 								</div>
-								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
-							</form>
+							</div>
+						</div>
+						<div class="card mb-3">
+							<div class="card-header">
+								<i class="fa fa-desktop"></i> IP conocida
+							</div>
+							<div class="col-md-12 mb-2 mt-2" id="configuracionTelegram">
+								<div class="form-row">
+									<div class="form-group col-md-12">
+										<input type="text" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
+									</div>
+									<div class="form-group col-md-12">
+										<a class="btn btn-info btn-block text-white btn-sm btnAnadirIP">Añadir IP</a>
+									</div>
+								</div>
+							</div>
 						</div>
 						<!--<div class="col-md-12 mb-2 mt-2">
-							<a class="btn btn-primary btn-block text-white btnBackup" >Backup base de datos</a>
-						</div>-->
-					</div>
+						<a class="btn btn-primary btn-block text-white btnBackup" >Backup base de datos</a>
+					</div>-->
+						<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
+					</form>
 				</div>
 			</div>
 		</div>

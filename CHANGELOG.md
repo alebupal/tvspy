@@ -1,3 +1,9 @@
+## [1.2.5.1] - dev - 2018-11-24
+- Añadida opción del registro de conexiones para ver facilmente conexiones no deseadas.
+- Reestructuración configuración
+- Reestructuración menú
+- Actulizada plantilla base de bootstrap
+
 ## [1.2.4] - 2018-06-21
 - La API de TVHeadend repite id, por lo que a partir de ahora para identificar las reproducciones se utiliza el id y el tiempo de Inicio
 - Redondeo del tiempo en la tabla Registro

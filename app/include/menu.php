@@ -1,53 +1,50 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
-	<a class="navbar-brand" href="index.html">TVSPY</a>
-	<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-	<div class="collapse navbar-collapse" id="navbarResponsive">
-		<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Inicio">
-				<a class="nav-link" href="index.php">
-					<i class="fa fa-fw fa-dashboard"></i>
-					<span class="nav-link-text">Inicio</span>
-				</a>
-			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Estadisticas">
-				<a class="nav-link" href="estadisticas.php">
-					<i class="fa fa-fw fa-area-chart"></i>
-					<span class="nav-link-text">Estadisticas</span>
-				</a>
-			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Registro">
-				<a class="nav-link" href="registro.php">
-					<i class="fa fa-list"></i>
-					<span class="nav-link-text">Registro</span>
-				</a>
-			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Canales">
-				<a class="nav-link" href="canales.php">
-					<i class="fa fa-television"></i>
-					<span class="nav-link-text">Canales</span>
-				</a>
-			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Usuarios">
-				<a class="nav-link" href="usuarios.php">
-					<i class="fa fa-users"></i>
-					<span class="nav-link-text">Usuarios</span>
-				</a>
-			</li>
-			<li class="nav-item" data-toggle="tooltip" data-placement="right" title="Configuración">
-				<a class="nav-link" href="configuracion.php">
-					<i class="fa fa-cog"></i>
-					<span class="nav-link-text">Configuración</span>
-				</a>
-			</li>
-		</ul>
-		<ul class="navbar-nav sidenav-toggler">
-			<li class="nav-item">
-				<a class="nav-link text-center" id="sidenavToggler">
-					<i class="fa fa-fw fa-angle-left"></i>
-				</a>
-			</li>
-		</ul>
-	</div>
-</nav>
+<ul class="sidebar navbar-nav">
+	<li class="nav-item active">
+		<a class="nav-link" href="index.php">
+			<i class="fas fa-fw fa-tachometer-alt"></i>
+			<span>Inicio</span>
+		</a>
+	</li>
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<i class="fas fa-chart-area"></i>
+			<span>Estadísticas</span>
+		</a>
+		<div class="dropdown-menu" aria-labelledby="pagesDropdown">
+			<a class="dropdown-item" href="estadisticas_reproduccion.php">Reproducción</a>
+			<a class="dropdown-item" href="estadisticas_conexiones.php">Conexiones</a>
+		</div>
+	</li>
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<i class="fas fa-network-wired"></i>
+			<span>Conexiones</span>
+		</a>
+		<div class="dropdown-menu" aria-labelledby="pagesDropdown">
+			<a class="dropdown-item" href="conexiones_internas.php">Internas</a>
+			<a class="dropdown-item" href="conexiones_externas.php">Externas</a>
+		</div>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="registro.php">
+			<i class="fas fa-list-ul"></i>
+			<span>Registro</span>
+		</a>
+	</li>
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<i class="fas fa-tv"></i>
+			<span>TvHeadend</span>
+		</a>
+		<div class="dropdown-menu" aria-labelledby="pagesDropdown">
+			<a class="dropdown-item" href="usuarios.php">Usuarios</a>
+			<a class="dropdown-item" href="canales.php">Canales</a>
+		</div>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="configuracion.php">
+			<i class="fas fa-cogs"></i>
+			<span>Configuración</span>
+		</a>
+	</li>
+</ul>

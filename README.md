@@ -1,10 +1,8 @@
 # TVSPY 1.2.4
 
-Aplicación web sobre Monitorizacion para tvheadend - Web application about Monitoring for tvheadend.
+Aplicación web sobre Monitorizacion para tvheadend
 
 La aplicación está realizada en PHP, MYSQL y JS. Hay un cron que se ejecuta cada cierto tiempo, el cual va guardando los registros que hay en la API de tvheadend, después con estos datos se elaboran las estadisticas. Permite enviar notificaciones a Telegram.
-
-The application is made in PHP, MYSQL and JS. There is a cron that runs every so often and keeps the records of the tvheadend API in the database. This data is used to make the statistics. Send notifications to Telegram.
 
 ## Instalación - Installing
 Para utilizarla basta con instalar la imagen de docker https://hub.docker.com/r/alebupal/tvspy/ y configurar la aplicación con la ip y puerto de TvHeadend en la opción configuración.
@@ -31,33 +29,6 @@ Si la configuración sale sin valores, prueba a iniciar apache y mysql dentro de
 ```
 
 Si no hay conexión entre tvspy y tvheadend, os sale constatemente login incorrecto o sale algo como "505 HTTP/RTSP Version Not Supported" hay que asegurarse de que en configuración>general>base>HTTP Server Settings>Authentication type debe estar seleccionado "Both plain and digest"
-
---
-
-To use it, simply install the docker image https://hub.docker.com/r/alebupal/tvspy/ and configure the application with the ip and port of TvHeadend in the configuration option.
-To create the docker image I have based on https://github.com/mattrayner/docker-lamp.
-The image has PHP 7.2, MYSQL, PHPMyAdmin and apache.
-To access PHPMyAdmin the route is: http://IP_DOCKER:PORT_DOCKER/phpmyadmin and to access the application http://IP_DOCKER:PORT_DOCKER
-
-You can change the update time of the database with tvheadend data with the environment variable: TIME_CRON
-Time in seconds.
-I do not guarantee that it works with less than 15 seconds.
-
-Whenever it is installed again it is advisable to make a copy of the database with phpmyadmin so as not to lose the data record. Then with re-import from phpmyadmin there will be no problems.
-
-Thanks to @Spufy for his advice to assemble the image.
-
-[Screenshots](https://github.com/alebupal/tvspy/tree/master/capturas)
-
-If the configuration comes out without values, try to start apache and mysql inside the container
-```
-/etc/init.d/mysql start
-```
-```
-/etc/init.d/apache2 start
-```
-
-If there is no connection between tvspy and tvheadend, you get a wrong login or something like "505 HTTP / RTSP Version Not Supported" you have to make sure that in configuration> general> base> HTTP Server Settings> Authentication type must be selected "Both plain and digest"
 
 --
 
