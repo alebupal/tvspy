@@ -4,7 +4,7 @@ Aplicación web sobre Monitorizacion para tvheadend
 
 La aplicación está realizada en PHP, MYSQL y JS. Hay un cron que se ejecuta cada cierto tiempo, el cual va guardando los registros que hay en la API de tvheadend, después con estos datos se elaboran las estadisticas. Permite enviar notificaciones a Telegram.
 
-## Instalación - Installing
+## Instalación
 Para utilizarla basta con instalar la imagen de docker https://hub.docker.com/r/alebupal/tvspy/ y configurar la aplicación con la ip y puerto de TvHeadend en la opción configuración.
 Para crear la imagen de docker me he basado en https://github.com/mattrayner/docker-lamp .
 La imagen tiene PHP 7.2, MYSQL, PHPMyAdmin y apache.
@@ -44,6 +44,6 @@ docker create --name=tvspy -p xxxxx:80 -p xxxxx:3306 -e TIME_CRON=15 -e PHPMYADM
 
 ## Changelog (https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md)
 
-## Donate - Donación (https://www.paypal.me/alebupal)
+## Donación (https://www.paypal.me/alebupal)
 
 ## License
