@@ -15,16 +15,6 @@
 			<a class="dropdown-item" href="estadisticas_conexiones.php">Conexiones</a>
 		</div>
 	</li>
-	<li class="nav-item dropdown">
-		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			<i class="fas fa-network-wired"></i>
-			<span>Conexiones</span>
-		</a>
-		<div class="dropdown-menu" aria-labelledby="pagesDropdown">
-			<a class="dropdown-item" href="conexiones_internas.php">Internas</a>
-			<a class="dropdown-item" href="conexiones_externas.php">Externas</a>
-		</div>
-	</li>
 	<li class="nav-item">
 		<a class="nav-link" href="registro.php">
 			<i class="fas fa-list-ul"></i>

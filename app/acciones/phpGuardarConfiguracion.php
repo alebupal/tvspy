@@ -23,6 +23,22 @@
 	}else{
 		$notificacion_telegram = 1;
 	}
+
+	$cont = 0;
+	$ips="";
+	foreach ($_POST as $key => $value) {
+		if (htmlspecialchars($key) == "ip_".$cont){
+			//echo "Field ".htmlspecialchars($key)." is ".htmlspecialchars($value)."<br>";
+			$cont++;
+			if(trim(htmlspecialchars($value))!=""){
+				if($ips==""){
+					$ips=htmlspecialchars($value);
+				}else{
+					$ips.=",".htmlspecialchars($value);
+				}
+			}
+		}
+	}
 	$arrayConfiguracion = array(
 		"ip" => $_POST["ip"],
 		"puerto" => $_POST["puerto"],
@@ -40,7 +56,8 @@
 		"notificacion_telegram" => $notificacion_telegram,
 		"bot_token" => $_POST["bot_token"],
 		"id_chat" => $_POST["id_chat"],
-		"unidadTiempo" => $_POST["unidadTiempo"]
+		"unidadTiempo" => $_POST["unidadTiempo"],
+		"ip_permitida" => $ips
 	);
 	$configuracion = Util::guardarConfiguracion($arrayConfiguracion);
 	echo true;

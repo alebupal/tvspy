@@ -15,6 +15,8 @@ $(document).ready(function () {
 					guardarConfiguracionFormulario();
 					btnTestTelegram();
 					btnTestTvheadend();
+					btnAnadirIP();
+					btnQuitarIP();
 				}
 				if ( $(".pagina-canales").length > 0 ) {
 					//importarCanales();
@@ -69,7 +71,7 @@ $(document).ready(function () {
 			abrirNav();
 		}
 		// Toggle the side navigation
-		$("#sidenavToggler").click(function(e) {
+		$("#sidebarToggle").click(function(e) {
 			if(localStorage.getItem("estadoNav")=="cerrado"){
 				localStorage.setItem("estadoNav", "abierto");
 			}else{
@@ -274,6 +276,22 @@ $(document).ready(function () {
 		$("#usuario").val(arrayConfiguracion["usuario"]);
 		$("#refresco").val(arrayConfiguracion["refresco"]);
 		$("#tiempoMinimo").val(arrayConfiguracion["tiempoMinimo"]);
+		var ips = separar_comas(arrayConfiguracion["ip_permitida"]);
+		if(ips==null){
+			ips=[arrayConfiguracion["ip_permitida"]];
+		}
+		var input_ip="";
+		if(ips != null){
+			for (var i = 0; i < ips.length; i++) {
+				input_ip += '<div class="form-group col-md-3">'+
+				'<input type="text" class="form-control input_ip" id="ip_'+i+'" name="ip_'+i+'" value="'+ips[i]+'">'+
+				'</div>'+
+				'<div class="form-group mt-2 col-md-1">'+
+				'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
+				'</div>';
+			}
+			$(".contenedor_ip").html(input_ip);
+		}
 
 		if(arrayConfiguracion["notificacion_telegram"]==1){
 			$("#notificacion_telegram").prop('checked', true);
@@ -371,6 +389,7 @@ $(document).ready(function () {
 				contentType : false,
 				processData : false,
 				success: function(data) {
+					console.log(data);
 					irArriba();
 					if(data==true){
 						console.log("Configuración guardada correctamente");
@@ -447,6 +466,25 @@ $(document).ready(function () {
 					}
 				}
 			});
+		});
+	}
+	function btnAnadirIP(){
+		$( ".btnAnadirIP" ).click(function() {
+			numIP = $(".input_ip").length;
+			console.log(numIP);
+			var input_ip = '<div class="form-group col-md-3">'+
+							'<input type="text" class="form-control input_ip" id="ip_'+numIP+'" name="ip_'+numIP+'" placeholder="192.168.1">'+
+						'</div>'+
+						'<div class="form-group mt-2 col-md-1">'+
+							'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
+						'</div>';
+			$(".contenedor_ip").append(input_ip);
+		});
+	}
+	function btnQuitarIP(){
+		$('body').on('click', '.btnQuitarIP', function (){
+			(($(this).parent()).prev()).remove();
+			($(this).parent()).remove();
 		});
 	}
 	/*** Página Canales ***/
@@ -694,7 +732,12 @@ $(document).ready(function () {
 				{data: "2"},
 				{data: "3"},
 				{data: "4"},
-				{data: "5"},
+				{data: null,
+					render: function (data, type, row) {
+						ip = comprobarIP(arrayConfiguracion["ip_permitida"], data[5]);
+						return ip;
+					}
+				},
 				{data: "6"},
 				{data: null,
 					render: function (data, type, row) {
@@ -717,6 +760,9 @@ $(document).ready(function () {
 				},
 				{data: "8"},
 			],
+			createdRow: function (row, data, dataIndex) {
+				colorearIP(arrayConfiguracion["ip_permitida"], data[5], row)
+			},
 			initComplete: function() {
 				table.columns().every( function (){
 					var that = this;
@@ -1028,14 +1074,85 @@ $(document).ready(function () {
 		return formattedDate;
 	}
 	function abrirNav(){
-		$("body").removeClass("sidenav-toggled");
+		$(".navbar-nav").removeClass("toggled");
 	}
 	function cerrarNav(){
-		$("body").toggleClass("sidenav-toggled");
-		$(".navbar-sidenav .nav-link-collapse").addClass("collapsed");
-		$(".navbar-sidenav .sidenav-second-level, .navbar-sidenav .sidenav-third-level").removeClass("show");
+		$(".navbar-nav").addClass("toggled");
 	}
 	function irArriba(){
 		$('body,html').animate({scrollTop : 0}, 500);
+	}
+	function colorearIP(ip_permitida, data, row){
+		var ips = separar_comas(ip_permitida);
+		var ip = partirIP(data);
+		var resultado;
+		var row = row;
+		var permitida = "no";
+		if(ips != null){
+			for (var i = 0; i < ips.length; i++) {
+				if(ips[i]==ip){
+					permitida = "si";
+				}
+			}
+			if(permitida == "si"){
+				resultado = "Permitida: "+data;
+				$(row).css('background-color', '#bde3b1');
+			}else if (permitida == "no"){
+				resultado = "No permitida: "+data;
+				$(row).css('background-color', '#f5bfae');
+			}
+		}else {
+			ips=ip_permitida;
+			if(ips==ip){
+				resultado = "Permitida: "+data;
+				$(row).css('background-color', '#bde3b1');
+			}else{
+				resultado = "No permitida: "+data;
+				$(row).css('background-color', '#f5bfae');
+			}
+		}
+		return resultado;
+	}
+	function comprobarIP(ip_permitida, data){
+		var ips = separar_comas(ip_permitida);
+		var ip = partirIP(data);
+		var resultado;
+		var row = row;
+		var permitida = "no";
+		if(ips != null){
+			for (var i = 0; i < ips.length; i++) {
+				if(ips[i]==ip){
+					permitida = "si";
+				}
+			}
+			if(permitida == "si"){
+				resultado = "Permitida: <a class='localizarIP'>"+data+"</a>";
+			}else if (permitida == "no"){
+				resultado = "No permitida: <a class='localizarIP'>"+data+"</a>";
+			}
+		}else {
+			ips=ip_permitida;
+			if(ips==ip){
+				resultado = "Permitida: <a class='localizarIP'>"+data+"</a>";
+			}else{
+				resultado = "No permitida: <a class='localizarIP'>"+data+"</a>";
+			}
+		}
+		return resultado;
+	}
+	function partirIP(ip){
+		partesIP = ip.split(".");
+		ipfinal = partesIP[0]+"."+partesIP[1]+"."+partesIP[2];
+		return ipfinal;
+	}
+	function separar_comas(CommaSepStr) {
+		var ResultArray = null;
+		if (CommaSepStr!= null) {
+			var SplitChars = ',';
+			if (CommaSepStr.indexOf(SplitChars) >= 0) {
+				ResultArray = CommaSepStr.split(SplitChars);
+			}
+		}
+		return ResultArray ;
 	}
 });

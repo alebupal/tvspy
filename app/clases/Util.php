@@ -3,9 +3,9 @@
  * @author alebupal
  */
 class Util{
-	public static $servidor= "localhost";
-	public static $usuarioBD= "tvspy";
-	public static $contrasenaBD = "tvspy";
+	public static $servidor= "127.0.0.1";
+	public static $usuarioBD= "root";
+	public static $contrasenaBD = "";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -58,7 +58,8 @@ class Util{
 											texto_para = :texto_para,
 											texto_tiempo = :texto_tiempo,
 											usuario = :usuario,
-											unidadTiempo = :unidadTiempo
+											unidadTiempo = :unidadTiempo,
+											ip_permitida = :ip_permitida
 										WHERE id=1";
 		$stmt = $db->prepare($update);
 		// Bind parameters to statement variables
@@ -79,6 +80,7 @@ class Util{
 		$stmt->bindParam(':texto_tiempo', $arrayConfiguracion["texto_tiempo"]);
 		$stmt->bindParam(':usuario', $arrayConfiguracion["usuario"]);
 		$stmt->bindParam(':unidadTiempo', $arrayConfiguracion["unidadTiempo"]);
+		$stmt->bindParam(':ip_permitida', $arrayConfiguracion["ip_permitida"]);
 
 		$stmt->execute();
 	}
