@@ -453,7 +453,7 @@ class Util{
 		$stmt->bindParam(':fechaInicio', $fechaInicio);
 		$stmt->bindParam(':fechaFin', $fechaFin);
 		$stmt->bindParam(':fechaFin', $fechaFin);
-		
+
 		$stmt->execute();
 		$stmt->closeCursor();
 		// Especificamos el fetch mode antes de llamar a fetch()
@@ -464,11 +464,11 @@ class Util{
 		$row= $stmt->fetchAll();
 		//var_dump($row);
 		$ips = self::separar_comas($configuracion["ip_permitida"]);
-	
+
 		$arrayPermitidas = array();
 		//var_dump($row);
 		for ($r=0; $r < count($row); $r++) {
-			$permitida = "no";		
+			$permitida = "no";
 			//echo"hola";
 			for ($i = 0; $i < sizeof($ips); $i++) {
 				$ip = self::partirIP($row[$r]["hostname"]);
@@ -487,10 +487,10 @@ class Util{
 				array_push($arrayPermitidas, $item);
 			}
 		}
-		
+
 		$arrayNoPermitidas = array();
 		for ($r=0; $r < count($row); $r++) {
-			$permitida = "no";		
+			$permitida = "no";
 			//echo"hola";
 			for ($i = 0; $i < sizeof($ips); $i++) {
 				$ip = self::partirIP($row[$r]["hostname"]);
@@ -509,7 +509,7 @@ class Util{
 				array_push($arrayNoPermitidas, $item);
 			}
 		}
-	
+
 
 
 		$arrayPermitidas = array_values(self::dameSumaConexionesFecha($arrayPermitidas));
@@ -518,10 +518,10 @@ class Util{
 		//var_dump($arrayPermitidas);
 		//var_dump($arrayPermitidas);
 		//$arrayNoPermitidas = self::dameSumaConexionesFecha($arrayNoPermitidas);
-		
+
 		$array_resultante= array_merge($arrayPermitidas,$arrayNoPermitidas);
-		usort($array_resultante, function($a, $b) {
-			return new DateTime($a['fecha']) <=> new DateTime($b['fecha']);
+		usort($array_resultante, function( $a, $b ) {
+			return strtotime($a["fecha"]) - strtotime($b["fecha"]);
 		});
 		echo json_encode($array_resultante);
 	}
@@ -853,7 +853,7 @@ class Util{
 		$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
 		return $dt->format('Y-m-d H:i:s');
 	}
-	
+
 	static function comprobarIP($ip_permitidas, $data){
 		$ips = self::separar_comas($ip_permitidas);
 		$ip = self::partirIP($data);

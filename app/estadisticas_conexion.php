@@ -43,6 +43,7 @@
 										<a class="btn btn-primary btn-block btnAplicarGraficaConexion text-white">Aplicar</a>
 									</div>
 									<div id="graficaConexion"></div>
+
 								</div>
 							</div>
 						</div>

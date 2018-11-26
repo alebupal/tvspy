@@ -61,7 +61,7 @@ $(document).ready(function () {
 					graficaDias();
 					btnAplicarGraficaDias();
 				}
-				if ( $(".pagina-estadisticas-conexion").length > 0 ) {					
+				if ( $(".pagina-estadisticas-conexion").length > 0 ) {
 					$('.input-daterange').datepicker({
 						format: "yyyy-mm-dd",
 						todayBtn: "linked",
@@ -1126,7 +1126,6 @@ $(document).ready(function () {
 					// do nothing if serisField is not set
 					if (chart.seriesField === undefined)
 						return;
-
 					// get graphs and dataProvider
 					var graphs, dataSet;
 					if (chart.type === "stock") {
@@ -1135,7 +1134,6 @@ $(document).ready(function () {
 							chart.panels[0].stockGraphs = [];
 						graphs = chart.panels[0].stockGraphs;
 						dataSet = chart.dataSets[0];
-
 						// check if data set has fieldMappings set
 						if (dataSet.fieldMappings === undefined)
 							dataSet.fieldMappings = [];
@@ -1145,7 +1143,6 @@ $(document).ready(function () {
 						graphs = chart.graphs;
 						dataSet = chart;
 					}
-
 					// collect value fields for graphs that might already exist
 					// in chart config
 					var valueFields = {};
@@ -1157,7 +1154,6 @@ $(document).ready(function () {
 							valueFields[g.id] = g.valueField;
 						}
 					}
-
 					// process data
 					var newData = [];
 					var dpoints = {};
@@ -1166,14 +1162,12 @@ $(document).ready(function () {
 						var row = dataSet.dataProvider[i];
 						var category = row[dataSet.categoryField];
 						var series = row[chart.seriesField];
-
 						// create a data point
 						if (dpoints[category] === undefined) {
 							dpoints[category] = {};
 							dpoints[category][dataSet.categoryField] = category;
 							newData.push(dpoints[category]);
 						}
-
 						// check if we need to generate a graph
 						if (valueFields[series] === undefined) {
 							// apply template
@@ -1187,7 +1181,6 @@ $(document).ready(function () {
 							// add to chart's graphs
 							graphs.push(g);
 							valueFields[series] = series;
-
 							// add fieldMapping to data set on Stock Chart
 							if (chart.type === "stock") {
 								dataSet.fieldMappings.push({
@@ -1196,21 +1189,17 @@ $(document).ready(function () {
 								});
 							}
 						}
-
 						// add series value field
 						if (row[chart.seriesValueField] !== undefined)
 							dpoints[category][series] = row[chart.seriesValueField];
-
 						// add the rest of the value fields (if applicable)
 						for (var field in valueFields) {
 							if (valueFields.hasOwnProperty(field) && row[field] !== undefined)
 								dpoints[category][field] = row[field];
 						}
 					}
-					
 					// set data
 					dataSet.dataProvider = newData;
-
 					// function which clones object
 					function cloneObject(obj) {
 						if (null == obj || "object" != typeof obj) return obj;
@@ -1221,7 +1210,19 @@ $(document).ready(function () {
 						return copy;
 					}
 				}, ["serial", "stock"]);
-				var sourceData = data;
+				var sourceData = [{"fecha":"2018-06-21","tipo":"No permitida","ip":"10.8.0.6","valor":2},
+				                  {"fecha":"2018-06-21","tipo":"Permitida","ip":"192.168.5.36","valor":4},
+				                  {"fecha":"2018-06-22","tipo":"Permitida","ip":"192.168.5.4","valor":1},
+				                  {"fecha":"2018-06-23","tipo":"Permitida","ip":"192.168.5.36","valor":2},
+				                  {"fecha":"2018-06-24","tipo":"Permitida","ip":"192.168.5.36","valor":3},
+				                  {"fecha":"2018-06-25","tipo":"Permitida","ip":"192.168.5.36","valor":2},
+				                  {"fecha":"2018-06-26","tipo":"Permitida","ip":"192.168.5.36","valor":3},
+				                  {"fecha":"2018-06-27","tipo":"Permitida","ip":"192.168.5.36","valor":3},
+				                  {"fecha":"2018-06-28","tipo":"Permitida","ip":"192.168.5.36","valor":2},
+				                  {"fecha":"2018-06-29","tipo":"Permitida","ip":"192.168.5.4","valor":1},{"fecha":"2018-06-30","tipo":"Permitida","ip":"192.168.5.48","valor":4},{"fecha":"2018-07-01","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-07-02","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-07-03","tipo":"Permitida","ip":"192.168.5.4","valor":2},{"fecha":"2018-07-04","tipo":"Permitida","ip":"192.168.5.4","valor":1},{"fecha":"2018-07-10","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-07-11","tipo":"Permitida","ip":"192.168.5.48","valor":2},{"fecha":"2018-07-14","tipo":"Permitida","ip":"192.168.5.4","valor":1},{"fecha":"2018-07-15","tipo":"Permitida","ip":"192.168.5.36","valor":5},{"fecha":"2018-08-01","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-08-04","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-08-05","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-08-08","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-08-10","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-08-11","tipo":"Permitida","ip":"192.168.5.48","valor":2},{"fecha":"2018-08-12","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-08-18","tipo":"Permitida","ip":"192.168.5.36","valor":12},{"fecha":"2018-08-19","tipo":"Permitida","ip":"192.168.5.36","valor":7},{"fecha":"2018-08-20","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-08-21","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-08-24","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-08-25","tipo":"Permitida","ip":"192.168.5.36","valor":3},{"fecha":"2018-08-26","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-08-27","tipo":"Permitida","ip":"192.168.5.48","valor":2},{"fecha":"2018-08-28","tipo":"Permitida","ip":"192.168.5.36","valor":4},{"fecha":"2018-08-30","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-08-31","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-09-01","tipo":"Permitida","ip":"192.168.5.36","valor":12},{"fecha":"2018-09-02","tipo":"Permitida","ip":"192.168.5.36","valor":7},{"fecha":"2018-09-06","tipo":"Permitida","ip":"192.168.5.36","valor":3},{"fecha":"2018-09-07","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-09-08","tipo":"Permitida","ip":"192.168.5.36","valor":5},{"fecha":"2018-09-09","tipo":"Permitida","ip":"192.168.5.36","valor":8},{"fecha":"2018-09-10","tipo":"Permitida","ip":"192.168.5.36","valor":5},{"fecha":"2018-09-11","tipo":"Permitida","ip":"192.168.5.36","valor":6},{"fecha":"2018-09-12","tipo":"Permitida","ip":"192.168.5.36","valor":13},{"fecha":"2018-09-13","tipo":"Permitida","ip":"192.168.5.36","valor":4},{"fecha":"2018-09-14","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-09-15","tipo":"Permitida","ip":"192.168.5.36","valor":8},{"fecha":"2018-09-16","tipo":"Permitida","ip":"192.168.5.36","valor":7},{"fecha":"2018-09-17","tipo":"Permitida","ip":"192.168.5.36","valor":5},{"fecha":"2018-09-18","tipo":"Permitida","ip":"192.168.5.36","valor":4},{"fecha":"2018-09-19","tipo":"Permitida","ip":"192.168.5.36","valor":3},{"fecha":"2018-09-20","tipo":"Permitida","ip":"192.168.5.36","valor":9},{"fecha":"2018-09-21","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-09-22","tipo":"Permitida","ip":"192.168.5.36","valor":8},{"fecha":"2018-09-23","tipo":"Permitida","ip":"192.168.5.36","valor":25},{"fecha":"2018-09-24","tipo":"Permitida","ip":"192.168.5.48","valor":6},{"fecha":"2018-09-25","tipo":"Permitida","ip":"192.168.5.48","valor":2},{"fecha":"2018-09-26","tipo":"Permitida","ip":"192.168.5.36","valor":9},{"fecha":"2018-09-27","tipo":"Permitida","ip":"192.168.5.36","valor":5},{"fecha":"2018-09-29","tipo":"Permitida","ip":"192.168.5.36","valor":11},{"fecha":"2018-09-30","tipo":"Permitida","ip":"192.168.5.36","valor":18},{"fecha":"2018-10-01","tipo":"Permitida","ip":"192.168.5.36","valor":3},{"fecha":"2018-10-02","tipo":"Permitida","ip":"192.168.5.36","valor":4},{"fecha":"2018-10-04","tipo":"Permitida","ip":"192.168.5.36","valor":5},{"fecha":"2018-10-06","tipo":"Permitida","ip":"192.168.5.36","valor":22},{"fecha":"2018-10-07","tipo":"Permitida","ip":"192.168.5.36","valor":10},{"fecha":"2018-10-08","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-11","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-12","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-13","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-14","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-10-15","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-10-17","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-10-18","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-20","tipo":"Permitida","ip":"192.168.5.36","valor":9},{"fecha":"2018-10-21","tipo":"Permitida","ip":"192.168.5.36","valor":18},{"fecha":"2018-10-22","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-10-23","tipo":"Permitida","ip":"192.168.5.36","valor":3},{"fecha":"2018-10-24","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-25","tipo":"Permitida","ip":"192.168.5.36","valor":3},{"fecha":"2018-10-26","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-27","tipo":"Permitida","ip":"192.168.5.36","valor":8},{"fecha":"2018-10-28","tipo":"Permitida","ip":"192.168.5.36","valor":16},{"fecha":"2018-10-29","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-10-31","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-11-01","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-11-02","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-11-03","tipo":"Permitida","ip":"192.168.5.36","valor":4},{"fecha":"2018-11-04","tipo":"Permitida","ip":"192.168.5.36","valor":11},{"fecha":"2018-11-05","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-11-06","tipo":"Permitida","ip":"192.168.5.49","valor":6},{"fecha":"2018-11-07","tipo":"Permitida","ip":"192.168.5.48","valor":3},{"fecha":"2018-11-08","tipo":"Permitida","ip":"192.168.5.36","valor":2},{"fecha":"2018-11-10","tipo":"Permitida","ip":"192.168.5.36","valor":4},{"fecha":"2018-11-11","tipo":"Permitida","ip":"192.168.5.36","valor":14},{"fecha":"2018-11-12","tipo":"Permitida","ip":"192.168.5.48","valor":1},{"fecha":"2018-11-14","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-11-16","tipo":"Permitida","ip":"192.168.5.49","valor":2},{"fecha":"2018-11-17","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-11-18","tipo":"Permitida","ip":"192.168.5.36","valor":7},{"fecha":"2018-11-21","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-11-22","tipo":"Permitida","ip":"192.168.5.36","valor":1},{"fecha":"2018-11-24","tipo":"Permitida","ip":"192.168.5.45","valor":1}];
+console.log(sourceData);
+console.log(JSON.parse(data));
+
 				var chart = AmCharts.makeChart( "graficaConexion", {
 					"type": "serial",
 					"theme": "light",
@@ -1251,8 +1252,7 @@ $(document).ready(function () {
 					"legend": {
 						"position": "right"
 					},
-					"dataProvider":  JSON.parse(data),
-					
+					"dataProvider":  sourceData,
 				});
 			}
 		});
