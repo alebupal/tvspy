@@ -24,6 +24,12 @@
 		$notificacion_telegram = 1;
 	}
 
+	if (!isset($_POST["telegram_conexion"])) {
+		$telegram_conexion = 0;
+	}else{
+		$telegram_conexion = 1;
+	}
+
 	$cont = 0;
 	$ips="";
 	foreach ($_POST as $key => $value) {
@@ -53,6 +59,7 @@
 		"telegram_para" => $telegram_para,
 		"telegram_tiempo" => $telegram_tiempo,
 		"telegram_tiempo_limite" => $_POST["telegram_tiempo_limite"],
+		"telegram_conexion" => $telegram_conexion,
 		"notificacion_telegram" => $notificacion_telegram,
 		"bot_token" => $_POST["bot_token"],
 		"id_chat" => $_POST["id_chat"],

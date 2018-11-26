@@ -58,7 +58,6 @@
 							</div>
 						</div>
 						<div class="col-lg-12">
-							<!-- Example Notifications Card-->
 							<form id="formConfiguracion" method="post">
 								<div class="card mb-3">
 									<div class="card-header">
@@ -176,21 +175,41 @@
 											</div>
 										</div>
 										<div class="form-row">
-											<div class="form-group col-md-12">
-												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="true" name="telegram_tiempo" id="telegram_tiempo">
-													<label class="form-check-label" for="telegram_tiempo">Notificaciones cuando pase x tiempo en Telegram</label>
+											<div class="form-group col-md-6">
+												<div class="form-row">
+													<div class="form-group col-md-12">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="true" name="telegram_tiempo" id="telegram_tiempo">
+															<label class="form-check-label" for="telegram_tiempo">Notificaciones cuando pase x tiempo en Telegram</label>
+														</div>
+													</div>
+												</div>
+												<div class="form-row" id="div_telegram_tiempo">
+													<div class="form-group col-md-12">
+														<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%, %%tiempo%%</label>
+														<textarea class="form-control" name="texto_tiempo" id="texto_tiempo" rows="3"></textarea>
+													</div>
+													<div class="form-group col-md-12">
+														<label>Tiempo límite (minutos)</label>
+														<input type="number" class="form-control" id="telegram_tiempo_limite" name="telegram_tiempo_limite" placeholder="1" required>
+													</div>
 												</div>
 											</div>
-										</div>
-										<div class="form-row" id="div_telegram_tiempo">
-											<div class="form-group col-md-8">
-												<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%, %%tiempo%%</label>
-												<textarea class="form-control" name="texto_tiempo" id="texto_tiempo" rows="3"></textarea>
-											</div>
-											<div class="form-group col-md-4">
-												<label>Tiempo límite (minutos)</label>
-												<input type="number" class="form-control" id="telegram_tiempo_limite" name="telegram_tiempo_limite" placeholder="1" required>
+											<div class="form-group col-md-6">
+												<div class="form-row">
+													<div class="form-group col-md-12">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="true" name="telegram_conexion" id="telegram_conexion">
+															<label class="form-check-label" for="telegram_conexion">Notificaciones conexiones intrusas</label>
+														</div>
+													</div>
+												</div>
+												<div class="form-row" id="div_telegram_conexion">
+													<div class="form-group col-md-12">
+														<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
+														<textarea class="form-control" name="texto_conexion" id="texto_conexion" rows="3"></textarea>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -204,9 +223,7 @@
 											<!-- <div class="form-group col-md-12">
 												<input type="text" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
 											</div> -->
-											<div class="contenedor_ip form-row">
-
-											</div>
+											<div class="contenedor_ip form-row"></div>
 											<small>Deben ser con el siguiente formato 192.168.1</small>
 											<div class="form-group col-md-12 mt-2">
 												<a class="btn btn-info btn-block text-white btn-sm btnAnadirIP">Añadir IP</a>

@@ -5,6 +5,12 @@
 			<span>Inicio</span>
 		</a>
 	</li>
+	<li class="nav-item">
+		<a class="nav-link" href="registro.php">
+			<i class="fas fa-list-ul"></i>
+			<span>Registro</span>
+		</a>
+	</li>
 	<li class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fas fa-chart-area"></i>
@@ -12,14 +18,8 @@
 		</a>
 		<div class="dropdown-menu" aria-labelledby="pagesDropdown">
 			<a class="dropdown-item" href="estadisticas_reproduccion.php">Reproducción</a>
-			<a class="dropdown-item" href="estadisticas_conexiones.php">Conexiones</a>
+			<a class="dropdown-item" href="estadisticas_conexion.php">Conexiones</a>
 		</div>
-	</li>
-	<li class="nav-item">
-		<a class="nav-link" href="registro.php">
-			<i class="fas fa-list-ul"></i>
-			<span>Registro</span>
-		</a>
 	</li>
 	<li class="nav-item dropdown">
 		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

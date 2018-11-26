@@ -9,7 +9,7 @@
 		<title>Escritorio - TVSPY</title>
 		<?php include "include/estilo.php"; ?>
 	</head>
-	<body id="page-top">
+	<body id="page-top" class="pagina-estadisticas-reproduccion">
 		<?php include "include/navbar.php"; ?>
 		<div id="wrapper">
 			<?php include "include/menu.php"; ?>

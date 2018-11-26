@@ -54,9 +54,11 @@ class Util{
 											telegram_para = :telegram_para,
 											telegram_tiempo = :telegram_tiempo,
 											telegram_tiempo_limite = :telegram_tiempo_limite,
+											telegram_conexion = :telegram_conexion,
 											texto_empieza = :texto_empieza,
 											texto_para = :texto_para,
 											texto_tiempo = :texto_tiempo,
+											texto_conexion = :texto_conexion,
 											usuario = :usuario,
 											unidadTiempo = :unidadTiempo,
 											ip_permitida = :ip_permitida
@@ -75,9 +77,11 @@ class Util{
 		$stmt->bindParam(':telegram_para', $arrayConfiguracion["telegram_para"]);
 		$stmt->bindParam(':telegram_tiempo', $arrayConfiguracion["telegram_tiempo"]);
 		$stmt->bindParam(':telegram_tiempo_limite', $arrayConfiguracion["telegram_tiempo_limite"]);
+		$stmt->bindParam(':telegram_conexion', $arrayConfiguracion["telegram_conexion"]);
 		$stmt->bindParam(':texto_empieza', $arrayConfiguracion["texto_empieza"]);
 		$stmt->bindParam(':texto_para', $arrayConfiguracion["texto_para"]);
 		$stmt->bindParam(':texto_tiempo', $arrayConfiguracion["texto_tiempo"]);
+		$stmt->bindParam(':texto_conexion', $arrayConfiguracion["texto_conexion"]);
 		$stmt->bindParam(':usuario', $arrayConfiguracion["usuario"]);
 		$stmt->bindParam(':unidadTiempo', $arrayConfiguracion["unidadTiempo"]);
 		$stmt->bindParam(':ip_permitida', $arrayConfiguracion["ip_permitida"]);
@@ -432,7 +436,110 @@ class Util{
 		}
 		echo json_encode($array);
 	}
+	static function graficaConexion($fechaInicio, $fechaFin, $configuracion){
+		$fechaInicio = $fechaInicio." 00:00:00";
+		$fechaFin = $fechaFin." 23:59:59";
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
 
+
+		$stmt = $db->prepare("SELECT DATE(inicio) fecha, COUNT(hostname) conexion, hostname FROM registro WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) and hostname GROUP BY DATE(inicio), hostname");
+		$stmt->bindParam(':fechaInicio', $fechaInicio);
+		$stmt->bindParam(':fechaFin', $fechaFin);
+		$stmt->bindParam(':fechaFin', $fechaFin);
+		
+		$stmt->execute();
+		$stmt->closeCursor();
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		// Ejecutamos
+		$stmt->execute();
+		// Mostramos los resultados
+		$row= $stmt->fetchAll();
+		//var_dump($row);
+		$ips = self::separar_comas($configuracion["ip_permitida"]);
+	
+		$arrayPermitidas = array();
+		//var_dump($row);
+		for ($r=0; $r < count($row); $r++) {
+			$permitida = "no";		
+			//echo"hola";
+			for ($i = 0; $i < sizeof($ips); $i++) {
+				$ip = self::partirIP($row[$r]["hostname"]);
+				if($ips[$i]==$ip){
+					//$resultado = "si";
+					$permitida = "si";
+				}
+			}
+			if($permitida == "si"){
+				$item  = array(
+					"fecha" => $row[$r]["fecha"],
+					"tipo" => "Permitida",
+					"ip" => $row[$r]["hostname"],
+					"valor" => (int) $row[$r]["conexion"]
+				);
+				array_push($arrayPermitidas, $item);
+			}
+		}
+		
+		$arrayNoPermitidas = array();
+		for ($r=0; $r < count($row); $r++) {
+			$permitida = "no";		
+			//echo"hola";
+			for ($i = 0; $i < sizeof($ips); $i++) {
+				$ip = self::partirIP($row[$r]["hostname"]);
+				if($ips[$i]==$ip){
+					//$resultado = "si";
+					$permitida = "si";
+				}
+			}
+			if ($permitida == "no"){
+				$item  = array(
+					"fecha" => $row[$r]["fecha"],
+					"tipo" => "No permitida",
+					"ip" => $row[$r]["hostname"],
+					"valor" => (int) $row[$r]["conexion"]
+				);
+				array_push($arrayNoPermitidas, $item);
+			}
+		}
+	
+
+
+		$arrayPermitidas = array_values(self::dameSumaConexionesFecha($arrayPermitidas));
+		$arrayNoPermitidas = array_values(self::dameSumaConexionesFecha($arrayNoPermitidas));
+		//$newarray = array_values($arrayPermitidas);
+		//var_dump($arrayPermitidas);
+		//var_dump($arrayPermitidas);
+		//$arrayNoPermitidas = self::dameSumaConexionesFecha($arrayNoPermitidas);
+		
+		$array_resultante= array_merge($arrayPermitidas,$arrayNoPermitidas);
+		usort($array_resultante, function($a, $b) {
+			return new DateTime($a['fecha']) <=> new DateTime($b['fecha']);
+		});
+		echo json_encode($array_resultante);
+	}
+	static function dameSumaConexionesFecha($data) {
+		$groups = array();
+		foreach ($data as $item) {
+			$key = $item['fecha'];
+			if (!array_key_exists($key, $groups)) {
+				$groups[$key] = array(
+					'fecha' => $item['fecha'],
+					'tipo' => $item['tipo'],
+					'ip' => $item['ip'],
+					'valor' => $item['valor']
+				);
+			}
+		}
+		return $groups;
+	}
 	static function obtenerReproduccionesBD(){
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
 			self::$usuarioBD,
@@ -535,6 +642,16 @@ class Util{
 				$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
 				$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
 				self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+			}
+			if((int)$configuracion["telegram_conexion"]!= 0){
+				if(comprobarIP($configuracion["ip_permitida"], $reproduccion["hostname"])=="no"){
+					$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_conexion"]);
+					$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
+					$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
+					$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
+					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+				}
 			}
 		}
 	}
@@ -735,6 +852,38 @@ class Util{
 		$dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
 		$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
 		return $dt->format('Y-m-d H:i:s');
+	}
+	
+	static function comprobarIP($ip_permitidas, $data){
+		$ips = self::separar_comas($ip_permitidas);
+		$ip = self::partirIP($data);
+		$resultado = "no";
+		//No -> no permitida
+		//Si -> permitida
+		if($ips != null){
+			for ($i = 0; $i < sizeof($ips); $i++) {
+				if($ips[$i]==$ip){
+					$resultado = "si";
+				}
+			}
+		}else {
+			$ips=$ip_permitida;
+			if($ips==$ip){
+				$resultado = "si";
+			}else{
+				$resultado = "no";
+			}
+		}
+		return $resultado;
+	}
+	function partirIP($ip){
+		$partesIP = explode('.', $ip);
+		$ipfinal = $partesIP[0].".".$partesIP[1].".".$partesIP[2];
+		return $ipfinal;
+	}
+	function separar_comas($commaSepStr) {
+		$myArray = explode(',', $commaSepStr);
+		return $myArray ;
 	}
 
 
