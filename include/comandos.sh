@@ -5,5 +5,3 @@ mysql -uroot -e "create database tvspy" < /var/www/html/bd.sql
 
 #cron
 ./actualizacion.sh
-
-exec supervisord -n
