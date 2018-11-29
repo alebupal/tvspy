@@ -23,12 +23,6 @@ RUN chmod -R 777 /var/www/html/*
 ADD include/actualizacion.sh /actualizacion.sh
 ADD include/run.sh /run.sh
 
-
-#Crear base de datos
-RUN /etc/init.d/mysql start && \
-	mysql -uroot -e "create database tvspy" \
-	mysql < /var/www/html/bd.sql
-
 # Puertos
 EXPOSE 80 3306
 

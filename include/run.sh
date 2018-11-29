@@ -1,10 +1,8 @@
 #!/bin/bash
-# start apache
-/etc/init.d/apache2 stop
-/etc/init.d/apache2 start
-# start db
-/etc/init.d/mysql stop
-/etc/init.d/mysql start
+
+#Crear base de datos
+mysql -uroot -e "create database tvspy" < /var/www/html/bd.sql
+
 #cron
 ./actualizacion.sh
 
