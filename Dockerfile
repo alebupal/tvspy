@@ -22,6 +22,7 @@ RUN chmod -R 777 /var/www/html/*
 # Script de actualizacion
 ADD include/actualizacion.sh /actualizacion.sh
 ADD include/run.sh /run.sh
+RUN chmod 755 /*.sh
 
 # Puertos
 EXPOSE 80 3306
