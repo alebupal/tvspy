@@ -633,24 +633,46 @@ class Util{
 		$statement->bindParam(':errores', $reproduccion["errors"]);
 		$statement->execute();
 		$statement->closeCursor();
-
 		if((int)$configuracion["notificacion_telegram"]!= 0){
 			if((int)$configuracion["telegram_empieza"]!= 0){
-				$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
-				$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
-				$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
-				$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
-				$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
-				self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
-			}
-			if((int)$configuracion["telegram_conexion"]!= 0){
-				if(comprobarIP($configuracion["ip_permitida"], $reproduccion["hostname"])=="no"){
-					$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_conexion"]);
+				if((int)$configuracion["telegram_conexion"]!= 0){
+					if(self::comprobarIP($configuracion["ip_permitida"], $reproduccion["hostname"])=="no"){
+						echo"no Permitida";
+						$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_conexion"]);
+						$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
+						$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
+						$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
+						$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+					}else{
+						echo"Permitida";
+						$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
+						$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
+						$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
+						$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
+						$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);						
+					}
+				}else{
+					echo"no aviso";
+					$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
 					$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 					$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
 					$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
 					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
-					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);					
+				}
+			}else{
+				if((int)$configuracion["telegram_conexion"]!= 0){
+					if(self::comprobarIP($configuracion["ip_permitida"], $reproduccion["hostname"])=="no"){
+						echo"no Permitida";
+						$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_conexion"]);
+						$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
+						$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
+						$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
+						$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
+						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+					}
 				}
 			}
 		}

@@ -1,6 +1,6 @@
 <?php
-//$ruta = "../";
-$ruta = "/var/www/html/";
+$ruta = "../";
+//$ruta = "/var/www/html/";
 require_once $ruta."clases/Util.php";
 $configuracion = Util::cargarConfiguracion();
 

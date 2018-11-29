@@ -55,6 +55,7 @@
 		"texto_empieza" => $_POST["texto_empieza"],
 		"texto_para" => $_POST["texto_para"],
 		"texto_tiempo" => $_POST["texto_tiempo"],
+		"texto_conexion" => $_POST["texto_conexion"],
 		"telegram_empieza" => $telegram_empieza,
 		"telegram_para" => $telegram_para,
 		"telegram_tiempo" => $telegram_tiempo,

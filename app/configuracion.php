@@ -96,21 +96,30 @@
 									</div>
 									<div class="col-md-12 mb-2 mt-2">
 										<div class="form-row">
-											<div class="form-group col-md-4">
-												<label for="refresco">Tiempo de refresco (segundos) página de inicio</label>
-												<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
-											</div>
-											<div class="form-group col-md-4">
-												<label for="tiempoMinimo">Tiempo mínimo para registro (segundos)</label>
-												<input type="number" class="form-control" id="tiempoMinimo" name="tiempoMinimo" placeholder="1" required>
-											</div>
-											<div class="form-group col-md-4">
+											<div class="form-group col-md-12">
 												<label for="unidadTiempo">Unidad de tiempo visualización</label>
 												<select class="form-control" id="unidadTiempo" name="unidadTiempo">
 													<option value="Horas">Horas</option>
 													<option value="Minutos">Minutos</option>
 													<option value="Segundos">Segundos</option>
 												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card mb-3">
+									<div class="card-header">
+										<i class="fas fa-cogs"></i> Configuración General
+									</div>
+									<div class="col-md-12 mb-2 mt-2">
+										<div class="form-row">
+											<div class="form-group col-md-6">
+												<label for="refresco">Tiempo de refresco (segundos) página de inicio</label>
+												<input type="number" class="form-control" id="refresco" name="refresco" placeholder="1" required>
+											</div>
+											<div class="form-group col-md-6">
+												<label for="tiempoMinimo">Tiempo mínimo para registro (segundos)</label>
+												<input type="number" class="form-control" id="tiempoMinimo" name="tiempoMinimo" placeholder="1" required>
 											</div>
 										</div>
 									</div>
