@@ -28,5 +28,4 @@ RUN chmod 755 /*.sh
 EXPOSE 80 3306
 
 # comando a ejecutar en el inicio
-ENTRYPOINT ["/run.sh"]
 CMD ["/comandos.sh"]
