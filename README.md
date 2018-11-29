@@ -45,5 +45,3 @@ docker create --name=tvspy -p xxxxx:80 -p xxxxx:3306 -e TIME_CRON=15 -e PHPMYADM
 ## Changelog (https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md)
 
 ## Donación (https://www.paypal.me/alebupal)
-
-## License

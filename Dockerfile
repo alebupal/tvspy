@@ -1,6 +1,5 @@
 FROM mattrayner/lamp:latest-1404-php7
 
-
 MAINTAINER alebupal <alebupal@gmail.com>
 
 # Zona horaria PHP Europe/Madrid
@@ -26,7 +25,8 @@ ADD include/run.sh /run.sh
 
 
 #Crear base de datos
-RUN mysql -uroot -e "create database tvspy" \
+RUN /etc/init.d/mysql start && \
+	mysql -uroot -e "create database tvspy" \
 	mysql < /var/www/html/bd.sql
 
 # Puertos
