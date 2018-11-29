@@ -1050,9 +1050,9 @@ $(document).ready(function () {
 					},
 					"valueScrollbar":{
 						"oppositeAxis":false,
-					  "offset":50,
-					  "scrollbarHeight":10
-				  },
+						"offset":50,
+						"scrollbarHeight":10
+					},
 					"categoryField": "fecha",
 					"categoryAxis": {
 						"parseDates": true,
@@ -1239,7 +1239,8 @@ $(document).ready(function () {
 					},
 					"chartCursor": {
 						"valueLineEnabled": true,
-						"valueLineBalloonEnabled": true
+						"valueLineBalloonEnabled": true,
+						"fillColor": "#FFFFFF"
 					},
 					"legend": {
 						"position": "right"
