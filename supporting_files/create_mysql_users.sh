@@ -12,7 +12,7 @@ done
 
 PASS="tvspy"
 _word="tvspy"
-echo "=> Creating MySQL admin user with ${_word} password and database"
+echo "=> Creating MySQL tvspy user with ${_word} password and database"
 
 mysql -uroot -e "CREATE USER 'tvspy'@'%' IDENTIFIED BY '$PASS'"
 mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'tvspy'@'%' WITH GRANT OPTION"
@@ -21,7 +21,7 @@ mysql -uroot -e "GRANT ALL PRIVILEGES ON phpmyadmin.* TO  'pma'@'localhost' IDEN
 
 mysql -uroot -e "CREATE DATABASE IF NOT EXISTS tvspy"
 mysql -uroot < /var/www/html/bd.sql
-mysql -uroot -e "GRANT ALL PRIVILEGES ON tvspy.* TO 'admin'@'%'"
+mysql -uroot -e "GRANT ALL PRIVILEGES ON tvspy.* TO 'tvspy'@'%'"
 
 CREATE_MYSQL_USER=false
 
