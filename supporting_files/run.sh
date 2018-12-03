@@ -64,4 +64,6 @@ else
     echo "=> Using an existing volume of MySQL"
 fi
 
+./actualizacion.sh
+
 exec supervisord -n
