@@ -67,8 +67,7 @@ CREATE TABLE `configuracion` (
 -- Volcado de datos para la tabla `configuracion`
 --
 
-INSERT INTO `configuracion` (
-								`id`, 
+INSERT INTO `configuracion` (`id`,
 								`ip`, 
 								`puerto`, 
 								`usuario`, 
@@ -87,7 +86,7 @@ INSERT INTO `configuracion` (
 								`telegram_conexion`, 
 								`bot_token`, 
 								`id_chat`, 
-								`unidadTiempo`
+								`unidadTiempo`,
 								`ip_permitida`
 							) VALUES(
 								1, 
