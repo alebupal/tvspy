@@ -102,33 +102,3 @@ RUN chmod 755 /*.sh
 EXPOSE 80 3306
 
 CMD ["/run.sh"]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# comando a ejecutar en el inicio
-CMD ["/comandos.sh"]
