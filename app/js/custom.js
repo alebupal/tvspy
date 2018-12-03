@@ -17,6 +17,7 @@ $(document).ready(function () {
 					btnTestTvheadend();
 					btnAnadirIP();
 					btnQuitarIP();
+					btnBackup();
 				}
 				if ( $(".pagina-canales").length > 0 ) {
 					//importarCanales();
@@ -514,6 +515,21 @@ $(document).ready(function () {
 		$('body').on('click', '.btnQuitarIP', function (){
 			(($(this).parent()).prev()).remove();
 			($(this).parent()).remove();
+		});
+	}
+	function btnBackup(){
+		$( ".btnBackup" ).click(function() {
+			$.ajax({
+				type: "POST",
+				url: "acciones/phpBackup.php",
+				beforeSend:function(){
+					irArriba();
+					$(".cargando").toggle();
+				},
+				success: function (data) {
+					$(".cargando").toggle();
+				}
+			});
 		});
 	}
 	/*** Página Canales ***/

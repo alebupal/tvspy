@@ -239,9 +239,9 @@
 											</div>
 									</div>
 								</div>
-								<!--<div class="col-md-12 mb-2 mt-2">
+								<div class="col-md-12 mb-2 mt-2">
 									<a class="btn btn-primary btn-block text-white btnBackup" >Backup base de datos</a>
-								</div>-->
+								</div>
 								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
 							</form>
 						</div>
