@@ -3,9 +3,9 @@
  * @author alebupal
  */
 class Util{
-	public static $servidor= "127.0.0.1";
-	public static $usuarioBD= "root";
-	public static $contrasenaBD = "";
+	public static $servidor= "localhost";
+	public static $usuarioBD= "tvspy";
+	public static $contrasenaBD = "tvspy";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
