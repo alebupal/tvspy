@@ -39,14 +39,14 @@ RUN phpenmod mcrypt
 # Add image configuration and scripts
 ADD supporting_files/start-apache2.sh /start-apache2.sh
 ADD supporting_files/start-mysqld.sh /start-mysqld.sh
-ADD supporting_files/actualizacion.sh /actualizacion.sh
-ADD supporting_files/backup.sh /backup.sh
+# ADD supporting_files/actualizacion.sh /actualizacion.sh
+# ADD supporting_files/backup.sh /backup.sh
 ADD supporting_files/run.sh /run.sh
 RUN chmod 755 /*.sh
 ADD supporting_files/supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
 ADD supporting_files/supervisord-mysqld.conf /etc/supervisor/conf.d/supervisord-mysqld.conf
-ADD supporting_files/supervisord-actualizacion.conf /etc/supervisor/conf.d/supervisord-actualizacion.conf
-ADD supporting_files/supervisord-backup.conf /etc/supervisor/conf.d/supervisord-backup.conf
+# ADD supporting_files/supervisord-actualizacion.conf /etc/supervisor/conf.d/supervisord-actualizacion.conf
+# ADD supporting_files/supervisord-backup.conf /etc/supervisor/conf.d/supervisord-backup.conf
 ADD supporting_files/mysqld_innodb.cnf /etc/mysql/conf.d/mysqld_innodb.cnf
 
 # Allow mysql to bind on 0.0.0.0
