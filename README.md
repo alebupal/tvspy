@@ -1,4 +1,4 @@
-# TVSPY 1.2.4
+# TVSPY 2.0
 
 Aplicación web para monitorizar TvHeadend
 
@@ -21,14 +21,6 @@ No garantizo que funcione con menos de 15 segundos.
 Gracias a @Spufy por sus consejos para montar la imagen.
 
 [Capturas](https://github.com/alebupal/tvspy/tree/master/capturas)
-
-Si la configuración sale sin valores, prueba a iniciar apache y mysql dentro del contenedor
-```
-/etc/init.d/mysql start
-```
-```
-/etc/init.d/apache2 start
-```
 
 Si no hay conexión entre tvspy y TvHeadend, os sale constantemente login incorrecto o sale algo como "505 HTTP/RTSP Version Not Supported" hay que asegurarse de que en configuración>general>base>HTTP Server Settings>Authentication type debe estar seleccionado "Both plain and digest"
 
@@ -56,16 +48,8 @@ Cada día se realizar una copia de seguridad de la base de datos en "/var/www/ht
 
 Se puede hacer y restaurar una copia de seguridad de la base de datos en la opción configuración.
 
-
 ## Docker (https://hub.docker.com/r/alebupal/tvspy/)
 
 ## Changelog (https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md)
 
 ## Donación (https://www.paypal.me/alebupal)
-
-
-
-
-
-
-
