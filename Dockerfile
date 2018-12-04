@@ -68,7 +68,7 @@ ADD supporting_files/create_mysql_users.sh /create_mysql_users.sh
 RUN chmod 755 /*.sh
 
 # Add phpmyadmin
-ENV PHPMYADMIN_VERSION=4.8.2
+ENV PHPMYADMIN_VERSION=4.8.3
 RUN wget -O /tmp/phpmyadmin.tar.gz https://files.phpmyadmin.net/phpMyAdmin/${PHPMYADMIN_VERSION}/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages.tar.gz
 RUN tar xfvz /tmp/phpmyadmin.tar.gz -C /var/www
 RUN ln -s /var/www/phpMyAdmin-${PHPMYADMIN_VERSION}-all-languages /var/www/phpmyadmin
