@@ -30,7 +30,7 @@
 						</div>
 						<div class="col-lg-12">
 							<div class="alert alert-success configuracionRestaurar oculto" role="alert">
-								Backup restaurado correctamente
+								Backup restaurado correctamente. La página se actualizará automaticamente.
 							</div>
 						</div>
 						<div class="col-lg-12">

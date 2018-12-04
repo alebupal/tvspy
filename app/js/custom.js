@@ -549,7 +549,6 @@ $(document).ready(function () {
 			form_data.append('basedatos', basedatos);
 			$.ajax({
 				url: "acciones/phpRestaurarBackup.php",
-				dataType: 'json',
 				cache: false,
 				contentType: false,
 				processData: false,
@@ -565,6 +564,9 @@ $(document).ready(function () {
 						$(".configuracionRestaurar").fadeTo(2000, 500).slideUp(500, function(){
 							$(".configuracionRestaurar").slideUp(500);
 						});
+						setTimeout(function() {
+							window.location.reload();
+						}, 5000);
 					}else{
 						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
 							$(".errorGeneral").slideUp(500);

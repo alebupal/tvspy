@@ -776,15 +776,22 @@ class Util{
 
 	/*** BD ***/
 	static function backup(){
+		/*Eliminamos copias anteriores*/
+		$files = glob('../bd_backup/*'); // get all file names
+		foreach($files as $file){ // iterate files
+			if(is_file($file)){
+				unlink($file); // delete file
+			}
+		}
 		$fecha  = self::fechaActualBD();
 		$base_datos = self::$base_datos;
 		$servidor = self::$servidor;
 		$usuarioBD = self::$usuarioBD;
 		$contrasenaBD = self::$contrasenaBD;
-		$archivo_bd = "../bd_backup/" . "{$fecha}_{$base_datos}.sql";
+		$archivo_bd = "/var/www/html/bd_backup/" . "{$fecha}_{$base_datos}.sql";
 		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd;
 		exec($cmd);
-		$archivo_zip = "../bd_backup/".$fecha."_".$base_datos.".zip";
+		$archivo_zip = "/var/www/html/bd_backup/".$fecha."_".$base_datos.".zip";
 		if (file_exists($archivo_zip)) {
 			//echo "El fichero $nombre_fichero existe";
 			unlink($archivo_zip);
@@ -799,6 +806,13 @@ class Util{
 		}
 	}
 	static function backupZip(){
+		/*Eliminamos copias anteriores*/
+		$files = glob('../bd_backup/*'); // get all file names
+		foreach($files as $file){ // iterate files
+			if(is_file($file)){
+				unlink($file); // delete file
+			}
+		}
 		$fecha  = self::fechaActualBD();
 		$base_datos = self::$base_datos;
 		$servidor = self::$servidor;
@@ -828,8 +842,12 @@ class Util{
 		$servidor = self::$servidor;
 		$usuarioBD = self::$usuarioBD;
 		$contrasenaBD = self::$contrasenaBD;
-		$cmd = "mysql -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} < $archivoMYSQL";
-		exec($cmd);
+		$cmd1 = "mysql -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} -e 'drop database tvspy'";
+		$cmd2 = "mysql -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} -e 'create database tvspy'";
+		$cmd3 = "mysql -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} < $archivoMYSQL";
+		exec($cmd1);
+		exec($cmd2);
+		exec($cmd3);
 		unlink($archivoMYSQL);
 		echo "ok";
 	}
