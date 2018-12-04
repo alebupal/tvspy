@@ -529,6 +529,15 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
+					if(data == "ok"){
+						$(".configuracionBackup").fadeTo(2000, 500).slideUp(500, function(){
+							$(".configuracionBackup").slideUp(500);
+						});
+					}else{
+						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorGeneral").slideUp(500);
+						});						
+					}
 				}
 			});
 		});
@@ -549,9 +558,19 @@ $(document).ready(function () {
 				beforeSend:function(){
 					irArriba();
 					$(".cargando").toggle();
+					
 				},
 				success: function (data) {
 					$(".cargando").toggle();
+					if(data == "ok"){
+						$(".configuracionRestaurar").fadeTo(2000, 500).slideUp(500, function(){
+							$(".configuracionRestaurar").slideUp(500);
+						});
+					}else{
+						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorGeneral").slideUp(500);
+						});						
+					}
 				}
 			});
 		});

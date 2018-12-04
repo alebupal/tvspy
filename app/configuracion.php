@@ -24,6 +24,16 @@
 					</ol>
 					<div class="row">
 						<div class="col-lg-12">
+							<div class="alert alert-success configuracionBackup oculto" role="alert">
+								Backup realizado correctamente
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="alert alert-success configuracionRestaurar oculto" role="alert">
+								Backup restaurado correctamente
+							</div>
+						</div>
+						<div class="col-lg-12">
 							<div class="alert alert-success configuracionGuardada oculto" role="alert">
 								Configuración cargada correctamente
 							</div>
@@ -46,6 +56,11 @@
 						<div class="col-lg-12">
 							<div class="alert alert-danger errorLogin oculto" role="alert">
 								Login incorrecto en tvhedend
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div class="alert alert-danger errorGeneral oculto" role="alert">
+								Ha ocurrido algún error
 							</div>
 						</div>
 						<div class="col-lg-12">

@@ -800,9 +800,10 @@ class Util{
 		$servidor = self::$servidor;
 		$usuarioBD = self::$usuarioBD;
 		$contrasenaBD = self::$contrasenaBD;
-		$cmd = "mysql -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} < $restore_file";
-		exec($cmd);exec($cmd);		
-		echo "ok";		
+		$cmd = "mysql -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} < $archivoMYSQL";
+		exec($cmd);
+		unlink($archivoMYSQL);
+		echo "ok";
 	}
 
 	
