@@ -43,7 +43,7 @@ docker create  \
 ```
 
 ## Copia de seguridad BD
-Cada día se realizar una copia de seguridad de la base de datos en "/var/www/html/bd_backup" es aconsejable mapear esta carpeta para tener acceso a ella en caso de problemas.
+Cada día se realiza una copia de seguridad de la base de datos en "/var/www/html/bd_backup" es aconsejable mapear esta carpeta para tener acceso a ella en caso de problemas.
 
 Se puede hacer y restaurar una copia de seguridad de la base de datos en la opción configuración.
 
