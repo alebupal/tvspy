@@ -24,13 +24,12 @@ Gracias a @Spufy por sus consejos para montar la imagen.
 
 Si no hay conexión entre tvspy y TvHeadend, os sale constantemente login incorrecto o sale algo como "505 HTTP/RTSP Version Not Supported" hay que asegurarse de que en configuración>general>base>HTTP Server Settings>Authentication type debe estar seleccionado "Both plain and digest"
 
---
+
 Nombre base datos: tvspy
 
 Usuario base datos: tvspy
 
 Contraseña base datos: tvspy
---
 
 ## Instalación
 
