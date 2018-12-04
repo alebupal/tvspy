@@ -18,6 +18,7 @@ $(document).ready(function () {
 					btnAnadirIP();
 					btnQuitarIP();
 					btnBackup();
+					btnRestaurarBackup();
 				}
 				if ( $(".pagina-canales").length > 0 ) {
 					//importarCanales();

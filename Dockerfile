@@ -39,8 +39,8 @@ RUN phpenmod mcrypt
 # Add image configuration and scripts
 ADD supporting_files/start-apache2.sh /start-apache2.sh
 ADD supporting_files/start-mysqld.sh /start-mysqld.sh
-# ADD supporting_files/actualizacion.sh /actualizacion.sh
-# ADD supporting_files/backup.sh /backup.sh
+ADD supporting_files/actualizacion.sh /actualizacion.sh
+ADD supporting_files/backup.sh /backup.sh
 ADD supporting_files/run.sh /run.sh
 RUN chmod 755 /*.sh
 ADD supporting_files/supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
