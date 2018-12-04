@@ -651,7 +651,7 @@ class Util{
 						$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
 						$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
 						$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
-						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);						
+						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 					}
 				}else{
 					echo"no aviso";
@@ -660,7 +660,7 @@ class Util{
 					$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
 					$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
 					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
-					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);					
+					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 				}
 			}else{
 				if((int)$configuracion["telegram_conexion"]!= 0){
@@ -776,22 +776,50 @@ class Util{
 
 	/*** BD ***/
 	static function backup(){
-		/*Eliminamos copias anteriores*/
-		$files = glob('../bd_backup/*'); // get all file names
-		foreach($files as $file){ // iterate files
-			if(is_file($file)){				
-				unlink($file); // delete file
-			}
-		}
-		
 		$fecha  = self::fechaActualBD();
 		$base_datos = self::$base_datos;
 		$servidor = self::$servidor;
 		$usuarioBD = self::$usuarioBD;
 		$contrasenaBD = self::$contrasenaBD;
-		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . "../bd_backup/" . "{$fecha}_{$base_datos}.sql";
-		exec($cmd);		
-		echo "ok";		
+		$archivo_bd = "../bd_backup/" . "{$fecha}_{$base_datos}.sql";
+		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd;
+		exec($cmd);
+		$archivo_zip = "../bd_backup/".$fecha."_".$base_datos.".zip";
+		if (file_exists($archivo_zip)) {
+			//echo "El fichero $nombre_fichero existe";
+			unlink($archivo_zip);
+		}
+		$zip = new ZipArchive();
+		if($zip->open($archivo_zip,ZIPARCHIVE::CREATE)===true) {
+			$zip->addFile($archivo_bd);
+			$zip->close();
+			//eliminamos sql
+			unlink($archivo_bd);
+			echo "ok";
+		}
+	}
+	static function backupZip(){
+		$fecha  = self::fechaActualBD();
+		$base_datos = self::$base_datos;
+		$servidor = self::$servidor;
+		$usuarioBD = self::$usuarioBD;
+		$contrasenaBD = self::$contrasenaBD;
+		$archivo_bd = "../bd_backup/" . "{$fecha}_{$base_datos}.sql";
+		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd;
+		exec($cmd);
+		$archivo_zip = "../bd_backup/".$fecha."_".$base_datos.".zip";
+		if (file_exists($archivo_zip)) {
+			//echo "El fichero $nombre_fichero existe";
+			unlink($archivo_zip);
+		}
+		$zip = new ZipArchive();
+		if($zip->open($archivo_zip,ZIPARCHIVE::CREATE)===true) {
+			$zip->addFile($archivo_bd);
+			$zip->close();
+			//eliminamos sql
+			unlink($archivo_bd);
+			header("Location: ".$archivo_zip);
+		}
 	}
 	static function restaurarBackup(){
 		$fecha  = self::fechaActualBD();
@@ -806,7 +834,7 @@ class Util{
 		echo "ok";
 	}
 
-	
+
 	/*** API ***/
 
 	static function testTvheadend($ip, $puerto, $usuario, $contrasena){

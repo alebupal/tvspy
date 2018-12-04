@@ -522,7 +522,7 @@ $(document).ready(function () {
 		$( ".btnBackup" ).click(function() {
 			$.ajax({
 				type: "POST",
-				url: "acciones/phpBackup.php",
+				url: "acciones/phpBackupZip.php",
 				beforeSend:function(){
 					irArriba();
 					$(".cargando").toggle();
@@ -536,7 +536,7 @@ $(document).ready(function () {
 					}else{
 						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
 							$(".errorGeneral").slideUp(500);
-						});						
+						});
 					}
 				}
 			});
@@ -558,7 +558,7 @@ $(document).ready(function () {
 				beforeSend:function(){
 					irArriba();
 					$(".cargando").toggle();
-					
+
 				},
 				success: function (data) {
 					$(".cargando").toggle();
@@ -569,7 +569,7 @@ $(document).ready(function () {
 					}else{
 						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
 							$(".errorGeneral").slideUp(500);
-						});						
+						});
 					}
 				}
 			});
@@ -1250,7 +1250,7 @@ $(document).ready(function () {
 				return copy;
 			}
 		}, ["serial", "stock"]);
-		
+
 		$(".btnAplicarGraficaConexion" ).click(function() {
 			fechaInicioCanal = moment($('#fechaInicioConexion').datepicker("getDate")).format('YYYY-MM-DD');
 			fechaFinCanal = moment($('#fechaFinConexion').datepicker("getDate")).format('YYYY-MM-DD');
