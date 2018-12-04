@@ -239,7 +239,7 @@
 													</div>
 												</div>
 											</div>
-											<div class="form-group col-md-12">												
+											<div class="form-group col-md-12">
 												<small>Hay que guardar abajo para aplicar los cambios</small>
 											</div>
 										</div>
@@ -256,7 +256,7 @@
 											<a class="btn btn-info btn-block text-white btn-sm btnAnadirIP">Añadir IP</a>
 										</div>
 									</div>
-									<div class="form-group col-md-12">												
+									<div class="form-group col-md-12">
 										<small>Hay que guardar abajo para aplicar los cambios</small>
 									</div>
 								</div>
@@ -273,7 +273,7 @@
 										</div>
 										<div class="form-row">
 											<div class="form-group col-md-6 mb-2 mt-2">
-												<input type="file" class="form-control-file" id="basedatos">
+												<input type="file" class="form-control-file" id="basedatos" name="basedatos" accept=".sql">
 											</div>
 											<div class="form-group col-md-6 mb-2 mt-2">
 												<a class="btn btn-info btn-block text-white btn-sm btnRestaurarBackup" >Restaurar base de datos</a>

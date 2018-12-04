@@ -558,7 +558,6 @@ $(document).ready(function () {
 				beforeSend:function(){
 					irArriba();
 					$(".cargando").toggle();
-
 				},
 				success: function (data) {
 					$(".cargando").toggle();
