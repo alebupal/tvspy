@@ -1,8 +1,11 @@
-## [1.2.5.1] - dev - 2018-11-24
-- Añadida opción del registro de conexiones para ver facilmente conexiones no deseadas.
+## [2.0] - 
+- Añadidos colores a registro según este o no esté permitida la conexión.
+- En configuración se pueden añadir las ip permitidas
 - Reestructuración configuración
 - Reestructuración menú
-- Actulizada plantilla base de bootstrap
+- Actualizada plantilla base de bootstrap
+- Añadida posibilidad de backup y restaurar la base de datos.
+- Reestructuración del fichero dockerfile para mejorar compatibilidad
 
 ## [1.2.4] - 2018-06-21
 - La API de TVHeadend repite id, por lo que a partir de ahora para identificar las reproducciones se utiliza el id y el tiempo de Inicio
@@ -27,7 +30,7 @@
 ## [1.1.0] - 2018-05-31
 - Añadir filtro de fechas en las gráficas
 - Evitar que se meta en la base de datos cuando TvHeadend esté escaneando
-- Correción para levantar el servicio mysql y apache
+- Corrección para levantar el servicio mysql y apache
 
 ## [1.0.0] - 2018-05-25
 - Estable
