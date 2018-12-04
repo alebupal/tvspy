@@ -65,3 +65,5 @@ else
 fi
 
 exec supervisord -n
+/backup.sh
+/actualizacion.sh
