@@ -467,14 +467,11 @@ class Util{
 			$ips = self::separar_comas($configuracion["ip_permitida"]);
 
 			$arrayPermitidas = array();
-			//var_dump($row);
 			for ($r=0; $r < count($row); $r++) {
 				$permitida = "no";
-				//echo"hola";
 				for ($i = 0; $i < sizeof($ips); $i++) {
 					$ip = self::partirIP($row[$r]["hostname"]);
 					if($ips[$i]==$ip){
-						//$resultado = "si";
 						$permitida = "si";
 					}
 				}
