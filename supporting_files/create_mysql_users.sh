@@ -47,7 +47,6 @@ echo "You can now connect to this MySQL Server with $PASS"
 echo ""
 echo "    mysql -uadmin -p$PASS -h<host> -P<port>"
 echo ""
-echo "Please remember to change the above password as soon as possible!"
 echo "MySQL user 'root' has no password but only allows local connections"
 echo ""
 

@@ -774,6 +774,38 @@ class Util{
 
 	}
 
+	/*** BD ***/
+	static function backup(){
+		/*Eliminamos copias anteriores*/
+		$files = glob('../bd_backup/*'); // get all file names
+		foreach($files as $file){ // iterate files
+			if(is_file($file)){				
+				unlink($file); // delete file
+			}
+		}
+		
+		$fecha  = self::fechaActualBD();
+		$base_datos = self::$base_datos;
+		$servidor = self::$servidor;
+		$usuarioBD = self::$usuarioBD;
+		$contrasenaBD = self::$contrasenaBD;
+		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . "../bd_backup/" . "{$fecha}_{$base_datos}.sql";
+		exec($cmd);		
+		echo "ok";		
+	}
+	static function restaurarBackup(){
+		$fecha  = self::fechaActualBD();
+		$archivoMYSQL = "../bd/restaurar.sql";
+		$base_datos = self::$base_datos;
+		$servidor = self::$servidor;
+		$usuarioBD = self::$usuarioBD;
+		$contrasenaBD = self::$contrasenaBD;
+		$cmd = "mysql -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} < $restore_file";
+		exec($cmd);exec($cmd);		
+		echo "ok";		
+	}
+
+	
 	/*** API ***/
 
 	static function testTvheadend($ip, $puerto, $usuario, $contrasena){
@@ -875,6 +907,13 @@ class Util{
 		$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
 		return $dt->format('Y-m-d H:i:s');
 	}
+	static function fechaActualBD(){
+		$tz = 'Europe/Madrid';
+		$timestamp = time();
+		$dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
+		$dt->setTimestamp($timestamp); //adjust the object to correct timestamp
+		return $dt->format('Y-m-d-H-i-s');
+	}
 
 	static function comprobarIP($ip_permitidas, $data){
 		$ips = self::separar_comas($ip_permitidas);
@@ -898,12 +937,12 @@ class Util{
 		}
 		return $resultado;
 	}
-	function partirIP($ip){
+	static function partirIP($ip){
 		$partesIP = explode('.', $ip);
 		$ipfinal = $partesIP[0].".".$partesIP[1].".".$partesIP[2];
 		return $ipfinal;
 	}
-	function separar_comas($commaSepStr) {
+	static function separar_comas($commaSepStr) {
 		$myArray = explode(',', $commaSepStr);
 		return $myArray ;
 	}

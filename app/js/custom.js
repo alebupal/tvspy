@@ -532,6 +532,29 @@ $(document).ready(function () {
 			});
 		});
 	}
+	function btnRestaurarBackup(){
+		$( ".btnRestaurarBackup" ).click(function() {
+			var basedatos = $('#basedatos').prop('files')[0];
+			var form_data = new FormData();
+			form_data.append('basedatos', basedatos);
+			$.ajax({
+				url: "acciones/phpRestaurarBackup.php",
+				dataType: 'json',
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				type: "POST",
+				beforeSend:function(){
+					irArriba();
+					$(".cargando").toggle();
+				},
+				success: function (data) {
+					$(".cargando").toggle();
+				}
+			});
+		});
+	}
 	/*** Página Canales ***/
 	function btnImportarCanales(){
 		$( ".btnImportarCanales" ).click(function() {

@@ -102,6 +102,6 @@ ADD supporting_files/actualizacion.sh /actualizacion.sh
 RUN chmod 755 /*.sh
 
 # Puertos
-EXPOSE 80 3306
+EXPOSE 80
 
 CMD ["/run.sh"]

@@ -86,7 +86,7 @@
 										</div>
 										<div class="mb-4 mt-2">
 											<a class="btn btn-info btn-block text-white btn-sm btnTestTvheadend">Comprobar conexion</a>
-											<small>Hay que guardar para aplicar los cambios</small>
+											<small>Hay que guardar abajo para aplicar los cambios</small>
 										</div>
 									</div>
 								</div>
@@ -103,6 +103,7 @@
 													<option value="Minutos">Minutos</option>
 													<option value="Segundos">Segundos</option>
 												</select>
+												<small>Hay que guardar abajo para aplicar los cambios</small>
 											</div>
 										</div>
 									</div>
@@ -120,6 +121,9 @@
 											<div class="form-group col-md-6">
 												<label for="tiempoMinimo">Tiempo mínimo para registro (segundos)</label>
 												<input type="number" class="form-control" id="tiempoMinimo" name="tiempoMinimo" placeholder="1" required>
+											</div>
+											<div class="form-group col-md-12">
+												<small>Hay que guardar abajo para aplicar los cambios</small>
 											</div>
 										</div>
 									</div>
@@ -220,6 +224,9 @@
 													</div>
 												</div>
 											</div>
+											<div class="form-group col-md-12">												
+												<small>Hay que guardar abajo para aplicar los cambios</small>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -228,21 +235,37 @@
 										<i class="fa fa-desktop"></i> IP conocida
 									</div>
 									<div class="col-md-12 mb-2 mt-2" id="configuracionTelegram">
-
-											<!-- <div class="form-group col-md-12">
-												<input type="text" class="form-control" id="bot_token" name="bot_token" placeholder="177537537537375252452" required>
-											</div> -->
-											<div class="contenedor_ip form-row"></div>
-											<small>Deben ser con el siguiente formato 192.168.1</small>
-											<div class="form-group col-md-12 mt-2">
-												<a class="btn btn-info btn-block text-white btn-sm btnAnadirIP">Añadir IP</a>
-											</div>
+										<div class="contenedor_ip form-row"></div>
+										<small>Deben ser con el siguiente formato 192.168.1</small>
+										<div class="form-group col-md-12 mt-2">
+											<a class="btn btn-info btn-block text-white btn-sm btnAnadirIP">Añadir IP</a>
+										</div>
+									</div>
+									<div class="form-group col-md-12">												
+										<small>Hay que guardar abajo para aplicar los cambios</small>
 									</div>
 								</div>
-								<div class="col-md-12 mb-2 mt-2">
-									<a class="btn btn-primary btn-block text-white btnBackup" >Backup base de datos</a>
-								</div>
 								<button type="submit" class="btn btn-primary btn-block btnGuardar">Guardar</button>
+								<div class="card mb-3 mt-3">
+									<div class="card-header">
+										<i class="fas fa-database"></i> Base de datos
+									</div>
+									<div class="col-md-12">
+										<div class="form-row">
+											<div class="form-group col-md-12 mb-2 mt-2">
+												<a class="btn btn-info btn-block text-white btn-sm btnBackup" >Realizar Backup base de datos</a>
+											</div>
+										</div>
+										<div class="form-row">
+											<div class="form-group col-md-6 mb-2 mt-2">
+												<input type="file" class="form-control-file" id="basedatos">
+											</div>
+											<div class="form-group col-md-6 mb-2 mt-2">
+												<a class="btn btn-info btn-block text-white btn-sm btnRestaurarBackup" >Restaurar base de datos</a>
+											</div>
+										</div>
+									</div>
+								</div>
 							</form>
 						</div>
 					</div>
