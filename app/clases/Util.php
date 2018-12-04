@@ -463,21 +463,66 @@ class Util{
 		// Mostramos los resultados
 		$row= $stmt->fetchAll();
 		//var_dump($row);
-		$ips = self::separar_comas($configuracion["ip_permitida"]);
+		if($configuracion["ip_permitida"]!=""){
+			$ips = self::separar_comas($configuracion["ip_permitida"]);
 
-		$arrayPermitidas = array();
-		//var_dump($row);
-		for ($r=0; $r < count($row); $r++) {
-			$permitida = "no";
-			//echo"hola";
-			for ($i = 0; $i < sizeof($ips); $i++) {
-				$ip = self::partirIP($row[$r]["hostname"]);
-				if($ips[$i]==$ip){
-					//$resultado = "si";
-					$permitida = "si";
+			$arrayPermitidas = array();
+			//var_dump($row);
+			for ($r=0; $r < count($row); $r++) {
+				$permitida = "no";
+				//echo"hola";
+				for ($i = 0; $i < sizeof($ips); $i++) {
+					$ip = self::partirIP($row[$r]["hostname"]);
+					if($ips[$i]==$ip){
+						//$resultado = "si";
+						$permitida = "si";
+					}
+				}
+				if($permitida == "si"){
+					$item  = array(
+						"fecha" => $row[$r]["fecha"],
+						"tipo" => "Permitida",
+						"ip" => $row[$r]["hostname"],
+						"valor" => (int) $row[$r]["conexion"]
+					);
+					array_push($arrayPermitidas, $item);
 				}
 			}
-			if($permitida == "si"){
+
+			$arrayNoPermitidas = array();
+			for ($r=0; $r < count($row); $r++) {
+				$permitida = "no";
+				//echo"hola";
+				for ($i = 0; $i < sizeof($ips); $i++) {
+					$ip = self::partirIP($row[$r]["hostname"]);
+					if($ips[$i]==$ip){
+						//$resultado = "si";
+						$permitida = "si";
+					}
+				}
+				if ($permitida == "no"){
+					$item  = array(
+						"fecha" => $row[$r]["fecha"],
+						"tipo" => "No permitida",
+						"ip" => $row[$r]["hostname"],
+						"valor" => (int) $row[$r]["conexion"]
+					);
+					array_push($arrayNoPermitidas, $item);
+				}
+			}
+
+			$arrayPermitidas = array_values(self::dameSumaConexionesFecha($arrayPermitidas));
+			$arrayNoPermitidas = array_values(self::dameSumaConexionesFecha($arrayNoPermitidas));
+
+			$array_resultante= array_merge($arrayPermitidas,$arrayNoPermitidas);
+			usort($array_resultante, function( $a, $b ) {
+				return strtotime($a["fecha"]) - strtotime($b["fecha"]);
+			});
+			echo json_encode($array_resultante);
+		}else{
+			$arrayPermitidas = array();
+			//var_dump($row);
+			for ($r=0; $r < count($row); $r++) {
 				$item  = array(
 					"fecha" => $row[$r]["fecha"],
 					"tipo" => "Permitida",
@@ -486,44 +531,12 @@ class Util{
 				);
 				array_push($arrayPermitidas, $item);
 			}
+			$arrayPermitidas = array_values(self::dameSumaConexionesFecha($arrayPermitidas));
+			usort($arrayPermitidas, function( $a, $b ) {
+				return strtotime($a["fecha"]) - strtotime($b["fecha"]);
+			});
+			echo json_encode($arrayPermitidas);
 		}
-
-		$arrayNoPermitidas = array();
-		for ($r=0; $r < count($row); $r++) {
-			$permitida = "no";
-			//echo"hola";
-			for ($i = 0; $i < sizeof($ips); $i++) {
-				$ip = self::partirIP($row[$r]["hostname"]);
-				if($ips[$i]==$ip){
-					//$resultado = "si";
-					$permitida = "si";
-				}
-			}
-			if ($permitida == "no"){
-				$item  = array(
-					"fecha" => $row[$r]["fecha"],
-					"tipo" => "No permitida",
-					"ip" => $row[$r]["hostname"],
-					"valor" => (int) $row[$r]["conexion"]
-				);
-				array_push($arrayNoPermitidas, $item);
-			}
-		}
-
-
-
-		$arrayPermitidas = array_values(self::dameSumaConexionesFecha($arrayPermitidas));
-		$arrayNoPermitidas = array_values(self::dameSumaConexionesFecha($arrayNoPermitidas));
-		//$newarray = array_values($arrayPermitidas);
-		//var_dump($arrayPermitidas);
-		//var_dump($arrayPermitidas);
-		//$arrayNoPermitidas = self::dameSumaConexionesFecha($arrayNoPermitidas);
-
-		$array_resultante= array_merge($arrayPermitidas,$arrayNoPermitidas);
-		usort($array_resultante, function( $a, $b ) {
-			return strtotime($a["fecha"]) - strtotime($b["fecha"]);
-		});
-		echo json_encode($array_resultante);
 	}
 	static function dameSumaConexionesFecha($data) {
 		$groups = array();

@@ -290,21 +290,23 @@ $(document).ready(function () {
 		$("#usuario").val(arrayConfiguracion["usuario"]);
 		$("#refresco").val(arrayConfiguracion["refresco"]);
 		$("#tiempoMinimo").val(arrayConfiguracion["tiempoMinimo"]);
-		var ips = separar_comas(arrayConfiguracion["ip_permitida"]);
-		if(ips==null){
-			ips=[arrayConfiguracion["ip_permitida"]];
-		}
-		var input_ip="";
-		if(ips != null){
-			for (var i = 0; i < ips.length; i++) {
-				input_ip += '<div class="form-group col-md-3">'+
-				'<input type="text" class="form-control input_ip" id="ip_'+i+'" name="ip_'+i+'" value="'+ips[i]+'">'+
-				'</div>'+
-				'<div class="form-group mt-2 col-md-1">'+
-				'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
-				'</div>';
+		if(arrayConfiguracion["ip_permitida"]!=""){
+			var ips = separar_comas(arrayConfiguracion["ip_permitida"]);
+			if(ips==null){
+				ips=[arrayConfiguracion["ip_permitida"]];
 			}
-			$(".contenedor_ip").html(input_ip);
+			var input_ip="";
+			if(ips != null){
+				for (var i = 0; i < ips.length; i++) {
+					input_ip += '<div class="form-group col-md-3">'+
+					'<input type="text" class="form-control input_ip" id="ip_'+i+'" name="ip_'+i+'" value="'+ips[i]+'">'+
+					'</div>'+
+					'<div class="form-group mt-2 col-md-1">'+
+					'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
+					'</div>';
+				}
+				$(".contenedor_ip").html(input_ip);
+			}
 		}
 
 		if(arrayConfiguracion["notificacion_telegram"]==1){
@@ -1342,32 +1344,37 @@ $(document).ready(function () {
 		$('body,html').animate({scrollTop : 0}, 500);
 	}
 	function colorearIP(ip_permitida, data, row){
-		var ips = separar_comas(ip_permitida);
-		var ip = partirIP(data);
-		var resultado;
-		var row = row;
-		var permitida = "no";
-		if(ips != null){
-			for (var i = 0; i < ips.length; i++) {
-				if(ips[i]==ip){
-					permitida = "si";
+		if(ip_permitida == ""{
+			resultado = "Permitida: "+data;
+			$(row).css('background-color', '#bde3b1');
+		}else{
+			var ips = separar_comas(ip_permitida);
+			var ip = partirIP(data);
+			var resultado;
+			var row = row;
+			var permitida = "no";
+			if(ips != null){
+				for (var i = 0; i < ips.length; i++) {
+					if(ips[i]==ip){
+						permitida = "si";
+					}
 				}
-			}
-			if(permitida == "si"){
-				resultado = "Permitida: "+data;
-				$(row).css('background-color', '#bde3b1');
-			}else if (permitida == "no"){
-				resultado = "No permitida: "+data;
-				$(row).css('background-color', '#f5bfae');
-			}
-		}else {
-			ips=ip_permitida;
-			if(ips==ip){
-				resultado = "Permitida: "+data;
-				$(row).css('background-color', '#bde3b1');
-			}else{
-				resultado = "No permitida: "+data;
-				$(row).css('background-color', '#f5bfae');
+				if(permitida == "si"){
+					resultado = "Permitida: "+data;
+					$(row).css('background-color', '#bde3b1');
+				}else if (permitida == "no"){
+					resultado = "No permitida: "+data;
+					$(row).css('background-color', '#f5bfae');
+				}
+			}else {
+				ips=ip_permitida;
+				if(ips==ip){
+					resultado = "Permitida: "+data;
+					$(row).css('background-color', '#bde3b1');
+				}else{
+					resultado = "No permitida: "+data;
+					$(row).css('background-color', '#f5bfae');
+				}
 			}
 		}
 		return resultado;
