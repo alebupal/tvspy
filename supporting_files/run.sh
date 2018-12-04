@@ -60,11 +60,11 @@ if [[ ! -d $VOLUME_HOME/mysql ]]; then
 
     echo "=> Done!"
     /create_mysql_users.sh
+#	./backup.sh
 else
     echo "=> Using an existing volume of MySQL"
 fi
 
 exec supervisord -n
 
-./backup.sh
-./actualizacion.sh
+#./actualizacion.sh

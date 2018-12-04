@@ -90,14 +90,11 @@ RUN chmod -R 777 /var/www/html/*
 ENV PHP_UPLOAD_MAX_FILESIZE 10M
 ENV PHP_POST_MAX_SIZE 10M
 
-# Add volumes for the app and MySql
-VOLUME  ["/etc/mysql", "/var/lib/mysql", "/app" ]
 
-
-#Tiempo de actualizacion a la api en segundos
+#Tiempo de actualización a la api en segundos
 ENV TIME_CRON 15
 
-# Script de actualizacion
+# Script de actualización
 ADD supporting_files/actualizacion.sh /actualizacion.sh
 RUN chmod 755 /*.sh
 
