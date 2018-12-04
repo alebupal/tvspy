@@ -1344,7 +1344,7 @@ $(document).ready(function () {
 		$('body,html').animate({scrollTop : 0}, 500);
 	}
 	function colorearIP(ip_permitida, data, row){
-		if(ip_permitida == ""{
+		if(ip_permitida == ""){
 			resultado = "Permitida: "+data;
 			$(row).css('background-color', '#bde3b1');
 		}else{
