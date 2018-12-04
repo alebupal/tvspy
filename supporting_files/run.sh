@@ -58,13 +58,10 @@ if [[ ! -d $VOLUME_HOME/mysql ]]; then
         mysql_install_db > /dev/null 2>&1
     fi
 
-    echo "=> Done!"
+    echo "=> Done!"  
     /create_mysql_users.sh
-#	./backup.sh
 else
     echo "=> Using an existing volume of MySQL"
 fi
 
 exec supervisord -n
-
-#./actualizacion.sh
