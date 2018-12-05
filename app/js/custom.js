@@ -532,10 +532,11 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
-					if(data == "ok"){
+					if(data != "ko"){
 						$(".configuracionBackup").fadeTo(2000, 500).slideUp(500, function(){
 							$(".configuracionBackup").slideUp(500);
 						});
+						document.location.href = "bd_backup/"+data;
 					}else{
 						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
 							$(".errorGeneral").slideUp(500);

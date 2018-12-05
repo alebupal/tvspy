@@ -830,7 +830,7 @@ class Util{
 			$zip->close();
 			//eliminamos sql
 			//unlink($archivo_bd);
-			header("Location: ".$archivo_zip);
+			echo $fecha."_".$base_datos.".zip";
 		}
 	}
 	static function restaurarBackup(){
