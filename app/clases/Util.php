@@ -787,7 +787,7 @@ class Util{
 	/*** BD ***/
 	static function backup(){
 		/*Eliminamos copias anteriores*/
-		$files = glob('../bd_backup/*'); // get all file names
+		$files = glob('/var/www/html/bd_backup/*'); // get all file names
 		foreach($files as $file){ // iterate files
 			if(is_file($file)){
 				unlink($file); // delete file
@@ -801,19 +801,7 @@ class Util{
 		$archivo_bd = "/var/www/html/bd_backup/" . "{$fecha}_{$base_datos}.sql";
 		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd;
 		exec($cmd);
-		$archivo_zip = "/var/www/html/bd_backup/".$fecha."_".$base_datos.".zip";
-		if (file_exists($archivo_zip)) {
-			//echo "El fichero $nombre_fichero existe";
-			unlink($archivo_zip);
-		}
-		$zip = new ZipArchive();
-		if($zip->open($archivo_zip,ZIPARCHIVE::CREATE)===true) {
-			$zip->addFile($archivo_bd);
-			$zip->close();
-			//eliminamos sql
-			unlink($archivo_bd);
-			echo "ok";
-		}
+		echo "ok";
 	}
 	static function backupZip(){
 		/*Eliminamos copias anteriores*/
@@ -841,7 +829,7 @@ class Util{
 			$zip->addFile($archivo_bd);
 			$zip->close();
 			//eliminamos sql
-			unlink($archivo_bd);
+			//unlink($archivo_bd);
 			header("Location: ".$archivo_zip);
 		}
 	}
@@ -978,7 +966,9 @@ class Util{
 		$resultado = "no";
 		//No -> no permitida
 		//Si -> permitida
-		if($ips != null){
+		if($ips == ""){
+			$resultado = "si";
+		}else if($ips != null){
 			for ($i = 0; $i < sizeof($ips); $i++) {
 				if($ips[$i]==$ip){
 					$resultado = "si";

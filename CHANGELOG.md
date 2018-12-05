@@ -1,6 +1,7 @@
 ## [2.0] - 
 - Añadidos colores a registro según este o no esté permitida la conexión.
 - En configuración se pueden añadir las ip permitidas
+- Localización de ip
 - Reestructuración configuración
 - Reestructuración menú
 - Actualizada plantilla base de bootstrap

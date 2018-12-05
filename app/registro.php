@@ -14,6 +14,11 @@
 		<div id="wrapper">
 			<?php include "include/menu.php"; ?>
 			<div id="content-wrapper">
+				<div class="col-lg-12">
+					<div class="alert alert-danger ipNo oculto" role="alert">
+						Esta ip no se puede localizar.
+					</div>
+				</div>
 				<div class="container-fluid">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">
@@ -55,6 +60,36 @@
 					</div>
 				</div>
 				<?php include "include/footer.php"; ?>
+			</div>
+			<div class="modal" id="myModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<!-- Modal Header -->
+						<div class="modal-header">
+							<h4 class="modal-title">Localización <span class="ipModal"></span></h4>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<!-- Modal body -->
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-6"><span><b>País: </b></span><span class="codigoPais"></span> - <span class="pais"></span></div>
+								<div class="col-md-6"><span><b>Región: </b></span><span class="codigoSubdivision"></span> - <span class="subdivision"></span></div>
+							</div>
+							<div class="row">
+								<div class="col-md-6"><span><b>Ciudad: </b></span><span class="codigoCiudad"></span> - <span class="ciudad"></span></div>
+								<div class="col-md-6"><span><b>Radio: </b></span><span class="radio"></span></div>
+							</div>
+							<div class="row">
+								<div class="col-md-6"><span><b>Latitud: </b></span><span class="latitud"></span></div>
+								<div class="col-md-6"><span><b>Longitud: </b></span><span class="longitud"></span></div>
+							</div>
+						</div>
+						<!-- Modal footer -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<?php include "include/scroll.php"; ?>

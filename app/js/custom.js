@@ -33,6 +33,7 @@ $(document).ready(function () {
 				if ( $(".pagina-registro").length > 0 ) {
 					$(".unidadTiempoEstadisticas").html(arrayConfiguracion["unidadTiempo"]);
 					tablaRegistro(arrayConfiguracion);
+					localizarIP();
 				}
 				if ( $(".pagina-inicio").length > 0 ) {
 					actualizarInicio(arrayConfiguracion)
@@ -568,7 +569,7 @@ $(document).ready(function () {
 						});
 						setTimeout(function() {
 							window.location.reload();
-						}, 5000);
+						}, 2000);
 					}else{
 						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
 							$(".errorGeneral").slideUp(500);
@@ -867,7 +868,41 @@ $(document).ready(function () {
 		});
 		table.select();
 	}
-
+	function localizarIP(){
+		$('body').on('click', '.localizarIP', function (){
+			var ip = $(this).text();
+			var form_data = new FormData();
+			form_data.append('ip', ip);
+			$.ajax({
+				url: "acciones/phpLocalizarIP.php",
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				type: "POST",
+				success: function (data) {
+					if(data != "ko"){
+						var data = JSON.parse(data);
+						$(".ipModal").text(ip);
+						$(".codigoPais").text(data[0]["codigoPais"]);
+						$(".pais").text(data[0]["pais"]);
+						$(".codigoSubdivision").text(data[0]["codigoSubdivision"]);
+						$(".subdivision").text(data[0]["subdivision"]);
+						$(".codigoCiudad").text(data[0]["codigoCiudad"]);
+						$(".ciudad").text(data[0]["ciudad"]);
+						$(".radio").text(data[0]["radio"]);
+						$(".latitud").text(data[0]["latitud"]);
+						$(".longitud").text(data[0]["longitud"]);
+						$("#myModal").modal();
+					}else{
+						$(".ipNo").fadeTo(2000, 500).slideUp(500, function(){
+							$(".ipNo").slideUp(500);
+						});
+					}
+				}
+			});
+		});
+	}
 	/*** Página Estadisticas ***/
 	function graficaCanales(){
 		var semanaAnterior = new Date();
@@ -1344,13 +1379,13 @@ $(document).ready(function () {
 		$('body,html').animate({scrollTop : 0}, 500);
 	}
 	function colorearIP(ip_permitida, data, row){
+		var resultado;
 		if(ip_permitida == ""){
 			resultado = "Permitida: "+data;
 			$(row).css('background-color', '#bde3b1');
 		}else{
 			var ips = separar_comas(ip_permitida);
 			var ip = partirIP(data);
-			var resultado;
 			var row = row;
 			var permitida = "no";
 			if(ips != null){
@@ -1385,7 +1420,9 @@ $(document).ready(function () {
 		var resultado;
 		var row = row;
 		var permitida = "no";
-		if(ips != null){
+		if(ip_permitida == ""){
+			resultado = "Permitida: <a class='localizarIP'>"+data+"</a>";
+		}else if(ips != null){
 			for (var i = 0; i < ips.length; i++) {
 				if(ips[i]==ip){
 					permitida = "si";
