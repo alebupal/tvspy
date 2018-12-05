@@ -1,10 +1,10 @@
-## [2.0] - 
+## [2.0] - 2018-12-05
 - Añadidos colores a registro según este o no esté permitida la conexión.
 - En configuración se pueden añadir las ip permitidas
 - Localización de ip
 - Reestructuración configuración
 - Reestructuración menú
-- Actualizada plantilla base de bootstrap
+- Actualizada plantilla base de Bootstrap
 - Añadida posibilidad de backup y restaurar la base de datos.
 - Reestructuración del fichero dockerfile para mejorar compatibilidad
 
@@ -21,7 +21,7 @@
 - Correción notificación tiempo de más
 
 ## [1.2.1] - 2018-06-01
-- Correción, no salía la fecha en el mensaje de telegram
+- Correción, no salía la fecha en el mensaje de Telegram
 
 ## [1.2.0] - 2018-06-01
 - El tiempo en la base de datos ahora se guarda en segundos
@@ -31,7 +31,7 @@
 ## [1.1.0] - 2018-05-31
 - Añadir filtro de fechas en las gráficas
 - Evitar que se meta en la base de datos cuando TvHeadend esté escaneando
-- Corrección para levantar el servicio mysql y apache
+- Corrección para levantar el servicio MySQL y apache
 
 ## [1.0.0] - 2018-05-25
 - Estable

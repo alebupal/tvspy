@@ -7,12 +7,12 @@ La aplicación está realizada en PHP, MYSQL y JS. Hay un cron que se ejecuta ca
 ## Características
 - Ver quien está conectado actualmente
 - Registro de todas las reproducciones
-- Notificación en telegram de cuando alguien empieza o para de reproducir
+- Notificación en Telegram de cuando alguien empieza o para de reproducir
 - Localización de ip (This product includes GeoLite2 data created by MaxMind, available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.)
 - Poner ip permitidas para localizar pirateo de TvHeadend rápidamente
 - Estadísticas de uso
 - Estadísticas de conexiones
-- Notificación por telegram cuando alguien lleva x tiempo reproduciendo.
+- Notificación por Telegram cuando alguien lleva x tiempo reproduciendo.
 
 ## Instalación
 Para utilizarla basta con instalar la imagen de docker https://hub.docker.com/r/alebupal/tvspy/ y configurar la aplicación con la ip y puerto de TvHeadend en la opción configuración.
