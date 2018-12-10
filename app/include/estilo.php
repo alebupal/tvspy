@@ -1,4 +1,4 @@
-<!-- Bootstrap core CSS-->
+<link rel="shortcut icon" type="image/ico" href="img/favicon.ico"/>
 <!-- Bootstrap core CSS-->
 <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 

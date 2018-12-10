@@ -1,8 +1,24 @@
 $(document).ready(function () {
 	var arrayConfiguracion = new Array();
+	var version = "2.0.0";
 
+	comprobarVersion(version);
 	gestionMenu();
 	cargarConfiguracion(arrayConfiguracion);
+
+	function comprobarVersion(version){
+		$.ajax({
+			type: "GET",
+			dataType:'json',
+			url: "https://cdn.jsdelivr.net/gh/alebupal/tvspy@master/version.json",
+			success: function (data) {
+				console.log(data["version"]);
+				if(data["version"]!=version){
+					$(".nuevaVersion").text(" (Nueva versión disponible)")
+				}
+			}
+		});
+	}
 
 	function cargarConfiguracion(arrayConfiguracion){
 		$.ajax({

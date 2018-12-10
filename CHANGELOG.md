@@ -1,4 +1,4 @@
-## [2.0] - 2018-12-05
+## [2.0.0] - 2018-12-05
 - Añadidos colores a registro según este o no esté permitida la conexión.
 - En configuración se pueden añadir las ip permitidas
 - Localización de ip
@@ -6,7 +6,9 @@
 - Reestructuración menú
 - Actualizada plantilla base de Bootstrap
 - Añadida posibilidad de backup y restaurar la base de datos.
+- Compatibilidad si TvHeadend está en inglés.
 - Reestructuración del fichero dockerfile para mejorar compatibilidad
+- Comprueba si hay una versión nueva
 
 ## [1.2.4] - 2018-06-21
 - La API de TVHeadend repite id, por lo que a partir de ahora para identificar las reproducciones se utiliza el id y el tiempo de Inicio
