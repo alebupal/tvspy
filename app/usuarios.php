@@ -12,6 +12,9 @@
 	<body id="page-top" class="pagina-usuarios">
 		<?php include "include/navbar.php"; ?>
 		<div id="wrapper">
+			<?php
+				$menu = "tvheadend";
+			?>
 			<?php include "include/menu.php"; ?>
 			<div id="content-wrapper">
 				<div class="container-fluid">

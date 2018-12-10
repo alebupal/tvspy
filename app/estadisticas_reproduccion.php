@@ -12,6 +12,9 @@
 	<body id="page-top" class="pagina-estadisticas-reproduccion">
 		<?php include "include/navbar.php"; ?>
 		<div id="wrapper">
+			<?php
+				$menu = "estadisticas";
+			?>
 			<?php include "include/menu.php"; ?>
 			<div id="content-wrapper">
 				<div class="container-fluid">

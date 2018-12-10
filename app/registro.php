@@ -12,6 +12,9 @@
 	<body id="page-top" class="pagina-registro">
 		<?php include "include/navbar.php"; ?>
 		<div id="wrapper">
+			<?php
+				$menu = "registro";
+			?>
 			<?php include "include/menu.php"; ?>
 			<div id="content-wrapper">
 				<div class="col-lg-12">

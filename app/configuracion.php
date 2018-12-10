@@ -10,6 +10,9 @@
 		<?php include "include/estilo.php"; ?>
 	</head>
 	<body id="page-top" class="pagina-configuracion">
+		<?php
+			$menu = "configuracion";
+		?>
 		<?php include "include/navbar.php"; ?>
 		<div id="wrapper">
 			<?php include "include/menu.php"; ?>
