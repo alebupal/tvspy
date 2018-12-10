@@ -4,6 +4,8 @@ Aplicación web para monitorizar TvHeadend
 
 La aplicación está realizada en PHP, MYSQL y JS. Hay un cron que se ejecuta cada cierto tiempo, el cual va guardando los registros que hay en la API de TvHeadend, después con estos datos se elaboran las estadísticas. Permite enviar notificaciones a Telegram.
 
+Para que funcione todo correctamente TvHeadend debe estar en español
+
 ## Características
 - Ver quien está conectado actualmente
 - Registro de todas las reproducciones

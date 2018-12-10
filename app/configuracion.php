@@ -104,6 +104,7 @@
 										</div>
 										<div class="mb-4 mt-2">
 											<a class="btn btn-info btn-block text-white btn-sm btnTestTvheadend">Comprobar conexion</a>
+											<small>Para que funcione todo correctamente TvHeadend debe estar en español</small>
 											<small>Hay que guardar abajo para aplicar los cambios</small>
 										</div>
 									</div>
