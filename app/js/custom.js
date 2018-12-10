@@ -140,7 +140,7 @@ $(document).ready(function () {
 					data = $.parseJSON(data);
 					var html="";
 					for (var i = 0; i < data["totalCount"]; i++) {
-						if(data["entries"][i]["state"]=="Funcionando"){
+						if(data["entries"][i]["state"]=="Funcionando" || data["entries"][i]["state"]=="Running"){
 							usuario = "";
 							if(data["entries"][i]["username"]== undefined){
 								usuario = "Sin usuario";
