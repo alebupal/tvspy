@@ -56,7 +56,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 		$obtenerReproduccion = Util::obtenerReproduccion($reproduccionesActivas["entries"][$i]["id"]);
 		if($obtenerReproduccion != false){
 			echo Util::fechaActual().": Actualiza tiempo reproducción ".$reproduccionesActivas["entries"][$i]["id"]."\n";
-			Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion);
+			Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion, $reproduccionesActivas["entries"][$i]["errors"]);
 		}
 	}
 

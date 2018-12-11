@@ -833,7 +833,44 @@ $(document).ready(function () {
 				[5, 10, 25, 50, 100, "Todo"] // change per page values here
 			],
 			buttons: [
-				'colvis',
+				{
+					extend: 'print',
+					text: 'Imprimir',
+					autoPrint: false,
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				{
+					extend: 'csv',
+					text: 'CSV',
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				{
+					extend: 'pdf',
+					text: 'PDF',
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				{
+					extend: 'copy',
+					text: 'Copiar',
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				'colvis'
 			],
 			order: [[ 2, "desc" ]],
 			columns: [
@@ -881,6 +918,12 @@ $(document).ready(function () {
 						}
 					});
 				});
+			},
+			i18n: {
+				create: {
+					button: "print",
+					title:  "Imprimir",
+				},
 			}
 		});
 		table.select();

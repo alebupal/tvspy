@@ -687,7 +687,7 @@ class Util{
 			}
 		}
 	}
-	static function actualizarTiempoReproduccion($reproduccion, $configuracion){
+	static function actualizarTiempoReproduccion($reproduccion, $configuracion, $errores){
 		$inicio = $reproduccion["inicio"];
 		$fechaActual =  self::fechaActual();
 		$segundos = (strtotime($fechaActual) - strtotime($inicio));
@@ -701,11 +701,12 @@ class Util{
 				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
 			)
 		);
-		$update = "UPDATE registro SET tiempo=:tiempo WHERE idReproduccion=:idReproduccion";
+		$update = "UPDATE registro SET tiempo=:tiempo, errores=:errores WHERE idReproduccion=:idReproduccion";
 		$statement = $db->prepare($update);
 		// Bind parameters to statement variables
 		$statement->bindParam(':idReproduccion', $reproduccion["idReproduccion"]);
 		$statement->bindParam(':tiempo', $segundos);
+		$statement->bindParam(':tiempo', $errores);
 
 		$statement->execute();
 		$statement->closeCursor();
