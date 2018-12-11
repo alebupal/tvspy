@@ -11,7 +11,7 @@
 			<span>Registro</span>
 		</a>
 	</li>
-	<li <?php if($menu == "estadisticas"){echo "class='nav-item active'";}else {echo "class='nav-item'";}	?> >
+	<li <?php if($menu == "estadisticas"){echo "class='nav-item dropdown active'";}else {echo "class='nav-item dropdown'";}	?> >
 		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fas fa-chart-area"></i>
 			<span>Estadísticas</span>
@@ -21,7 +21,7 @@
 			<a class="dropdown-item" href="estadisticas_conexion.php">Conexiones</a>
 		</div>
 	</li>
-	<li <?php if($menu == "tvheadend"){echo "class='nav-item active'";}else {echo "class='nav-item'";}	?> >
+	<li <?php if($menu == "tvheadend"){echo "class='nav-item dropdown active'";}else {echo "class='nav-item dropdown'";}	?> >
 		<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			<i class="fas fa-tv"></i>
 			<span>TvHeadend</span>
