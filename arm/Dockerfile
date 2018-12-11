@@ -1,4 +1,4 @@
-FROM phusion/baseimage
+FROM arm64v8/ubuntu:16.04
 
 MAINTAINER alebupal <alebupal@gmail.com>
 
@@ -22,16 +22,14 @@ RUN groupmod -g ${BOOT2DOCKER_GID} staff
 
 # Install packages
 ENV DEBIAN_FRONTEND noninteractive
-
 RUN apt-get update && \
-	apt-get upgrade -y && \
-	add-apt-repository -y ppa:ondrej/php && \
-	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C && \
-	apt-get update && \
-	apt-get -y upgrade && \
-	apt-get -y install nano supervisor wget git apache2 php-xdebug libapache2-mod-php mysql-server php-mysql pwgen php-apcu php7.0-mcrypt php-gd php-xml php-mbstring php-gettext zip unzip php-zip curl php-curl && \
-	apt-get -y autoremove && \
-	echo "ServerName localhost" >> /etc/apache2/apache2.conf
+  apt-get install -y software-properties-common python-software-properties && \
+  apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C && \
+  apt-get update && \
+  apt-get -y upgrade && \
+  apt-get -y install supervisor wget git apache2 php-xdebug libapache2-mod-php mariadb-server php-mysql pwgen php-apcu php7.0-mcrypt php-gd php-xml php-mbstring php-gettext zip unzip php-zip curl php-curl && \
+  apt-get -y autoremove && \
+  echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # needed for phpMyAdmin
 RUN phpenmod mcrypt
@@ -53,8 +51,8 @@ ADD supporting_files/mysqld_innodb.cnf /etc/mysql/conf.d/mysqld_innodb.cnf
 RUN sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 # Set PHP timezones to Europe/Madrid
-RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/apache2/php.ini
-RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/cli/php.ini
+RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.0/apache2/php.ini
+RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.0/cli/php.ini
 
 #Cambiar zona horaria
 RUN apt update && apt install -y tzdata && \
