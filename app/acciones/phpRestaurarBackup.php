@@ -2,11 +2,13 @@
 	require_once "../clases/Util.php";
 
 	if ( $_FILES['basedatos']['size'] <= 0) {
-		echo 'ko';
-	}else if ( 0 <= $_FILES['basedatos']['error'] ) {
-		echo 'ko';
-	}else if (!isset_file('input_name')) {
-		echo 'ko';
+		echo 'ko1';
+	}else if ( $_FILES['basedatos']['error'] > 0  ) {
+		echo 'ko2';
+	}elseif ( 	!file_exists($_FILES['basedatos']['tmp_name']) ||
+				!is_uploaded_file($_FILES['basedatos']['tmp_name'])
+			){
+		echo 'ko3';
 	}else {
 		$path = $_FILES['basedatos']['name'];
 		$ext = pathinfo($path, PATHINFO_EXTENSION);
