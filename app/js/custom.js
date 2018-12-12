@@ -12,7 +12,7 @@ $(document).ready(function () {
 			dataType:'json',
 			url: "https://cdn.jsdelivr.net/gh/alebupal/tvspy@master/version.json",
 			success: function (data) {
-				console.log(data["version"]);
+				//console.log(data["version"]);
 				if(data["version"]!=version){
 					$(".nuevaVersion").text(" (Nueva versión disponible)")
 				}
@@ -26,6 +26,7 @@ $(document).ready(function () {
 			url: "acciones/phpCagarConfiguracion.php",
 			success: function (data) {
 				arrayConfiguracion = $.parseJSON(data);
+				console.log(arrayConfiguracion);
 				if ( $(".pagina-configuracion").length > 0 ) {
 					cargarConfiguracionFormulario(arrayConfiguracion);
 					guardarConfiguracionFormulario();
@@ -163,6 +164,11 @@ $(document).ready(function () {
 							}else{
 								usuario = data["entries"][i]["username"];
 							}
+							if(data["entries"][i]["hostname"]== undefined){
+								hostname = "localhost";
+							}else{
+								hostname = data["entries"][i]["hostname"];
+							}
 							fechaInicio=data["entries"][i]["start"];
 
 							html +='<div class="col-xl-4 col-sm-6 mb-3">'+
@@ -172,7 +178,7 @@ $(document).ready(function () {
 							'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
 							'<span><b>Inicio</b>: '+unixToDate(fechaInicio)+'</span><br>'+
 							'<span><b>State</b>: '+data["entries"][i]["state"]+'</span><br>'+
-							'<span><b>IP</b>: '+data["entries"][i]["hostname"]+'</span><br>'+
+							'<span><b>IP</b>: '+hostname+'</span><br>'+
 							'<span><b>Service</b>: '+data["entries"][i]["service"]+'</span><br>'+
 							'<span><b>Profile</b>: '+data["entries"][i]["profile"]+'</span><br>'+
 							'<span><b>Errors</b>: '+data["entries"][i]["errors"]+'</span>'+
@@ -326,11 +332,11 @@ $(document).ready(function () {
 			}
 		}
 
-		if(arrayConfiguracion["notificacion_telegram"]==1){
-			$("#notificacion_telegram").prop('checked', true);
+		if(arrayConfiguracion["telegram_notificacion"]==1){
+			$("#telegram_notificacion").prop('checked', true);
 			$("#configuracionTelegram").show();
-		}else if(arrayConfiguracion["notificacion_telegram"]==0){
-			$("#notificacion_telegram").prop('checked', false);
+		}else if(arrayConfiguracion["telegram_notificacion"]==0){
+			$("#telegram_notificacion").prop('checked', false);
 			$("#configuracionTelegram").hide();
 		}
 
@@ -366,6 +372,22 @@ $(document).ready(function () {
 			$("#div_telegram_conexion").hide();
 		}
 
+		if(arrayConfiguracion["telegram_empieza_grabacion"]==1){
+			$("#telegram_empieza_grabacion").prop('checked', true);
+			$("#div_telegram_empieza_grabacion").show();
+		}else if(arrayConfiguracion["telegram_empieza_grabacion"]==0){
+			$("#telegram_empieza_grabacion").prop('checked', false);
+			$("#div_telegram_empieza_grabacion").hide();
+		}
+
+		if(arrayConfiguracion["telegram_para_grabacion"]==1){
+			$("#telegram_para_grabacion").prop('checked', true);
+			$("#div_telegram_para_grabacion").show();
+		}else if(arrayConfiguracion["telegram_para_grabacion"]==0){
+			$("#telegram_para_grabacion").prop('checked', false);
+			$("#div_telegram_para_grabacion").hide();
+		}
+
 		if(arrayConfiguracion["unidadTiempo"]=="Horas"){
 			$("#unidadTiempo option[value='Horas']").attr('selected',true);
 			$("#unidadTiempo option[value='Minutos']").attr('selected',false);
@@ -384,13 +406,16 @@ $(document).ready(function () {
 		$("#texto_para").val(arrayConfiguracion["texto_para"]);
 		$("#texto_tiempo").val(arrayConfiguracion["texto_tiempo"]);
 		$("#texto_conexion").val(arrayConfiguracion["texto_conexion"]);
+		$("#texto_empieza_grabacion").val(arrayConfiguracion["texto_empieza_grabacion"]);
+		$("#texto_para_grabacion").val(arrayConfiguracion["texto_para_grabacion"]);
+		$("#texto_conexion").val(arrayConfiguracion["texto_conexion"]);
 		$("#telegram_tiempo_limite").val(arrayConfiguracion["telegram_tiempo_limite"]);
 		$("#bot_token").val(arrayConfiguracion["bot_token"]);
 		$("#id_chat").val(arrayConfiguracion["id_chat"]);
 	}
 	function guardarConfiguracionFormulario(){
-		$("#notificacion_telegram").click(function() {
-			if ($('#notificacion_telegram').is(":checked")){
+		$("#telegram_notificacion").click(function() {
+			if ($('#telegram_notificacion').is(":checked")){
 				$("#configuracionTelegram").show();
 			}else{
 				$("#configuracionTelegram").hide();
@@ -428,6 +453,23 @@ $(document).ready(function () {
 				$("#div_telegram_conexion").hide();
 			}
 		});
+
+		$("#telegram_empieza_grabacion").click(function() {
+			if ($('#telegram_empieza_grabacion').is(":checked")){
+				$("#div_telegram_empieza_grabacion").show();
+			}else{
+				$("#div_telegram_empieza_grabacion").hide();
+			}
+		});
+		
+		$("#telegram_para_grabacion").click(function() {
+			if ($('#telegram_para_grabacion').is(":checked")){
+				$("#div_telegram_para_grabacion").show();
+			}else{
+				$("#div_telegram_para_grabacion").hide();
+			}
+		});
+
 		$('#formConfiguracion').on('submit', function(e){
 			e.preventDefault();
 			var form = $('#formConfiguracion')[0];

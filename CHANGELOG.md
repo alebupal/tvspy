@@ -9,6 +9,8 @@
 - Compatibilidad si TvHeadend está en inglés.
 - Reestructuración del fichero dockerfile para mejorar compatibilidad
 - Comprueba si hay una versión nueva
+- Notificación por telegram cuando empieza o para de grabar
+- Se registra cuando se graba algo, en la opción de reproductor sale como: "Grabando:"
 
 ## [1.2.4] - 2018-06-21
 - La API de TVHeadend repite id, por lo que a partir de ahora para identificar las reproducciones se utiliza el id y el tiempo de Inicio

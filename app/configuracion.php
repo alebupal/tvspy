@@ -155,8 +155,8 @@
 										<div class="form-row">
 											<div class="form-group col-md-12">
 												<div class="form-check">
-													<input class="form-check-input" type="checkbox" value="true" name="notificacion_telegram" id="notificacion_telegram">
-													<label class="form-check-label" for="notificacion_telegram">Notificaciones Telegram</label>
+													<input class="form-check-input" type="checkbox" value="true" name="telegram_notificacion" id="telegram_notificacion">
+													<label class="form-check-label" for="telegram_notificacion">Notificaciones Telegram</label>
 												</div>
 											</div>
 										</div>
@@ -203,6 +203,36 @@
 												<div id="div_texto_para">
 													<label>%%usuario%%, %%canal%%, %%fecha%%, %%reproductor%%, %%hostname%%</label>
 													<textarea class="form-control" name="texto_para" id="texto_para" rows="3"></textarea>
+												</div>
+											</div>
+										</div>
+										<div class="form-row">
+											<div class="form-group col-md-6">
+												<div class="form-row">
+													<div class="form-group col-md-12">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="true" name="telegram_empieza_grabacion" id="telegram_empieza_grabacion">
+															<label class="form-check-label" for="telegram_empieza_grabacion">Notificaciones para empezar grabación Telegram</label>
+														</div>
+													</div>
+												</div>
+												<div id="div_telegram_empieza_grabacion">
+													<label>%%usuario%%, %%canal%%, %%fecha%%, %%programa%%, %%hostname%%</label>
+													<textarea class="form-control" name="texto_empieza_grabacion" id="texto_empieza_grabacion" rows="3"></textarea>
+												</div>
+											</div>
+											<div class="form-group col-md-6">
+												<div class="form-row">
+													<div class="form-group col-md-12">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="true" name="telegram_para_grabacion" id="telegram_para_grabacion">
+															<label class="form-check-label" for="telegram_para_grabacion">Notificaciones parar para grabación Telegram</label>
+														</div>
+													</div>
+												</div>
+												<div id="div_telegram_para_grabacion">
+													<label>%%usuario%%, %%canal%%, %%fecha%%, %%programa%%, %%hostname%%</label>
+													<textarea class="form-control" name="texto_para_grabacion" id="texto_para_grabacion" rows="3"></textarea>
 												</div>
 											</div>
 										</div>

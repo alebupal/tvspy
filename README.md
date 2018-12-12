@@ -8,8 +8,8 @@ Para asegurar un mejor funcionamiento es recomendable tener TvHeadend en españo
 
 ## Características
 - Ver quien está conectado actualmente
-- Registro de todas las reproducciones
-- Notificación en Telegram de cuando alguien empieza o para de reproducir
+- Registro de todas las reproducciones y grabaciones
+- Notificación en Telegram de cuando alguien empieza o para de reproducir o grabar
 - Localización de ip (This product includes GeoLite2 data created by MaxMind, available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.)
 - Poner ip permitidas para localizar pirateo de TvHeadend rápidamente
 - Estadísticas de uso
