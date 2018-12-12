@@ -4,8 +4,8 @@
  */
 class Util{
 	public static $servidor= "localhost";
-	public static $usuarioBD= "tvspy";
-	public static $contrasenaBD = "tvspy";
+	public static $usuarioBD= "root";
+	public static $contrasenaBD = "";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -42,7 +42,7 @@ class Util{
 						)
 					);
 		// FETCH_ASSOC
-		$update = "UPDATE configuracion SET 
+		$update = "UPDATE configuracion SET
 											ip = :ip,
 											puerto = :puerto,
 											usuario = :usuario,
@@ -687,7 +687,7 @@ class Util{
 							$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza_grabacion"]);
 							$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 							$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
-							$mensaje = str_replace("%%programa%%",$title,$mensaje);
+							$mensaje = str_replace("%%programa%%",str_replace("Grabando:","",$reproduccion["title"]),$mensaje);
 							$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
 							//echo $configuracion["texto_empieza_grabacion"];
 							//var_dump($mensaje);
@@ -712,7 +712,7 @@ class Util{
 					$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_conexion"]);
 					$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 					$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
-					$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
+					$mensaje = str_replace("%%programa%%",str_replace("Grabando:","",$title),$mensaje);
 					$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
 					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 				}
@@ -723,14 +723,14 @@ class Util{
 					$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza_grabacion"]);
 					$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 					$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
-					$mensaje = str_replace("%%programa%%",$title,$mensaje);
+					$mensaje = str_replace("%%programa%%",str_replace("Grabando:","",$title),$mensaje);
 					$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
 					//echo $configuracion["texto_empieza_grabacion"];
 					//var_dump($mensaje);
 					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 				}
 			}
-			
+
 		}
 	}
 	static function actualizarTiempoReproduccion($reproduccion, $configuracion, $errores){
@@ -836,15 +836,15 @@ class Util{
 					$mensaje = str_replace("%%reproductor%%",$reproduccion["reproductor"],$mensaje);
 					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
 					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
-				}elseif(strpos($reproduccion["reproductor"], 'Grabando:') !== false){					 
+				}elseif(strpos($reproduccion["reproductor"], 'Grabando:') !== false){
 					//Es grabación
 					$mensaje = str_replace("%%usuario%%",$reproduccion["usuario"],$configuracion["texto_para_grabacion"]);
 					$mensaje = str_replace("%%canal%%",$reproduccion["canal"],$mensaje);
 					$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
-					$mensaje = str_replace("%%programa%%",$reproduccion["reproductor"],$mensaje);
+					$mensaje = str_replace("%%programa%%",str_replace("Grabando:","",$reproduccion["reproductor"]),$mensaje);
 					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
 					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
-					
+
 				}
 			}elseif((int)$configuracion["telegram_empieza_grabacion"]!= 0){
 				if(strpos($reproduccion["reproductor"], 'Grabando:') !== false) {
@@ -852,7 +852,7 @@ class Util{
 					$mensaje = str_replace("%%usuario%%",$reproduccion["usuario"],$configuracion["texto_para_grabacion"]);
 					$mensaje = str_replace("%%canal%%",$reproduccion["canal"],$mensaje);
 					$mensaje = str_replace("%%fecha%%",$fechaActual,$mensaje);
-					$mensaje = str_replace("%%programa%%",$reproduccion["reproductor"],$mensaje);
+					$mensaje = str_replace("%%programa%%",str_replace("Grabando:","",$reproduccion["reproductor"]),$mensaje);
 					$mensaje = str_replace("%%hostname%%",$reproduccion["hostname"],$mensaje);
 					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 				}
@@ -1063,7 +1063,7 @@ class Util{
 	}
 	static function partirIP($ip){
 		$ipfinal="";
-		if($ip != "localhost"){			
+		if($ip != "localhost"){
 			$partesIP = explode('.', $ip);
 			$ipfinal = $partesIP[0].".".$partesIP[1].".".$partesIP[2];
 		}

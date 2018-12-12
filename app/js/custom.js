@@ -26,7 +26,7 @@ $(document).ready(function () {
 			url: "acciones/phpCagarConfiguracion.php",
 			success: function (data) {
 				arrayConfiguracion = $.parseJSON(data);
-				console.log(arrayConfiguracion);
+				//console.log(arrayConfiguracion);
 				if ( $(".pagina-configuracion").length > 0 ) {
 					cargarConfiguracionFormulario(arrayConfiguracion);
 					guardarConfiguracionFormulario();
@@ -170,11 +170,14 @@ $(document).ready(function () {
 								hostname = data["entries"][i]["hostname"];
 							}
 							fechaInicio=data["entries"][i]["start"];
-
+							accion = "reproduciendo";
+							if(data["entries"][i]["title"].indexOf("DVR:") > -1){
+								accion = "grabando";
+							}
 							html +='<div class="col-xl-4 col-sm-6 mb-3">'+
 							'<div class="card">'+
 							'<div class="card-body">'+
-							'<h6 class="card-title"><b>'+usuario+'</b> está reproduciendo <b>'+data["entries"][i]["channel"]+'</b></h6>'+
+							'<h6 class="card-title"><b>'+usuario+'</b> está '+accion+' <b>'+data["entries"][i]["channel"]+'</b></h6>'+
 							'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
 							'<span><b>Inicio</b>: '+unixToDate(fechaInicio)+'</span><br>'+
 							'<span><b>State</b>: '+data["entries"][i]["state"]+'</span><br>'+
@@ -461,7 +464,7 @@ $(document).ready(function () {
 				$("#div_telegram_empieza_grabacion").hide();
 			}
 		});
-		
+
 		$("#telegram_para_grabacion").click(function() {
 			if ($('#telegram_para_grabacion').is(":checked")){
 				$("#div_telegram_para_grabacion").show();
@@ -481,7 +484,7 @@ $(document).ready(function () {
 				contentType : false,
 				processData : false,
 				success: function(data) {
-					console.log(data);
+					//console.log(data);
 					irArriba();
 					if(data==true){
 						console.log("Configuración guardada correctamente");
@@ -513,7 +516,7 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
-					console.log("Mensaje enviado");
+					//console.log("Mensaje enviado");
 					$(".testEnviado").fadeTo(2000, 500).slideUp(500, function(){
 						$(".testEnviado").slideUp(500);
 					});
@@ -563,7 +566,7 @@ $(document).ready(function () {
 	function btnAnadirIP(){
 		$( ".btnAnadirIP" ).click(function() {
 			numIP = $(".input_ip").length;
-			console.log(numIP);
+			//console.log(numIP);
 			var input_ip = '<div class="form-group col-md-3">'+
 							'<input type="text" class="form-control input_ip" id="ip_'+numIP+'" name="ip_'+numIP+'" placeholder="192.168.1">'+
 						'</div>'+
@@ -1481,13 +1484,13 @@ $(document).ready(function () {
 		$('body,html').animate({scrollTop : 0}, 500);
 	}
 	function colorearIP(ip_permitida, data, row){
+		var ip = partirIP(data);
 		var resultado;
-		if(ip_permitida == ""){
+		if(ip_permitida == "" || ip == ""){
 			resultado = "Permitida: "+data;
 			$(row).css('background-color', '#bde3b1');
 		}else{
 			var ips = separar_comas(ip_permitida);
-			var ip = partirIP(data);
 			var row = row;
 			var permitida = "no";
 			if(ips != null){
@@ -1522,7 +1525,7 @@ $(document).ready(function () {
 		var resultado;
 		var row = row;
 		var permitida = "no";
-		if(ip_permitida == ""){
+		if(ip_permitida == ""  || ip == ""){
 			resultado = "Permitida: <a class='localizarIP'>"+data+"</a>";
 		}else if(ips != null){
 			for (var i = 0; i < ips.length; i++) {
@@ -1546,8 +1549,11 @@ $(document).ready(function () {
 		return resultado;
 	}
 	function partirIP(ip){
-		partesIP = ip.split(".");
-		ipfinal = partesIP[0]+"."+partesIP[1]+"."+partesIP[2];
+		ipfinal="";
+		if(ip != "localhost"){
+			partesIP = ip.split(".");
+			ipfinal = partesIP[0]+"."+partesIP[1]+"."+partesIP[2];
+		}
 		return ipfinal;
 	}
 	function separar_comas(CommaSepStr) {

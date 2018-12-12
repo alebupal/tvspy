@@ -6,8 +6,7 @@
 -- Tiempo de generación: 25-05-2018 a las 17:04:50
 -- Versión del servidor: 10.1.8-MariaDB
 -- Versión de PHP: 7.2.13-1
-create database tvspy;
-use tvspy;
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+02:00";
@@ -83,9 +82,9 @@ INSERT INTO `configuracion` (
 								`telegram_empieza`,
 								`telegram_para`,
 								`telegram_tiempo`,
-								`telegram_tiempo_limite`, 
+								`telegram_tiempo_limite`,
 								`telegram_conexion`,
-								`telegram_empieza_grabacion`, 
+								`telegram_empieza_grabacion`,
 								`telegram_para_grabacion`,
 								`texto_empieza`,
 								`texto_para`,
