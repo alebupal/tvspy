@@ -6,7 +6,8 @@
 -- Tiempo de generación: 25-05-2018 a las 17:04:50
 -- Versión del servidor: 10.1.8-MariaDB
 -- Versión de PHP: 7.2.13-1
-
+create database tvspy;
+use tvspy;
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+02:00";
