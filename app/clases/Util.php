@@ -687,7 +687,7 @@ class Util{
 							$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza_grabacion"]);
 							$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 							$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
-							$mensaje = str_replace("%%programa%%",str_replace("Grabando:","",$reproduccion["title"]),$mensaje);
+							$mensaje = str_replace("%%programa%%",str_replace("DVR:","",$reproduccion["title"]),$mensaje);
 							$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
 							//echo $configuracion["texto_empieza_grabacion"];
 							//var_dump($mensaje);
@@ -723,7 +723,7 @@ class Util{
 					$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza_grabacion"]);
 					$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 					$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
-					$mensaje = str_replace("%%programa%%",str_replace("Grabando:","",$title),$mensaje);
+					$mensaje = str_replace("%%programa%%",str_replace("DVR:","",$reproduccion["title"]),$mensaje);
 					$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
 					//echo $configuracion["texto_empieza_grabacion"];
 					//var_dump($mensaje);
