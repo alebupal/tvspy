@@ -1476,9 +1476,11 @@ $(document).ready(function () {
 	}
 	function abrirNav(){
 		$(".navbar-nav").removeClass("toggled");
+		$("body").removeClass("sidebar-toggled");
 	}
 	function cerrarNav(){
 		$(".navbar-nav").addClass("toggled");
+		$("body").addClass("sidebar-toggled");
 	}
 	function irArriba(){
 		$('body,html').animate({scrollTop : 0}, 500);
