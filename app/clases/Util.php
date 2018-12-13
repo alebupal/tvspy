@@ -261,7 +261,7 @@ class Util{
 			)
 		);
 		// FETCH_ASSOC
-		$stmt = $db->prepare("SELECT registro.canal, sum(tiempo) as tiempoTotal, COUNT(1) AS total FROM registro GROUP BY registro.canal HAVING COUNT(1) > 1 ORDER BY tiempoTotal DESC LIMIT 1");
+		$stmt = $db->prepare("SELECT registro.canal, sum(tiempo) as tiempoTotal, COUNT(1) AS total FROM registro GROUP BY registro.canal HAVING COUNT(1) >= 1 ORDER BY tiempoTotal DESC LIMIT 1");
 		// Especificamos el fetch mode antes de llamar a fetch()
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		// Ejecutamos
@@ -280,7 +280,7 @@ class Util{
 			)
 		);
 		// FETCH_ASSOC
-		$stmt = $db->prepare("SELECT registro.usuario, sum(tiempo) as tiempoTotal, COUNT(1) AS total FROM registro GROUP BY registro.usuario HAVING COUNT(1) > 1 ORDER BY tiempoTotal DESC LIMIT 1");
+		$stmt = $db->prepare("SELECT registro.usuario, sum(tiempo) as tiempoTotal, COUNT(1) AS total FROM registro GROUP BY registro.usuario HAVING COUNT(1) >= 1 ORDER BY tiempoTotal DESC LIMIT 1");
 		// Especificamos el fetch mode antes de llamar a fetch()
 		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		// Ejecutamos
