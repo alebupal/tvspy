@@ -20,6 +20,11 @@ mysql -uroot -e "GRANT ALL PRIVILEGES ON *.* TO 'tvspy'@'%' WITH GRANT OPTION"
 mysql -uroot < /var/www/html/bd/bd_inicial.sql
 mysql -uroot -e "GRANT ALL PRIVILEGES ON tvspy.* TO 'tvspy'@'%' IDENTIFIED BY 'tvspy'"
 
+file=/var/www/html/bd_backup/backup.sql
+if [ -e "$file" ]; then
+	mysql -uroot tvspy < $file
+fi 
+
 CREATE_MYSQL_USER=false
 
 if [ -n "$CREATE_MYSQL_BASIC_USER_AND_DB" ] || \
