@@ -880,13 +880,13 @@ class Util{
 		echo "ok";
 	}
 	static function backupZip(){
-		/*Eliminamos copias anteriores*/
-		// $files = glob('../bd_backup/*'); // get all file names
-		// foreach($files as $file){ // iterate files
-		// 	if(is_file($file)){
-		// 		unlink($file); // delete file
-		// 	}
-		// }
+		/*Eliminamos zip nteriores*/
+		$files = glob('../bd_backup/*.zip'); // get all file names
+		foreach($files as $file){ // iterate files
+			if(is_file($file)){
+				unlink($file); // delete file
+			}
+		}
 		$fecha  = self::fechaActualBD();
 		$base_datos = self::$base_datos;
 		$servidor = self::$servidor;
@@ -895,11 +895,7 @@ class Util{
 		$archivo_bd = "../bd_backup/backup.sql";
 		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd;
 		exec($cmd);
-		$archivo_zip = "../bd_backup/".$fecha."_".$base_datos.".zip";
-		if (file_exists($archivo_zip)) {
-			//echo "El fichero $nombre_fichero existe";
-			unlink($archivo_zip);
-		}
+		$archivo_zip = "/var/www/html/bd_backup/".$fecha."_".$base_datos.".zip";
 		$zip = new ZipArchive();
 		if($zip->open($archivo_zip,ZIPARCHIVE::CREATE)===true) {
 			$zip->addFile($archivo_bd);
