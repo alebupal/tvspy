@@ -1,5 +1,4 @@
 #bin/bash
-sleep 5m
 while [ true ]
 do
 	#do whatever you want, use curl, lynx to your page...
