@@ -23,6 +23,7 @@ mysql -uroot -e "GRANT ALL PRIVILEGES ON tvspy.* TO 'tvspy'@'%' IDENTIFIED BY 't
 file=/var/www/html/bd_backup/backup.sql
 if [ -e "$file" ]; then
 	mysql -uroot tvspy < $file
+	echo "Backup importado"
 fi 
 
 CREATE_MYSQL_USER=false

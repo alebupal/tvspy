@@ -1,4 +1,5 @@
 ## [2.0.0] - 2018-12-05
+- Cambios en la BD, anteriores versiones no son compatibles
 - Añadidos colores a registro según este o no esté permitida la conexión.
 - En configuración se pueden añadir las ip permitidas
 - Localización de ip
@@ -11,6 +12,7 @@
 - Comprueba si hay una versión nueva
 - Notificación por telegram cuando empieza o para de grabar
 - Se registra cuando se graba algo, en la opción de reproductor sale como: "Grabando:"
+- Si existe el archivo /var/www/html/bd_backup/backup.sql se importa al principio
 
 ## [1.2.4] - 2018-06-21
 - La API de TVHeadend repite id, por lo que a partir de ahora para identificar las reproducciones se utiliza el id y el tiempo de Inicio
