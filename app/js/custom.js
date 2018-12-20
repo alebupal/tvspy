@@ -1296,111 +1296,13 @@ $(document).ready(function () {
 		obtenerGraficaConexion(fechaInicioCanal,fechaFinCanal);
 	}
 	function btnAplicarGraficaConexion(){
-		var chart;
-		/**
-			* amCharts plugin: auto-generate data and graphs from series
-			* in specific column.
-			* Available parameters:
-			* seriesField - specifies which column holds series
-			* seriesValueField - sepcifies column for series value
-			* seriesGraphTemplate - config to use for auto-generated graphs
-		*/
-		AmCharts.addInitHandler(function(chart) {
-			// do nothing if serisField is not set
-			if (chart.seriesField === undefined)
-				return;
-			// get graphs and dataProvider
-			var graphs, dataSet;
-			if (chart.type === "stock") {
-				// use first panel
-				if (chart.panels[0].stockGraphs === undefined)
-					chart.panels[0].stockGraphs = [];
-				graphs = chart.panels[0].stockGraphs;
-				dataSet = chart.dataSets[0];
-				// check if data set has fieldMappings set
-				if (dataSet.fieldMappings === undefined)
-					dataSet.fieldMappings = [];
-			} else {
-				if (chart.graphs === undefined)
-					chart.graphs = [];
-				graphs = chart.graphs;
-				dataSet = chart;
-			}
-			// collect value fields for graphs that might already exist
-			// in chart config
-			var valueFields = {};
-			if (graphs.length) {
-				for (var i = 0; i < graphs.length; i++) {
-					var g = graphs[i];
-					if (g.id === undefined)
-						g.id = i;
-					valueFields[g.id] = g.valueField;
-				}
-			}
-			// process data
-			var newData = [];
-			var dpoints = {};
-			for (var i = 0; i < dataSet.dataProvider.length; i++) {
-				// get row data
-				var row = dataSet.dataProvider[i];
-				var category = row[dataSet.categoryField];
-				var series = row[chart.seriesField];
-				// create a data point
-				if (dpoints[category] === undefined) {
-					dpoints[category] = {};
-					dpoints[category][dataSet.categoryField] = category;
-					newData.push(dpoints[category]);
-				}
-				// check if we need to generate a graph
-				if (valueFields[series] === undefined) {
-					// apply template
-					var g = {};
-					if (chart.seriesGraphTemplate !== undefined) {
-						g = cloneObject(chart.seriesGraphTemplate);
-					}
-					g.id = series;
-					g.valueField = series;
-					g.title = series;
-					// add to chart's graphs
-					graphs.push(g);
-					valueFields[series] = series;
-					// add fieldMapping to data set on Stock Chart
-					if (chart.type === "stock") {
-						dataSet.fieldMappings.push({
-							"fromField": series,
-							"toField": series
-						});
-					}
-				}
-				// add series value field
-				if (row[chart.seriesValueField] !== undefined)
-					dpoints[category][series] = row[chart.seriesValueField];
-				// add the rest of the value fields (if applicable)
-				for (var field in valueFields) {
-					if (valueFields.hasOwnProperty(field) && row[field] !== undefined)
-						dpoints[category][field] = row[field];
-				}
-			}
-			// set data
-			dataSet.dataProvider = newData;
-			// function which clones object
-			function cloneObject(obj) {
-				if (null == obj || "object" != typeof obj) return obj;
-				var copy = obj.constructor();
-				for (var attr in obj) {
-					if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-				}
-				return copy;
-			}
-		}, ["serial", "stock"]);
-
 		$(".btnAplicarGraficaConexion" ).click(function() {
 			fechaInicioCanal = moment($('#fechaInicioConexion').datepicker("getDate")).format('YYYY-MM-DD');
 			fechaFinCanal = moment($('#fechaFinConexion').datepicker("getDate")).format('YYYY-MM-DD');
-			obtenerGraficaConexion(fechaInicioCanal, fechaFinCanal, chart);
+			obtenerGraficaConexion(fechaInicioCanal, fechaFinCanal);
 		});
 	}
-	function obtenerGraficaConexion(fechaInicioCanal,fechaFinCanal, chart){
+	function obtenerGraficaConexion(fechaInicioCanal,fechaFinCanal){
 		var formData = new FormData();
 		formData.append("fechaInicio", fechaInicioCanal);
 		formData.append("fechaFin", fechaFinCanal);
@@ -1414,45 +1316,222 @@ $(document).ready(function () {
 				$(".cargando").toggle();
 			},
 			success: function (data) {
-				if (chart) {
-					chart.clear();
-				}
-				chart = AmCharts.makeChart( "graficaConexion", {
+				var chart = AmCharts.makeChart("graficaConexion", {
 					"type": "serial",
-					"theme": "light",
-					"dataDateFormat": "YYYY-MM-DD",
-					"seriesField": "tipo",
-					"seriesValueField": "valor",
-					"seriesGraphTemplate": {
-						"lineThickness": 2,
-						"bullet": "round"
-					},
-					"categoryField": "fecha",
-					"categoryAxis": {
-						"parseDates": true,
-						"dashLength": 1,
-						"minorGridEnabled": true
-					},
-					"valueAxes": [{
-						"stackType": "regular"
-					}],
-					"chartScrollbar": {
-						"scrollbarHeight": 12
-					},
-					"chartCursor": {
-						"valueLineEnabled": true,
-						"valueLineBalloonEnabled": true,
-						"fillColor": "#FFFFFF"
-					},
+					"theme": "none",
 					"legend": {
-						"position": "right"
+						"horizontalGap": 10,
+						"maxColumns": 1,
+						"position": "right",
+						"useGraphSettings": true,
+						"markerSize": 10
 					},
 					"dataProvider":  JSON.parse(data),
+					"valueAxes": [{
+						"stackType": "regular",
+						"axisAlpha": 0.3,
+						"gridAlpha": 0
+					}],
+					"graphs": [{
+							"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+							"fillAlphas": 0.8,
+							"labelText": "[[value]]",
+							"lineAlpha": 0.3,
+							"title": "Permitidas",
+							"type": "column",
+							"fillColors": "#bde3b1",
+							"color": "#000000",
+							"lineColor": "#38d900",
+							"lineThickness": 2,
+							"valueField": "permitida"
+						},{
+							"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+							"fillAlphas": 0.8,
+							"labelText": "[[value]]",
+							"lineAlpha": 0.3,
+							"title": "No Permitidas",
+							"type": "column",
+							"fillColors": "#f5bfae",
+							"color": "#000000",
+							"lineColor": "#ea3200",
+							"lineThickness": 2,
+							"valueField": "no-permitida"
+						}
+					],
+					"categoryField": "fecha",
+					"categoryAxis": {
+						"gridPosition": "start",
+						"axisAlpha": 0,
+						"gridAlpha": 0,
+						"position": "left"
+					},
+					"export": {
+						"enabled": true
+					}
 				});
 			}
 		});
 
 	}
+	
+	// function btnAplicarGraficaConexion(){
+	// 	var chart;
+	// 	/**
+	// 		* amCharts plugin: auto-generate data and graphs from series
+	// 		* in specific column.
+	// 		* Available parameters:
+	// 		* seriesField - specifies which column holds series
+	// 		* seriesValueField - sepcifies column for series value
+	// 		* seriesGraphTemplate - config to use for auto-generated graphs
+	// 	*/
+	// 	AmCharts.addInitHandler(function(chart) {
+	// 		// do nothing if serisField is not set
+	// 		if (chart.seriesField === undefined)
+	// 			return;
+	// 		// get graphs and dataProvider
+	// 		var graphs, dataSet;
+	// 		if (chart.type === "stock") {
+	// 			// use first panel
+	// 			if (chart.panels[0].stockGraphs === undefined)
+	// 				chart.panels[0].stockGraphs = [];
+	// 			graphs = chart.panels[0].stockGraphs;
+	// 			dataSet = chart.dataSets[0];
+	// 			// check if data set has fieldMappings set
+	// 			if (dataSet.fieldMappings === undefined)
+	// 				dataSet.fieldMappings = [];
+	// 		} else {
+	// 			if (chart.graphs === undefined)
+	// 				chart.graphs = [];
+	// 			graphs = chart.graphs;
+	// 			dataSet = chart;
+	// 		}
+	// 		// collect value fields for graphs that might already exist
+	// 		// in chart config
+	// 		var valueFields = {};
+	// 		if (graphs.length) {
+	// 			for (var i = 0; i < graphs.length; i++) {
+	// 				var g = graphs[i];
+	// 				if (g.id === undefined)
+	// 					g.id = i;
+	// 				valueFields[g.id] = g.valueField;
+	// 			}
+	// 		}
+	// 		// process data
+	// 		var newData = [];
+	// 		var dpoints = {};
+	// 		for (var i = 0; i < dataSet.dataProvider.length; i++) {
+	// 			// get row data
+	// 			var row = dataSet.dataProvider[i];
+	// 			var category = row[dataSet.categoryField];
+	// 			var series = row[chart.seriesField];
+	// 			// create a data point
+	// 			if (dpoints[category] === undefined) {
+	// 				dpoints[category] = {};
+	// 				dpoints[category][dataSet.categoryField] = category;
+	// 				newData.push(dpoints[category]);
+	// 			}
+	// 			// check if we need to generate a graph
+	// 			if (valueFields[series] === undefined) {
+	// 				// apply template
+	// 				var g = {};
+	// 				if (chart.seriesGraphTemplate !== undefined) {
+	// 					g = cloneObject(chart.seriesGraphTemplate);
+	// 				}
+	// 				g.id = series;
+	// 				g.valueField = series;
+	// 				g.title = series;
+	// 				// add to chart's graphs
+	// 				graphs.push(g);
+	// 				valueFields[series] = series;
+	// 				// add fieldMapping to data set on Stock Chart
+	// 				if (chart.type === "stock") {
+	// 					dataSet.fieldMappings.push({
+	// 						"fromField": series,
+	// 						"toField": series
+	// 					});
+	// 				}
+	// 			}
+	// 			// add series value field
+	// 			if (row[chart.seriesValueField] !== undefined)
+	// 				dpoints[category][series] = row[chart.seriesValueField];
+	// 			// add the rest of the value fields (if applicable)
+	// 			for (var field in valueFields) {
+	// 				if (valueFields.hasOwnProperty(field) && row[field] !== undefined)
+	// 					dpoints[category][field] = row[field];
+	// 			}
+	// 		}
+	// 		// set data
+	// 		dataSet.dataProvider = newData;
+	// 		// function which clones object
+	// 		function cloneObject(obj) {
+	// 			if (null == obj || "object" != typeof obj) return obj;
+	// 			var copy = obj.constructor();
+	// 			for (var attr in obj) {
+	// 				if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+	// 			}
+	// 			return copy;
+	// 		}
+	// 	}, ["serial", "stock"]);
+	// 
+	// 	$(".btnAplicarGraficaConexion" ).click(function() {
+	// 		fechaInicioCanal = moment($('#fechaInicioConexion').datepicker("getDate")).format('YYYY-MM-DD');
+	// 		fechaFinCanal = moment($('#fechaFinConexion').datepicker("getDate")).format('YYYY-MM-DD');
+	// 		obtenerGraficaConexion(fechaInicioCanal, fechaFinCanal, chart);
+	// 	});
+	// }
+	// function obtenerGraficaConexion(fechaInicioCanal,fechaFinCanal, chart){
+	// 	var formData = new FormData();
+	// 	formData.append("fechaInicio", fechaInicioCanal);
+	// 	formData.append("fechaFin", fechaFinCanal);
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "acciones/phpGraficaConexion.php",
+	// 		data : formData,
+	// 		contentType : false,
+	// 		processData : false,
+	// 		beforeSend:function(){
+	// 			$(".cargando").toggle();
+	// 		},
+	// 		success: function (data) {
+	// 			if (chart) {
+	// 				chart.clear();
+	// 			}
+	// 			chart = AmCharts.makeChart( "graficaConexion", {
+	// 				"type": "serial",
+	// 				"theme": "light",
+	// 				"dataDateFormat": "YYYY-MM-DD",
+	// 				"seriesField": "tipo",
+	// 				"seriesValueField": "valor",
+	// 				"seriesGraphTemplate": {
+	// 					"lineThickness": 2,
+	// 					"bullet": "round"
+	// 				},
+	// 				"categoryField": "fecha",
+	// 				"categoryAxis": {
+	// 					"parseDates": true,
+	// 					"dashLength": 1,
+	// 					"minorGridEnabled": true
+	// 				},
+	// 				"valueAxes": [{
+	// 					"stackType": "regular"
+	// 				}],
+	// 				"chartScrollbar": {
+	// 					"scrollbarHeight": 12
+	// 				},
+	// 				"chartCursor": {
+	// 					"valueLineEnabled": true,
+	// 					"valueLineBalloonEnabled": true,
+	// 					"fillColor": "#FFFFFF"
+	// 				},
+	// 				"legend": {
+	// 					"position": "right"
+	// 				},
+	// 				"dataProvider":  JSON.parse(data),
+	// 			});
+	// 		}
+	// 	});
+	// 
+	// }
 
 
 	/*** Otros ***/

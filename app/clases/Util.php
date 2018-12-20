@@ -518,11 +518,69 @@ class Util{
 
 			$arrayPermitidas = array_values(self::dameSumaConexionesFecha($arrayPermitidas));
 			$arrayNoPermitidas = array_values(self::dameSumaConexionesFecha($arrayNoPermitidas));
+			//self::arrayBonito($arrayPermitidas);
+			//self::arrayBonito($arrayNoPermitidas);
 
-			$array_resultante= array_merge($arrayPermitidas,$arrayNoPermitidas);
+			$array_resultante = array();
+
+			for ($i=0; $i < count($arrayPermitidas) ; $i++) {				
+				$item  = array(
+					"fecha" => $arrayPermitidas[$i]["fecha"],
+					"permitida" => $arrayPermitidas[$i]["valor"],
+					"no-permitida" => 0
+				);
+				array_push($array_resultante, $item);			
+			}
+			// for ($i=0; $i < count($arrayPermitidas) ; $i++) {
+			// 	if(count($array_resultante)==0){
+			// 		$item  = array(
+			// 			"fecha" => $arrayPermitidas[$i]["fecha"],
+			// 			"permitida" => $arrayPermitidas[$i]["valor"],
+			// 			"no-permitida" => 0
+			// 		);
+			// 		array_push($array_resultante, $item);
+			// 	}else if(count($array_resultante)>=1){
+			// 		for ($r=0; $r < count($array_resultante); $r++) {
+			// 			$esta = 0;
+			// 			if ($arrayPermitidas[$i]["fecha"]==$array_resultante[$r]["fecha"]) {
+			// 				$array_resultante[$i]["permitida"] = (int)$array_resultante[$i]["permitida"]+1;
+			// 				$esta = 1;
+			// 			}
+			// 		}
+			// 		if($esta == 0){
+			// 			$item  = array(
+			// 				"fecha" => $arrayPermitidas[$i]["fecha"],
+			// 				"permitida" => $arrayPermitidas[$i]["valor"],
+			// 				"no-permitida" => 0
+			// 			);
+			// 			array_push($array_resultante, $item);
+			// 		}
+			// 	}
+			// }
+
+			for ($i=0; $i < count($arrayNoPermitidas) ; $i++) {
+				$esta = 0;
+				for ($r=0; $r < count($array_resultante) ; $r++) {
+					if($array_resultante[$r]["fecha"]==$arrayNoPermitidas[$i]["fecha"]){
+						$array_resultante[$r]["no-permitida"] = (int)$array_resultante[$r]["no-permitida"]+(int)$arrayNoPermitidas[$i]["valor"];
+						$esta = 1;
+					}
+				}
+				if($esta == 0){
+					$item = array(
+						"fecha" => $arrayNoPermitidas[$i]["fecha"],
+						"permitida" => 0,
+						"no-permitida" => $arrayNoPermitidas[$i]["valor"]
+					);
+					array_push($array_resultante, $item);
+				}
+			}
+			
+			//$array_resultante= array_merge($arrayPermitidas,$arrayNoPermitidas);
 			usort($array_resultante, function( $a, $b ) {
 				return strtotime($a["fecha"]) - strtotime($b["fecha"]);
 			});
+			//self::arrayBonito($array_resultante);
 			echo json_encode($array_resultante);
 		}else{
 			$arrayPermitidas = array();
@@ -874,9 +932,16 @@ class Util{
 		$servidor = self::$servidor;
 		$usuarioBD = self::$usuarioBD;
 		$contrasenaBD = self::$contrasenaBD;
-		$archivo_bd = "/var/www/html/bd_backup/backup.sql";
-		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd;
+		$archivo_bd_temp = "/var/www/html/backup_temp.sql";
+		$archivo_bd = "/var/www/html/backup.sql";
+		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd_temp;
 		exec($cmd);
+		//Evitar backup de 0 bytes
+		if (filesize($archivo_bd_temp) != 0){
+			rename($archivo_bd_temp, $archivo_bd);
+		}else{
+			unlink($archivo_bd_temp);
+		}
 		echo "ok";
 	}
 	static function backupZip(){
