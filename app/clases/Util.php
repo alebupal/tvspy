@@ -933,7 +933,7 @@ class Util{
 		$usuarioBD = self::$usuarioBD;
 		$contrasenaBD = self::$contrasenaBD;
 		$archivo_bd_temp = "/var/www/html/backup_temp.sql";
-		$archivo_bd = "/var/www/html/backup.sql";
+		$archivo_bd = "/var/www/html/bd_backup/backup.sql";
 		$cmd = "mysqldump --routines -h {$servidor} -u {$usuarioBD} -p{$contrasenaBD} {$base_datos} > " . $archivo_bd_temp;
 		exec($cmd);
 		//Evitar backup de 0 bytes
