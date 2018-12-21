@@ -138,7 +138,7 @@ $(document).ready(function () {
 						$(".errorLogin").slideUp(500);
 					});
 				}else if (data == 200){
-					reproduccionesActivas();
+					reproduccionesActivas(arrayConfiguracion);
 					usuarioActivo();
 					canalActivo();
 					reproduccionesTotales();
@@ -149,7 +149,7 @@ $(document).ready(function () {
 		});
 
 	}
-	function reproduccionesActivas(){
+	function reproduccionesActivas(arrayConfiguracion){
 		$.ajax({
 			type: "POST",
 			url: "acciones/phpReproduccionesActivas.php",
@@ -1374,7 +1374,7 @@ $(document).ready(function () {
 		});
 
 	}
-	
+
 	// function btnAplicarGraficaConexion(){
 	// 	var chart;
 	// 	/**
@@ -1473,7 +1473,7 @@ $(document).ready(function () {
 	// 			return copy;
 	// 		}
 	// 	}, ["serial", "stock"]);
-	// 
+	//
 	// 	$(".btnAplicarGraficaConexion" ).click(function() {
 	// 		fechaInicioCanal = moment($('#fechaInicioConexion').datepicker("getDate")).format('YYYY-MM-DD');
 	// 		fechaFinCanal = moment($('#fechaFinConexion').datepicker("getDate")).format('YYYY-MM-DD');
@@ -1531,7 +1531,7 @@ $(document).ready(function () {
 	// 			});
 	// 		}
 	// 	});
-	// 
+	//
 	// }
 
 
