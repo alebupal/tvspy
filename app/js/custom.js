@@ -53,8 +53,9 @@ $(document).ready(function () {
 					localizarIP();
 				}
 				if ( $(".pagina-inicio").length > 0 ) {
-					actualizarInicio(arrayConfiguracion)
+					actualizarInicio(arrayConfiguracion);
 					setInterval(function() { actualizarInicio(arrayConfiguracion); }, (arrayConfiguracion["refresco"]*1000));
+					localizarIP();
 				}
 				if ( $(".pagina-estadisticas-reproduccion").length > 0 ) {
 
@@ -167,7 +168,7 @@ $(document).ready(function () {
 							if(data["entries"][i]["hostname"]== undefined){
 								hostname = "localhost";
 							}else{
-								hostname = data["entries"][i]["hostname"];
+								hostname = comprobarIPInicio(arrayConfiguracion["ip_permitida"], data["entries"][i]["hostname"]);
 							}
 							fechaInicio=data["entries"][i]["start"];
 							accion = "reproduciendo";
@@ -1600,14 +1601,14 @@ $(document).ready(function () {
 		}
 		return resultado;
 	}
-	function comprobarIP(ip_permitida, data){
+	function comprobarIPInicio(ip_permitida, data){
 		var ips = separar_comas(ip_permitida);
 		var ip = partirIP(data);
 		var resultado;
 		var row = row;
 		var permitida = "no";
 		if(ip_permitida == ""  || ip == ""){
-			resultado = "Permitida: <a class='localizarIP'>"+data+"</a>";
+			resultado = "<span class='permitida'>Permitida: <a class='localizarIP'>"+data+"</a></span>";
 		}else if(ips != null){
 			for (var i = 0; i < ips.length; i++) {
 				if(ips[i]==ip){
@@ -1615,16 +1616,45 @@ $(document).ready(function () {
 				}
 			}
 			if(permitida == "si"){
-				resultado = "Permitida: <a class='localizarIP'>"+data+"</a>";
+				resultado = "<span class='permitida'>Permitida: <a class='localizarIP'>"+data+"</a></span>";
 			}else if (permitida == "no"){
-				resultado = "No permitida: <a class='localizarIP'>"+data+"</a>";
+				resultado = "<span class='no-permitida'>No permitida: <a class='localizarIP'>"+data+"</a></span>";
 			}
 		}else {
 			ips=ip_permitida;
 			if(ips==ip){
-				resultado = "Permitida: <a class='localizarIP'>"+data+"</a>";
+				resultado = "<span class='permitida'>Permitida: <a class='localizarIP'>"+data+"</a></span>";
 			}else{
-				resultado = "No permitida: <a class='localizarIP'>"+data+"</a>";
+				resultado = "<span class='no-permitida'>No permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}
+		}
+		return resultado;
+	}
+	function comprobarIP(ip_permitida, data){
+		var ips = separar_comas(ip_permitida);
+		var ip = partirIP(data);
+		var resultado;
+		var row = row;
+		var permitida = "no";
+		if(ip_permitida == ""  || ip == ""){
+			resultado = "<span>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+		}else if(ips != null){
+			for (var i = 0; i < ips.length; i++) {
+				if(ips[i]==ip){
+					permitida = "si";
+				}
+			}
+			if(permitida == "si"){
+				resultado = "<span>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}else if (permitida == "no"){
+				resultado = "<span>No permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}
+		}else {
+			ips=ip_permitida;
+			if(ips==ip){
+				resultado = "<span>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}else{
+				resultado = "<span>No permitida: <a class='localizarIP'>"+data+"</a></span>";
 			}
 		}
 		return resultado;

@@ -17,6 +17,11 @@
 			?>
 			<?php include "include/menu.php"; ?>
 			<div id="content-wrapper">
+				<div class="col-lg-12">
+					<div class="alert alert-danger ipNo oculto" role="alert">
+						Esta ip no se puede localizar.
+					</div>
+				</div>
 				<div class="container-fluid">
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item">

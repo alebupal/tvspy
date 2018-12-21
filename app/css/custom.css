@@ -21,3 +21,9 @@
 .btnQuitarIP, .localizarIP{
 	cursor: pointer;
 }
+.permitida{
+	color: #25dc50;
+}
+.no-permitida{
+	color: #ff2828;
+}
