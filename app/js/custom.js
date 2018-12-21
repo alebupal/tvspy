@@ -10,7 +10,7 @@ $(document).ready(function () {
 		$.ajax({
 			type: "GET",
 			dataType:'json',
-			url: "https://cdn.jsdelivr.net/gh/alebupal/tvspy@master/version.json",
+			url: "https://raw.githubusercontent.com/alebupal/tvspy/master/version.json",
 			success: function (data) {
 				//console.log(data["version"]);
 				if(data["version"]!=version){
