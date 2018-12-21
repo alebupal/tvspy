@@ -51,7 +51,7 @@ docker create  \
 	-v <path to data>:/var/www/html/bd_backup \
 	-p xxxxx:80 \
 	-e TIME_CRON=15 \
-	alebupal/tvspy \
+	alebupal/tvspy:latest \
 ```
 
 Si hay un archivo backup.sql en la carpeta /var/www/html/bd_backup que se ha mapeado se restaura al crear el contenedor. 
