@@ -1,8 +1,24 @@
 $(document).ready(function () {
 	var arrayConfiguracion = new Array();
+	var version = "2.0.0";
 
+	comprobarVersion(version);
 	gestionMenu();
 	cargarConfiguracion(arrayConfiguracion);
+
+	function comprobarVersion(version){
+		$.ajax({
+			type: "GET",
+			dataType:'json',
+			url: "https://cdn.jsdelivr.net/gh/alebupal/tvspy@master/version.json",
+			success: function (data) {
+				//console.log(data["version"]);
+				if(data["version"]!=version){
+					$(".nuevaVersion").text(" (Nueva versión disponible)")
+				}
+			}
+		});
+	}
 
 	function cargarConfiguracion(arrayConfiguracion){
 		$.ajax({
@@ -10,11 +26,16 @@ $(document).ready(function () {
 			url: "acciones/phpCagarConfiguracion.php",
 			success: function (data) {
 				arrayConfiguracion = $.parseJSON(data);
+				//console.log(arrayConfiguracion);
 				if ( $(".pagina-configuracion").length > 0 ) {
 					cargarConfiguracionFormulario(arrayConfiguracion);
 					guardarConfiguracionFormulario();
 					btnTestTelegram();
 					btnTestTvheadend();
+					btnAnadirIP();
+					btnQuitarIP();
+					btnBackup();
+					btnRestaurarBackup();
 				}
 				if ( $(".pagina-canales").length > 0 ) {
 					//importarCanales();
@@ -29,12 +50,14 @@ $(document).ready(function () {
 				if ( $(".pagina-registro").length > 0 ) {
 					$(".unidadTiempoEstadisticas").html(arrayConfiguracion["unidadTiempo"]);
 					tablaRegistro(arrayConfiguracion);
+					localizarIP();
 				}
 				if ( $(".pagina-inicio").length > 0 ) {
-					actualizarInicio(arrayConfiguracion)
+					actualizarInicio(arrayConfiguracion);
 					setInterval(function() { actualizarInicio(arrayConfiguracion); }, (arrayConfiguracion["refresco"]*1000));
+					localizarIP();
 				}
-				if ( $(".pagina-estadisticas").length > 0 ) {
+				if ( $(".pagina-estadisticas-reproduccion").length > 0 ) {
 
 					$(".js-example-basic-single").select2({
 						language: "es"
@@ -59,6 +82,18 @@ $(document).ready(function () {
 					graficaDias();
 					btnAplicarGraficaDias();
 				}
+				if ( $(".pagina-estadisticas-conexion").length > 0 ) {
+					$('.input-daterange').datepicker({
+						format: "yyyy-mm-dd",
+						todayBtn: "linked",
+						clearBtn: true,
+						language: "es",
+						todayHighlight: true,
+						toggleActive: true,
+					})
+					graficaConexion();
+					btnAplicarGraficaConexion();
+				}
 			}
 		});
 	}
@@ -69,7 +104,7 @@ $(document).ready(function () {
 			abrirNav();
 		}
 		// Toggle the side navigation
-		$("#sidenavToggler").click(function(e) {
+		$("#sidebarToggle").click(function(e) {
 			if(localStorage.getItem("estadoNav")=="cerrado"){
 				localStorage.setItem("estadoNav", "abierto");
 			}else{
@@ -123,23 +158,31 @@ $(document).ready(function () {
 					data = $.parseJSON(data);
 					var html="";
 					for (var i = 0; i < data["totalCount"]; i++) {
-						if(data["entries"][i]["state"]=="Funcionando"){
+						if(data["entries"][i]["state"]=="Funcionando" || data["entries"][i]["state"]=="Running"){
 							usuario = "";
 							if(data["entries"][i]["username"]== undefined){
 								usuario = "Sin usuario";
 							}else{
 								usuario = data["entries"][i]["username"];
 							}
+							if(data["entries"][i]["hostname"]== undefined){
+								hostname = "localhost";
+							}else{
+								hostname = comprobarIPInicio(arrayConfiguracion["ip_permitida"], data["entries"][i]["hostname"]);
+							}
 							fechaInicio=data["entries"][i]["start"];
-
+							accion = "reproduciendo";
+							if(data["entries"][i]["title"].indexOf("DVR:") > -1){
+								accion = "grabando";
+							}
 							html +='<div class="col-xl-4 col-sm-6 mb-3">'+
 							'<div class="card">'+
 							'<div class="card-body">'+
-							'<h6 class="card-title"><b>'+usuario+'</b> está reproduciendo <b>'+data["entries"][i]["channel"]+'</b></h6>'+
+							'<h6 class="card-title"><b>'+usuario+'</b> está '+accion+' <b>'+data["entries"][i]["channel"]+'</b></h6>'+
 							'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
 							'<span><b>Inicio</b>: '+unixToDate(fechaInicio)+'</span><br>'+
 							'<span><b>State</b>: '+data["entries"][i]["state"]+'</span><br>'+
-							'<span><b>IP</b>: '+data["entries"][i]["hostname"]+'</span><br>'+
+							'<span><b>IP</b>: '+hostname+'</span><br>'+
 							'<span><b>Service</b>: '+data["entries"][i]["service"]+'</span><br>'+
 							'<span><b>Profile</b>: '+data["entries"][i]["profile"]+'</span><br>'+
 							'<span><b>Errors</b>: '+data["entries"][i]["errors"]+'</span>'+
@@ -274,12 +317,30 @@ $(document).ready(function () {
 		$("#usuario").val(arrayConfiguracion["usuario"]);
 		$("#refresco").val(arrayConfiguracion["refresco"]);
 		$("#tiempoMinimo").val(arrayConfiguracion["tiempoMinimo"]);
+		if(arrayConfiguracion["ip_permitida"]!=""){
+			var ips = separar_comas(arrayConfiguracion["ip_permitida"]);
+			if(ips==null){
+				ips=[arrayConfiguracion["ip_permitida"]];
+			}
+			var input_ip="";
+			if(ips != null){
+				for (var i = 0; i < ips.length; i++) {
+					input_ip += '<div class="form-group col-md-3">'+
+					'<input type="text" class="form-control input_ip" id="ip_'+i+'" name="ip_'+i+'" value="'+ips[i]+'">'+
+					'</div>'+
+					'<div class="form-group mt-2 col-md-1">'+
+					'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
+					'</div>';
+				}
+				$(".contenedor_ip").html(input_ip);
+			}
+		}
 
-		if(arrayConfiguracion["notificacion_telegram"]==1){
-			$("#notificacion_telegram").prop('checked', true);
+		if(arrayConfiguracion["telegram_notificacion"]==1){
+			$("#telegram_notificacion").prop('checked', true);
 			$("#configuracionTelegram").show();
-		}else if(arrayConfiguracion["notificacion_telegram"]==0){
-			$("#notificacion_telegram").prop('checked', false);
+		}else if(arrayConfiguracion["telegram_notificacion"]==0){
+			$("#telegram_notificacion").prop('checked', false);
 			$("#configuracionTelegram").hide();
 		}
 
@@ -307,6 +368,30 @@ $(document).ready(function () {
 			$("#div_telegram_tiempo").hide();
 		}
 
+		if(arrayConfiguracion["telegram_conexion"]==1){
+			$("#telegram_conexion").prop('checked', true);
+			$("#div_telegram_conexion").show();
+		}else if(arrayConfiguracion["telegram_conexion"]==0){
+			$("#telegram_conexion").prop('checked', false);
+			$("#div_telegram_conexion").hide();
+		}
+
+		if(arrayConfiguracion["telegram_empieza_grabacion"]==1){
+			$("#telegram_empieza_grabacion").prop('checked', true);
+			$("#div_telegram_empieza_grabacion").show();
+		}else if(arrayConfiguracion["telegram_empieza_grabacion"]==0){
+			$("#telegram_empieza_grabacion").prop('checked', false);
+			$("#div_telegram_empieza_grabacion").hide();
+		}
+
+		if(arrayConfiguracion["telegram_para_grabacion"]==1){
+			$("#telegram_para_grabacion").prop('checked', true);
+			$("#div_telegram_para_grabacion").show();
+		}else if(arrayConfiguracion["telegram_para_grabacion"]==0){
+			$("#telegram_para_grabacion").prop('checked', false);
+			$("#div_telegram_para_grabacion").hide();
+		}
+
 		if(arrayConfiguracion["unidadTiempo"]=="Horas"){
 			$("#unidadTiempo option[value='Horas']").attr('selected',true);
 			$("#unidadTiempo option[value='Minutos']").attr('selected',false);
@@ -324,13 +409,17 @@ $(document).ready(function () {
 		$("#texto_empieza").val(arrayConfiguracion["texto_empieza"]);
 		$("#texto_para").val(arrayConfiguracion["texto_para"]);
 		$("#texto_tiempo").val(arrayConfiguracion["texto_tiempo"]);
+		$("#texto_conexion").val(arrayConfiguracion["texto_conexion"]);
+		$("#texto_empieza_grabacion").val(arrayConfiguracion["texto_empieza_grabacion"]);
+		$("#texto_para_grabacion").val(arrayConfiguracion["texto_para_grabacion"]);
+		$("#texto_conexion").val(arrayConfiguracion["texto_conexion"]);
 		$("#telegram_tiempo_limite").val(arrayConfiguracion["telegram_tiempo_limite"]);
 		$("#bot_token").val(arrayConfiguracion["bot_token"]);
 		$("#id_chat").val(arrayConfiguracion["id_chat"]);
 	}
 	function guardarConfiguracionFormulario(){
-		$("#notificacion_telegram").click(function() {
-			if ($('#notificacion_telegram').is(":checked")){
+		$("#telegram_notificacion").click(function() {
+			if ($('#telegram_notificacion').is(":checked")){
 				$("#configuracionTelegram").show();
 			}else{
 				$("#configuracionTelegram").hide();
@@ -360,6 +449,31 @@ $(document).ready(function () {
 				$("#div_telegram_tiempo").hide();
 			}
 		});
+
+		$("#telegram_conexion").click(function() {
+			if ($('#telegram_conexion').is(":checked")){
+				$("#div_telegram_conexion").show();
+			}else{
+				$("#div_telegram_conexion").hide();
+			}
+		});
+
+		$("#telegram_empieza_grabacion").click(function() {
+			if ($('#telegram_empieza_grabacion').is(":checked")){
+				$("#div_telegram_empieza_grabacion").show();
+			}else{
+				$("#div_telegram_empieza_grabacion").hide();
+			}
+		});
+
+		$("#telegram_para_grabacion").click(function() {
+			if ($('#telegram_para_grabacion').is(":checked")){
+				$("#div_telegram_para_grabacion").show();
+			}else{
+				$("#div_telegram_para_grabacion").hide();
+			}
+		});
+
 		$('#formConfiguracion').on('submit', function(e){
 			e.preventDefault();
 			var form = $('#formConfiguracion')[0];
@@ -371,6 +485,7 @@ $(document).ready(function () {
 				contentType : false,
 				processData : false,
 				success: function(data) {
+					//console.log(data);
 					irArriba();
 					if(data==true){
 						console.log("Configuración guardada correctamente");
@@ -402,7 +517,7 @@ $(document).ready(function () {
 				},
 				success: function (data) {
 					$(".cargando").toggle();
-					console.log("Mensaje enviado");
+					//console.log("Mensaje enviado");
 					$(".testEnviado").fadeTo(2000, 500).slideUp(500, function(){
 						$(".testEnviado").slideUp(500);
 					});
@@ -443,6 +558,84 @@ $(document).ready(function () {
 						console.log("200");
 						$(".urlCorrecta").fadeTo(2000, 500).slideUp(500, function(){
 							$(".urlCorrecta").slideUp(500);
+						});
+					}
+				}
+			});
+		});
+	}
+	function btnAnadirIP(){
+		$( ".btnAnadirIP" ).click(function() {
+			numIP = $(".input_ip").length;
+			//console.log(numIP);
+			var input_ip = '<div class="form-group col-md-3">'+
+							'<input type="text" class="form-control input_ip" id="ip_'+numIP+'" name="ip_'+numIP+'" placeholder="192.168.1">'+
+						'</div>'+
+						'<div class="form-group mt-2 col-md-1">'+
+							'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
+						'</div>';
+			$(".contenedor_ip").append(input_ip);
+		});
+	}
+	function btnQuitarIP(){
+		$('body').on('click', '.btnQuitarIP', function (){
+			(($(this).parent()).prev()).remove();
+			($(this).parent()).remove();
+		});
+	}
+	function btnBackup(){
+		$( ".btnBackup" ).click(function() {
+			$.ajax({
+				type: "POST",
+				url: "acciones/phpBackupZip.php",
+				beforeSend:function(){
+					irArriba();
+					$(".cargando").toggle();
+				},
+				success: function (data) {
+					$(".cargando").toggle();
+					if(data != "ko"){
+						$(".configuracionBackup").fadeTo(2000, 500).slideUp(500, function(){
+							$(".configuracionBackup").slideUp(500);
+						});
+						document.location.href = "bd_backup/"+data;
+					}else{
+						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorGeneral").slideUp(500);
+						});
+					}
+				}
+			});
+		});
+	}
+	function btnRestaurarBackup(){
+		$( ".btnRestaurarBackup" ).click(function() {
+			var basedatos = $('#basedatos').prop('files')[0];
+			var form_data = new FormData();
+			form_data.append('basedatos', basedatos);
+			$.ajax({
+				url: "acciones/phpRestaurarBackup.php",
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				type: "POST",
+				beforeSend:function(){
+					irArriba();
+					$(".cargando").toggle();
+				},
+				success: function (data) {
+					$(".cargando").toggle();
+					if(data == "ok"){
+						$(".configuracionRestaurar").fadeTo(2000, 500).slideUp(500, function(){
+							$(".configuracionRestaurar").slideUp(500);
+						});
+						setTimeout(function() {
+							window.location.reload();
+						}, 2000);
+					}else{
+						$(".errorGeneral").fadeTo(2000, 500).slideUp(500, function(){
+							$(".errorGeneral").slideUp(500);
 						});
 					}
 				}
@@ -686,7 +879,44 @@ $(document).ready(function () {
 				[5, 10, 25, 50, 100, "Todo"] // change per page values here
 			],
 			buttons: [
-				'colvis',
+				{
+					extend: 'print',
+					text: 'Imprimir',
+					autoPrint: false,
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				{
+					extend: 'csv',
+					text: 'CSV',
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				{
+					extend: 'pdf',
+					text: 'PDF',
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				{
+					extend: 'copy',
+					text: 'Copiar',
+					exportOptions: {
+						modifier: {
+							page: 'current'
+						}
+					}
+				},
+				'colvis'
 			],
 			order: [[ 2, "desc" ]],
 			columns: [
@@ -694,7 +924,12 @@ $(document).ready(function () {
 				{data: "2"},
 				{data: "3"},
 				{data: "4"},
-				{data: "5"},
+				{data: null,
+					render: function (data, type, row) {
+						ip = comprobarIP(arrayConfiguracion["ip_permitida"], data[5]);
+						return ip;
+					}
+				},
 				{data: "6"},
 				{data: null,
 					render: function (data, type, row) {
@@ -717,6 +952,9 @@ $(document).ready(function () {
 				},
 				{data: "8"},
 			],
+			createdRow: function (row, data, dataIndex) {
+				colorearIP(arrayConfiguracion["ip_permitida"], data[5], row)
+			},
 			initComplete: function() {
 				table.columns().every( function (){
 					var that = this;
@@ -726,11 +964,51 @@ $(document).ready(function () {
 						}
 					});
 				});
+			},
+			i18n: {
+				create: {
+					button: "print",
+					title:  "Imprimir",
+				},
 			}
 		});
 		table.select();
 	}
-
+	function localizarIP(){
+		$('body').on('click', '.localizarIP', function (){
+			var ip = $(this).text();
+			var form_data = new FormData();
+			form_data.append('ip', ip);
+			$.ajax({
+				url: "acciones/phpLocalizarIP.php",
+				cache: false,
+				contentType: false,
+				processData: false,
+				data: form_data,
+				type: "POST",
+				success: function (data) {
+					if(data != "ko"){
+						var data = JSON.parse(data);
+						$(".ipModal").text(ip);
+						$(".codigoPais").text(data[0]["codigoPais"]);
+						$(".pais").text(data[0]["pais"]);
+						$(".codigoSubdivision").text(data[0]["codigoSubdivision"]);
+						$(".subdivision").text(data[0]["subdivision"]);
+						$(".codigoCiudad").text(data[0]["codigoCiudad"]);
+						$(".ciudad").text(data[0]["ciudad"]);
+						$(".radio").text(data[0]["radio"]);
+						$(".latitud").text(data[0]["latitud"]);
+						$(".longitud").text(data[0]["longitud"]);
+						$("#myModal").modal();
+					}else{
+						$(".ipNo").fadeTo(2000, 500).slideUp(500, function(){
+							$(".ipNo").slideUp(500);
+						});
+					}
+				}
+			});
+		});
+	}
 	/*** Página Estadisticas ***/
 	function graficaCanales(){
 		var semanaAnterior = new Date();
@@ -975,9 +1253,9 @@ $(document).ready(function () {
 					},
 					"valueScrollbar":{
 						"oppositeAxis":false,
-					  "offset":50,
-					  "scrollbarHeight":10
-				  },
+						"offset":50,
+						"scrollbarHeight":10
+					},
 					"categoryField": "fecha",
 					"categoryAxis": {
 						"parseDates": true,
@@ -1008,6 +1286,255 @@ $(document).ready(function () {
 		});
 	}
 
+	/*** Página Estadisticas conexiones ***/
+	function graficaConexion(){
+		var semanaAnterior = new Date();
+		semanaAnterior.setDate(semanaAnterior.getDate()-7);
+		$("#fechaInicioConexion").datepicker("update", semanaAnterior);
+		$("#fechaFinConexion").datepicker("update", new Date());
+		fechaInicioCanal = moment($('#fechaInicioConexion').datepicker("getDate")).format('YYYY-MM-DD');
+		fechaFinCanal = moment($('#fechaFinConexion').datepicker("getDate")).format('YYYY-MM-DD');
+		obtenerGraficaConexion(fechaInicioCanal,fechaFinCanal);
+	}
+	function btnAplicarGraficaConexion(){
+		$(".btnAplicarGraficaConexion" ).click(function() {
+			fechaInicioCanal = moment($('#fechaInicioConexion').datepicker("getDate")).format('YYYY-MM-DD');
+			fechaFinCanal = moment($('#fechaFinConexion').datepicker("getDate")).format('YYYY-MM-DD');
+			obtenerGraficaConexion(fechaInicioCanal, fechaFinCanal);
+		});
+	}
+	function obtenerGraficaConexion(fechaInicioCanal,fechaFinCanal){
+		var formData = new FormData();
+		formData.append("fechaInicio", fechaInicioCanal);
+		formData.append("fechaFin", fechaFinCanal);
+		$.ajax({
+			type: "POST",
+			url: "acciones/phpGraficaConexion.php",
+			data : formData,
+			contentType : false,
+			processData : false,
+			beforeSend:function(){
+				$(".cargando").toggle();
+			},
+			success: function (data) {
+				var chart = AmCharts.makeChart("graficaConexion", {
+					"type": "serial",
+					"theme": "none",
+					"legend": {
+						"horizontalGap": 10,
+						"maxColumns": 1,
+						"position": "right",
+						"useGraphSettings": true,
+						"markerSize": 10
+					},
+					"dataProvider":  JSON.parse(data),
+					"valueAxes": [{
+						"stackType": "regular",
+						"axisAlpha": 0.3,
+						"gridAlpha": 0
+					}],
+					"graphs": [{
+							"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+							"fillAlphas": 0.8,
+							"labelText": "[[value]]",
+							"lineAlpha": 0.3,
+							"title": "Permitidas",
+							"type": "column",
+							"fillColors": "#bde3b1",
+							"color": "#000000",
+							"lineColor": "#38d900",
+							"lineThickness": 2,
+							"valueField": "permitida"
+						},{
+							"balloonText": "<b>[[title]]</b><br><span style='font-size:14px'>[[category]]: <b>[[value]]</b></span>",
+							"fillAlphas": 0.8,
+							"labelText": "[[value]]",
+							"lineAlpha": 0.3,
+							"title": "No Permitidas",
+							"type": "column",
+							"fillColors": "#f5bfae",
+							"color": "#000000",
+							"lineColor": "#ea3200",
+							"lineThickness": 2,
+							"valueField": "no-permitida"
+						}
+					],
+					"categoryField": "fecha",
+					"categoryAxis": {
+						"gridPosition": "start",
+						"axisAlpha": 0,
+						"gridAlpha": 0,
+						"position": "left"
+					},
+					"export": {
+						"enabled": true
+					}
+				});
+			}
+		});
+
+	}
+	
+	// function btnAplicarGraficaConexion(){
+	// 	var chart;
+	// 	/**
+	// 		* amCharts plugin: auto-generate data and graphs from series
+	// 		* in specific column.
+	// 		* Available parameters:
+	// 		* seriesField - specifies which column holds series
+	// 		* seriesValueField - sepcifies column for series value
+	// 		* seriesGraphTemplate - config to use for auto-generated graphs
+	// 	*/
+	// 	AmCharts.addInitHandler(function(chart) {
+	// 		// do nothing if serisField is not set
+	// 		if (chart.seriesField === undefined)
+	// 			return;
+	// 		// get graphs and dataProvider
+	// 		var graphs, dataSet;
+	// 		if (chart.type === "stock") {
+	// 			// use first panel
+	// 			if (chart.panels[0].stockGraphs === undefined)
+	// 				chart.panels[0].stockGraphs = [];
+	// 			graphs = chart.panels[0].stockGraphs;
+	// 			dataSet = chart.dataSets[0];
+	// 			// check if data set has fieldMappings set
+	// 			if (dataSet.fieldMappings === undefined)
+	// 				dataSet.fieldMappings = [];
+	// 		} else {
+	// 			if (chart.graphs === undefined)
+	// 				chart.graphs = [];
+	// 			graphs = chart.graphs;
+	// 			dataSet = chart;
+	// 		}
+	// 		// collect value fields for graphs that might already exist
+	// 		// in chart config
+	// 		var valueFields = {};
+	// 		if (graphs.length) {
+	// 			for (var i = 0; i < graphs.length; i++) {
+	// 				var g = graphs[i];
+	// 				if (g.id === undefined)
+	// 					g.id = i;
+	// 				valueFields[g.id] = g.valueField;
+	// 			}
+	// 		}
+	// 		// process data
+	// 		var newData = [];
+	// 		var dpoints = {};
+	// 		for (var i = 0; i < dataSet.dataProvider.length; i++) {
+	// 			// get row data
+	// 			var row = dataSet.dataProvider[i];
+	// 			var category = row[dataSet.categoryField];
+	// 			var series = row[chart.seriesField];
+	// 			// create a data point
+	// 			if (dpoints[category] === undefined) {
+	// 				dpoints[category] = {};
+	// 				dpoints[category][dataSet.categoryField] = category;
+	// 				newData.push(dpoints[category]);
+	// 			}
+	// 			// check if we need to generate a graph
+	// 			if (valueFields[series] === undefined) {
+	// 				// apply template
+	// 				var g = {};
+	// 				if (chart.seriesGraphTemplate !== undefined) {
+	// 					g = cloneObject(chart.seriesGraphTemplate);
+	// 				}
+	// 				g.id = series;
+	// 				g.valueField = series;
+	// 				g.title = series;
+	// 				// add to chart's graphs
+	// 				graphs.push(g);
+	// 				valueFields[series] = series;
+	// 				// add fieldMapping to data set on Stock Chart
+	// 				if (chart.type === "stock") {
+	// 					dataSet.fieldMappings.push({
+	// 						"fromField": series,
+	// 						"toField": series
+	// 					});
+	// 				}
+	// 			}
+	// 			// add series value field
+	// 			if (row[chart.seriesValueField] !== undefined)
+	// 				dpoints[category][series] = row[chart.seriesValueField];
+	// 			// add the rest of the value fields (if applicable)
+	// 			for (var field in valueFields) {
+	// 				if (valueFields.hasOwnProperty(field) && row[field] !== undefined)
+	// 					dpoints[category][field] = row[field];
+	// 			}
+	// 		}
+	// 		// set data
+	// 		dataSet.dataProvider = newData;
+	// 		// function which clones object
+	// 		function cloneObject(obj) {
+	// 			if (null == obj || "object" != typeof obj) return obj;
+	// 			var copy = obj.constructor();
+	// 			for (var attr in obj) {
+	// 				if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+	// 			}
+	// 			return copy;
+	// 		}
+	// 	}, ["serial", "stock"]);
+	// 
+	// 	$(".btnAplicarGraficaConexion" ).click(function() {
+	// 		fechaInicioCanal = moment($('#fechaInicioConexion').datepicker("getDate")).format('YYYY-MM-DD');
+	// 		fechaFinCanal = moment($('#fechaFinConexion').datepicker("getDate")).format('YYYY-MM-DD');
+	// 		obtenerGraficaConexion(fechaInicioCanal, fechaFinCanal, chart);
+	// 	});
+	// }
+	// function obtenerGraficaConexion(fechaInicioCanal,fechaFinCanal, chart){
+	// 	var formData = new FormData();
+	// 	formData.append("fechaInicio", fechaInicioCanal);
+	// 	formData.append("fechaFin", fechaFinCanal);
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "acciones/phpGraficaConexion.php",
+	// 		data : formData,
+	// 		contentType : false,
+	// 		processData : false,
+	// 		beforeSend:function(){
+	// 			$(".cargando").toggle();
+	// 		},
+	// 		success: function (data) {
+	// 			if (chart) {
+	// 				chart.clear();
+	// 			}
+	// 			chart = AmCharts.makeChart( "graficaConexion", {
+	// 				"type": "serial",
+	// 				"theme": "light",
+	// 				"dataDateFormat": "YYYY-MM-DD",
+	// 				"seriesField": "tipo",
+	// 				"seriesValueField": "valor",
+	// 				"seriesGraphTemplate": {
+	// 					"lineThickness": 2,
+	// 					"bullet": "round"
+	// 				},
+	// 				"categoryField": "fecha",
+	// 				"categoryAxis": {
+	// 					"parseDates": true,
+	// 					"dashLength": 1,
+	// 					"minorGridEnabled": true
+	// 				},
+	// 				"valueAxes": [{
+	// 					"stackType": "regular"
+	// 				}],
+	// 				"chartScrollbar": {
+	// 					"scrollbarHeight": 12
+	// 				},
+	// 				"chartCursor": {
+	// 					"valueLineEnabled": true,
+	// 					"valueLineBalloonEnabled": true,
+	// 					"fillColor": "#FFFFFF"
+	// 				},
+	// 				"legend": {
+	// 					"position": "right"
+	// 				},
+	// 				"dataProvider":  JSON.parse(data),
+	// 			});
+	// 		}
+	// 	});
+	// 
+	// }
+
+
 	/*** Otros ***/
 	function unixToDate(unixTimeStamp){
 		var timestampInMilliSeconds = unixTimeStamp*1000; //as JavaScript uses milliseconds; convert the UNIX timestamp(which is in seconds) to milliseconds.
@@ -1028,14 +1555,126 @@ $(document).ready(function () {
 		return formattedDate;
 	}
 	function abrirNav(){
-		$("body").removeClass("sidenav-toggled");
+		$(".navbar-nav").removeClass("toggled");
+		$("body").removeClass("sidebar-toggled");
 	}
 	function cerrarNav(){
-		$("body").toggleClass("sidenav-toggled");
-		$(".navbar-sidenav .nav-link-collapse").addClass("collapsed");
-		$(".navbar-sidenav .sidenav-second-level, .navbar-sidenav .sidenav-third-level").removeClass("show");
+		$(".navbar-nav").addClass("toggled");
+		$("body").addClass("sidebar-toggled");
 	}
 	function irArriba(){
 		$('body,html').animate({scrollTop : 0}, 500);
+	}
+	function colorearIP(ip_permitida, data, row){
+		var ip = partirIP(data);
+		var resultado;
+		if(ip_permitida == "" || ip == ""){
+			resultado = "Permitida: "+data;
+			$(row).css('background-color', '#bde3b1');
+		}else{
+			var ips = separar_comas(ip_permitida);
+			var row = row;
+			var permitida = "no";
+			if(ips != null){
+				for (var i = 0; i < ips.length; i++) {
+					if(ips[i]==ip){
+						permitida = "si";
+					}
+				}
+				if(permitida == "si"){
+					resultado = "Permitida: "+data;
+					$(row).css('background-color', '#bde3b1');
+				}else if (permitida == "no"){
+					resultado = "No permitida: "+data;
+					$(row).css('background-color', '#f5bfae');
+				}
+			}else {
+				ips=ip_permitida;
+				if(ips==ip){
+					resultado = "Permitida: "+data;
+					$(row).css('background-color', '#bde3b1');
+				}else{
+					resultado = "No permitida: "+data;
+					$(row).css('background-color', '#f5bfae');
+				}
+			}
+		}
+		return resultado;
+	}
+	function comprobarIPInicio(ip_permitida, data){
+		var ips = separar_comas(ip_permitida);
+		var ip = partirIP(data);
+		var resultado;
+		var row = row;
+		var permitida = "no";
+		if(ip_permitida == ""  || ip == ""){
+			resultado = "<span class='permitida'>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+		}else if(ips != null){
+			for (var i = 0; i < ips.length; i++) {
+				if(ips[i]==ip){
+					permitida = "si";
+				}
+			}
+			if(permitida == "si"){
+				resultado = "<span class='permitida'>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}else if (permitida == "no"){
+				resultado = "<span class='no-permitida'>No permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}
+		}else {
+			ips=ip_permitida;
+			if(ips==ip){
+				resultado = "<span class='permitida'>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}else{
+				resultado = "<span class='no-permitida'>No permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}
+		}
+		return resultado;
+	}
+	function comprobarIP(ip_permitida, data){
+		var ips = separar_comas(ip_permitida);
+		var ip = partirIP(data);
+		var resultado;
+		var row = row;
+		var permitida = "no";
+		if(ip_permitida == ""  || ip == ""){
+			resultado = "<span>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+		}else if(ips != null){
+			for (var i = 0; i < ips.length; i++) {
+				if(ips[i]==ip){
+					permitida = "si";
+				}
+			}
+			if(permitida == "si"){
+				resultado = "<span>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}else if (permitida == "no"){
+				resultado = "<span>No permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}
+		}else {
+			ips=ip_permitida;
+			if(ips==ip){
+				resultado = "<span>Permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}else{
+				resultado = "<span>No permitida: <a class='localizarIP'>"+data+"</a></span>";
+			}
+		}
+		return resultado;
+	}
+	function partirIP(ip){
+		ipfinal="";
+		if(ip != "localhost"){
+			partesIP = ip.split(".");
+			ipfinal = partesIP[0]+"."+partesIP[1]+"."+partesIP[2];
+		}
+		return ipfinal;
+	}
+	function separar_comas(CommaSepStr) {
+		var ResultArray = null;
+		if (CommaSepStr!= null) {
+			var SplitChars = ',';
+			if (CommaSepStr.indexOf(SplitChars) >= 0) {
+				ResultArray = CommaSepStr.split(SplitChars);
+			}
+		}
+		return ResultArray ;
 	}
 });

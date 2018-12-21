@@ -27,7 +27,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 	// No hay nada en la bd, pero hay una reprodución activa
 	// Insertamos la nueva produccion de reproducciones
 	for ($i=0; $i < count($reproduccionesActivas["entries"]); $i++) {
-		if($reproduccionesActivas["entries"][$i]["state"]=="Funcionando"){
+		if($reproduccionesActivas["entries"][$i]["state"]=="Funcionando" || $reproduccionesActivas["entries"][$i]["state"]=="Running"){
 			$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$i]["start"]), 'Y-m-d H:i:s');
 			$fechaActual =  Util::fechaActual();
 			$segundos = (strtotime($fechaActual) - strtotime($fechaInicio));
@@ -56,7 +56,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 		$obtenerReproduccion = Util::obtenerReproduccion($reproduccionesActivas["entries"][$i]["id"]);
 		if($obtenerReproduccion != false){
 			echo Util::fechaActual().": Actualiza tiempo reproducción ".$reproduccionesActivas["entries"][$i]["id"]."\n";
-			Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion);
+			Util::actualizarTiempoReproduccion($obtenerReproduccion, $configuracion, $reproduccionesActivas["entries"][$i]["errors"]);
 		}
 	}
 
@@ -76,7 +76,7 @@ if(count($reproduccionesActivas["entries"])==0 && count($reproduccionesBDFin)==0
 		for ($i=0; $i < count($arrayDiferente2); $i++) {
 			for ($r=0; $r < count($reproduccionesActivas["entries"]); $r++) {
 				if($arrayDiferente2[$i]==$reproduccionesActivas["entries"][$r]["id"]){
-					if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando"){
+					if($reproduccionesActivas["entries"][$r]["state"]=="Funcionando" || $reproduccionesActivas["entries"][$r]["state"]=="Running"){
 						$fechaInicio = date_format(date_timestamp_set(new DateTime(), $reproduccionesActivas["entries"][$r]["start"]), 'Y-m-d H:i:s');
 						$fechaActual =  Util::fechaActual();
 						$segundos = (strtotime($fechaActual) - strtotime($fechaInicio));
