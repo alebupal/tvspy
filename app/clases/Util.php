@@ -312,7 +312,7 @@ class Util{
 		$row = $stmt->fetchAll();
 		echo json_encode($row);
 	}
-	static function graficaCanales($fechaInicio, $fechaFin, $configuracion){
+	static function graficaCanales($usuario, $fechaInicio, $fechaFin, $configuracion){
 		$fechaInicio = $fechaInicio." 00:00:00";
 		$fechaFin = $fechaFin." 23:59:59";
 		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
@@ -324,11 +324,16 @@ class Util{
 			)
 		);
 		// FETCH_ASSOC
-		$stmt = $db->prepare("SELECT canal, sum(tiempo) as tiempoTotal, COUNT(*) as totalCanales FROM registro  WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY canal ORDER BY tiempoTotal DESC");
+		if($usuario=="todos"){
+			$stmt = $db->prepare("SELECT canal, sum(tiempo) as tiempoTotal, COUNT(*) as totalCanales FROM registro  WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) GROUP BY canal ORDER BY tiempoTotal DESC");
+		}else{
+			$stmt = $db->prepare("SELECT canal, sum(tiempo) as tiempoTotal, COUNT(*) as totalCanales FROM registro  WHERE (inicio BETWEEN :fechaInicio AND :fechaFin) AND usuario=:usuario GROUP BY canal ORDER BY tiempoTotal DESC");
+			$stmt->bindParam(':usuario', $usuario);
+		}
 		// Especificamos el fetch mode antes de llamar a fetch()
-		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		$stmt->bindParam(':fechaInicio', $fechaInicio);
 		$stmt->bindParam(':fechaFin', $fechaFin);
+		$stmt->setFetchMode(PDO::FETCH_ASSOC);
 		// Ejecutamos
 		$stmt->execute();
 		// Mostramos los resultados
@@ -523,40 +528,14 @@ class Util{
 
 			$array_resultante = array();
 
-			for ($i=0; $i < count($arrayPermitidas) ; $i++) {				
+			for ($i=0; $i < count($arrayPermitidas) ; $i++) {
 				$item  = array(
 					"fecha" => $arrayPermitidas[$i]["fecha"],
 					"permitida" => $arrayPermitidas[$i]["valor"],
 					"no-permitida" => 0
 				);
-				array_push($array_resultante, $item);			
+				array_push($array_resultante, $item);
 			}
-			// for ($i=0; $i < count($arrayPermitidas) ; $i++) {
-			// 	if(count($array_resultante)==0){
-			// 		$item  = array(
-			// 			"fecha" => $arrayPermitidas[$i]["fecha"],
-			// 			"permitida" => $arrayPermitidas[$i]["valor"],
-			// 			"no-permitida" => 0
-			// 		);
-			// 		array_push($array_resultante, $item);
-			// 	}else if(count($array_resultante)>=1){
-			// 		for ($r=0; $r < count($array_resultante); $r++) {
-			// 			$esta = 0;
-			// 			if ($arrayPermitidas[$i]["fecha"]==$array_resultante[$r]["fecha"]) {
-			// 				$array_resultante[$i]["permitida"] = (int)$array_resultante[$i]["permitida"]+1;
-			// 				$esta = 1;
-			// 			}
-			// 		}
-			// 		if($esta == 0){
-			// 			$item  = array(
-			// 				"fecha" => $arrayPermitidas[$i]["fecha"],
-			// 				"permitida" => $arrayPermitidas[$i]["valor"],
-			// 				"no-permitida" => 0
-			// 			);
-			// 			array_push($array_resultante, $item);
-			// 		}
-			// 	}
-			// }
 
 			for ($i=0; $i < count($arrayNoPermitidas) ; $i++) {
 				$esta = 0;
@@ -575,7 +554,7 @@ class Util{
 					array_push($array_resultante, $item);
 				}
 			}
-			
+
 			//$array_resultante= array_merge($arrayPermitidas,$arrayNoPermitidas);
 			usort($array_resultante, function( $a, $b ) {
 				return strtotime($a["fecha"]) - strtotime($b["fecha"]);
@@ -721,10 +700,12 @@ class Util{
 		$statement->execute();
 		$statement->closeCursor();
 		if((int)$configuracion["telegram_notificacion"]!= 0){
+			//echo "notifica";
 			if((int)$configuracion["telegram_empieza"]!= 0){
 				if((int)$configuracion["telegram_conexion"]!= 0){
+					//echo "empieza pero con detección de ip";
 					if(self::comprobarIP($configuracion["ip_permitida"], $hostname)=="no"){
-							echo "empieza reproduccion no permitida";
+							//echo "empieza reproduccion no permitida";
 							$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_conexion"]);
 							$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 							$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
@@ -733,8 +714,7 @@ class Util{
 							self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 					}else{
 						if(strpos($reproduccion["title"], 'DVR:') !== 0) {
-							//No es grabación
-							echo "empieza reproduccion";
+							//echo "empieza reproduccion no grabacion y permitida";
 							$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
 							$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 							$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
@@ -742,24 +722,30 @@ class Util{
 							$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
 							self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 						}else{
+							//echo "empieza reproduccion grabacion y permitida";
 							$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza_grabacion"]);
 							$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 							$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
 							$mensaje = str_replace("%%programa%%",str_replace("DVR:","",$reproduccion["title"]),$mensaje);
 							$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
-							//echo $configuracion["texto_empieza_grabacion"];
-							//var_dump($mensaje);
 							self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 						}
 					}
 				}else{
-					if (strpos($reproduccion["title"], 'DVR:') !== false) {
-						//No es grabación
-						//echo "empieza reproduccion";
+					if (strpos($reproduccion["title"], 'DVR:') !== 0) {
+						//echo "empieza pero sin detección de ip y sin grabacion";
 						$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza"]);
 						$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 						$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
 						$mensaje = str_replace("%%reproductor%%",$reproduccion["title"],$mensaje);
+						$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
+						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
+					}else{
+						//echo "empieza pero sin detección de ip y grabacion";
+						$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza_grabacion"]);
+						$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
+						$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
+						$mensaje = str_replace("%%programa%%",str_replace("DVR:","",$reproduccion["title"]),$mensaje);
 						$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
 						self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 					}
@@ -775,21 +761,18 @@ class Util{
 					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 				}
 			}elseif((int)$configuracion["telegram_empieza_grabacion"]!= 0){
-				//echo"empieza grabacion";
+				//echo "empieza grabacion";
 				if(strpos($reproduccion["title"], 'DVR:') !== false) {
-					//Es grabación
 					$mensaje = str_replace("%%usuario%%",$usuario,$configuracion["texto_empieza_grabacion"]);
 					$mensaje = str_replace("%%canal%%",$reproduccion["channel"],$mensaje);
 					$mensaje = str_replace("%%fecha%%",$fechaInicio,$mensaje);
 					$mensaje = str_replace("%%programa%%",str_replace("DVR:","",$reproduccion["title"]),$mensaje);
 					$mensaje = str_replace("%%hostname%%",$hostname,$mensaje);
-					//echo $configuracion["texto_empieza_grabacion"];
-					//var_dump($mensaje);
 					self::enviarTelegram($configuracion["bot_token"], $configuracion["id_chat"], $mensaje);
 				}
 			}
-
 		}
+
 	}
 	static function actualizarTiempoReproduccion($reproduccion, $configuracion, $errores){
 		$inicio = $reproduccion["inicio"];

@@ -1,3 +1,7 @@
+## [2.0.1] - 2018-12-29
+- Arreglado fallo que no notificaba al empezar una reproducción
+- Añadido selector de usuarios a la gráfica Tiempo reproducido por canal (Minutos)
+
 ## [2.0.0] - 2018-12-05
 - Cambios en la BD, anteriores versiones no son compatibles
 - Añadidos colores a registro según este o no esté permitida la conexión.

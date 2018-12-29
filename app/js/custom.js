@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	var arrayConfiguracion = new Array();
-	var version = "2.0.0";
+	var version = "2.0.1";
 
 	comprobarVersion(version);
 	gestionMenu();
@@ -72,6 +72,8 @@ $(document).ready(function () {
 					})
 
 					$(".unidadTiempoEstadisticas").html(arrayConfiguracion["unidadTiempo"]);
+
+					getUsuariosSelect();
 
 					graficaUsuarios();
 					btnAplicarGraficaUsuarios();
@@ -166,7 +168,7 @@ $(document).ready(function () {
 								usuario = data["entries"][i]["username"];
 							}
 							if(data["entries"][i]["hostname"]== undefined){
-								hostname = "localhost";
+								hostname = "<span class='permitida'>Permitida: <a class='localizarIP'>localhost</a></span>";
 							}else{
 								hostname = comprobarIPInicio(arrayConfiguracion["ip_permitida"], data["entries"][i]["hostname"]);
 							}
@@ -1017,19 +1019,22 @@ $(document).ready(function () {
 		$("#fechaFinCanal").datepicker("update", new Date());
 		fechaInicioCanal = moment($('#fechaInicioCanal').datepicker("getDate")).format('YYYY-MM-DD');
 		fechaFinCanal = moment($('#fechaFinCanal').datepicker("getDate")).format('YYYY-MM-DD');
-		obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal);
+		usuario = $("#usuarioCanal").val();
+		obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal,usuario);
 	}
 	function btnAplicarGraficaCanales(){
 		$(".btnAplicarGraficaCanal" ).click(function() {
 			fechaInicioCanal = moment($('#fechaInicioCanal').datepicker("getDate")).format('YYYY-MM-DD');
 			fechaFinCanal = moment($('#fechaFinCanal').datepicker("getDate")).format('YYYY-MM-DD');
-			obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal);
+			usuario = $("#usuarioCanal").val();
+			obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal,usuario);
 		});
 	}
-	function obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal){
+	function obtenerGraficaCanales(fechaInicioCanal,fechaFinCanal,usuario){
 		var formData = new FormData();
 		formData.append("fechaInicio", fechaInicioCanal);
 		formData.append("fechaFin", fechaFinCanal);
+		formData.append("usuario",usuario);
 		$.ajax({
 			type: "POST",
 			url: "acciones/phpGraficaCanales.php",
@@ -1154,22 +1159,20 @@ $(document).ready(function () {
 	}
 
 	function graficaDias(){
-		getUsuariosSelect();
 		var semanaAnterior = new Date();
 		semanaAnterior.setDate(semanaAnterior.getDate()-7);
 		$("#fechaInicioDias").datepicker("update", semanaAnterior);
 		$("#fechaFinDias").datepicker("update", new Date());
 		fechaInicioDias = moment($('#fechaInicioDias').datepicker("getDate")).format('YYYY-MM-DD');
 		fechaFinDias = moment($('#fechaFinDias').datepicker("getDate")).format('YYYY-MM-DD');
-		usuario = $("#usuario").val();
+		usuario = $("#usuarioDias").val();
 		obtenerGraficaDias(fechaInicioDias,fechaFinDias,usuario);
-
 	}
 	function btnAplicarGraficaDias(){
 		$(".btnAplicarGraficaDias" ).click(function() {
 			fechaInicioDias = moment($('#fechaInicioDias').datepicker("getDate")).format('YYYY-MM-DD');
 			fechaFinDias = moment($('#fechaFinDias').datepicker("getDate")).format('YYYY-MM-DD');
-			usuario = $("#usuario").val();
+			usuario = $("#usuarioDias").val();
 			obtenerGraficaDias(fechaInicioDias,fechaFinDias,usuario);
 		});
 	}
@@ -1281,7 +1284,8 @@ $(document).ready(function () {
 				for (var i = 0; i < data.length; i++) {
 					opciones += '<option value="'+data[i]["nombre"]+'">'+data[i]["nombre"]+'</option>'
 				}
-				$("#usuario").append(opciones);
+				$("#usuarioDias").append(opciones);
+				$("#usuarioCanal").append(opciones);
 			}
 		});
 	}

@@ -54,13 +54,15 @@ docker create  \
 	alebupal/tvspy:latest \
 ```
 
-Si hay un archivo backup.sql en la carpeta /var/www/html/bd_backup que se ha mapeado se restaura al crear el contenedor. 
+Si hay un archivo backup.sql en la carpeta /var/www/html/bd_backup que se ha mapeado se restaura al crear el contenedor.
 Comprobar en el CHANGELOG(https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md) si la nueva versión trae cambios en la BD ya que si la versión .sql que se importa es distinta a la del contenedor este no funcionara.
 
 ## Copia de seguridad BD
 Cada día se realiza una copia de seguridad de la base de datos en "/var/www/html/bd_backup/backup.sql" es aconsejable mapear esta carpeta para tener acceso a ella en caso de problemas.
 
 Se puede hacer y restaurar una copia de seguridad de la base de datos en la opción configuración.
+
+## Canal telegram (https://t.me/alebupal_tvspy)
 
 ## Docker (https://hub.docker.com/r/alebupal/tvspy/)
 

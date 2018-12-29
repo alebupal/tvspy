@@ -34,11 +34,14 @@
 									<div class="col-12 mt-2">
 										<div class="input-daterange" id="datepicker">
 											<div class="input-group">
-												<input type="text" class="form-control campo" id="fechaInicioCanal" name="fechaInicioCanal" >
+												<input type="text" class="form-control campo" id="fechaInicioCanal" name="fechaInicioCanal">
 												<div class="input-group-append">
 													<span class="input-group-text">hasta</span>
 												</div>
 												<input type="text" class="form-control campo" id="fechaFinCanal" name="fechaFinCanal">
+												<select class="js-example-basic-single custom-select" name="usuarioCanal" id="usuarioCanal">
+													<option value="todos">Todos</option>
+												</select>
 											</div>
 										</div>
 									</div>
@@ -86,12 +89,12 @@
 									<div class="col-12 mt-2">
 										<div class="input-daterange" id="datepicker">
 											<div class="input-group">
-												<input type="text" class="form-control campo" id="fechaInicioDias" name="fechaInicioDias" >
+												<input type="text" class="form-control campo" id="fechaInicioDias" name="fechaInicioDias">
 												<div class="input-group-append">
 													<span class="input-group-text">hasta</span>
 												</div>
-												<input type="text" class="form-control campo" id="fechaFinDias" name="fechaFinDias"   >
-												<select class="js-example-basic-single custom-select" name="usuario" id="usuario">
+												<input type="text" class="form-control campo" id="fechaFinDias" name="fechaFinDias">
+												<select class="js-example-basic-single custom-select" name="usuarioDias" id="usuarioDias">
 													<option value="todos">Todos</option>
 												</select>
 											</div>
