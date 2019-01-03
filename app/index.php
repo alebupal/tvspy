@@ -74,7 +74,10 @@
 			  						<div class="card-body-icon">
 			  							<i class="fa fa-television" aria-hidden="true"></i>
 			  						</div>
-			  						<div class="mr-5"><span class="canalActivo">--</span> es el canal más visto</div>
+			  						<div class="mr-5">
+										<span class="canalActivo">--</span> es el canal más visto
+										<div class="logoCanalActivo"></div>
+									</div>
 			  					</div>
 			  				</div>
 			  			</div>

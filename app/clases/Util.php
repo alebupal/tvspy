@@ -4,8 +4,8 @@
  */
 class Util{
 	public static $servidor= "localhost";
-	public static $usuarioBD= "tvspy";
-	public static $contrasenaBD = "tvspy";
+	public static $usuarioBD= "root";
+	public static $contrasenaBD = "";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -116,8 +116,19 @@ class Util{
 		var_dump($stmt->fetch());
 		//return $stmt->fetch();
 	}
-	static function importarCanales(){
+	static function importarCanales(){		
+		$configuracion = self::cargarConfiguracion();
 		$array_canales = self::canalesAPI();
+		$ipuerto =  $configuracion["ip"].":".$configuracion["puerto"];
+		
+		/*Eliminamos imagenes anteriores*/
+		$files = glob('../img/canales/*'); // get all file names
+		foreach($files as $file){ // iterate files
+			if(is_file($file)){
+				unlink($file); // delete file
+			}
+		}
+
 		if($array_canales == 404){
 			echo $array_canales;
 		}else if($array_canales == 401){
@@ -145,6 +156,10 @@ class Util{
 					'nombre' => $array_canales["entries"][$i]["name"]
 				);
 				array_push($items,$canal);
+				$url = "http://".$configuracion["usuario"].":".$configuracion["contrasena"]."@".$ipuerto."/".$array_canales["entries"][$i]["icon_public_url"];
+				$nombreImg = str_replace("picon://", "", $array_canales["entries"][$i]["icon"]);
+				$img = '../img/canales/'.count($items).".png";
+				file_put_contents($img, file_get_contents($url));
 			}
 			//Insert all of the items in the array
 			foreach ($items as $item) {
@@ -210,6 +225,24 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
+		
+		for ($i=0; $i < count($row); $i++) {
+			//Saco el logo
+			$stmt2 = $db->prepare("SELECT * from canales where nombre=:nombre");
+			// Especificamos el fetch mode antes de llamar a fetch()
+			$stmt2->setFetchMode(PDO::FETCH_ASSOC);
+			$stmt2->bindParam(':nombre', $row[$i]["canal"]);
+			// Ejecutamos
+			$stmt2->execute();
+			// Mostramos los resultados
+			$row2 = $stmt2->fetchAll();
+			if(!count($row2)==0){
+				$id = $row2[0]["id"];
+				$row[$i]["idCanal"]=$id;
+			}else{
+				$row[$i]["idCanal"]="";
+			}
+		}
 		echo json_encode($row);
 
 	}
@@ -230,6 +263,25 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
+		
+		for ($i=0; $i < count($row); $i++) {
+			//Saco el logo
+			$stmt2 = $db->prepare("SELECT * from canales where nombre=:nombre");
+			// Especificamos el fetch mode antes de llamar a fetch()
+			$stmt2->setFetchMode(PDO::FETCH_ASSOC);
+			$stmt2->bindParam(':nombre', $row[$i]["canal"]);
+			// Ejecutamos
+			$stmt2->execute();
+			// Mostramos los resultados
+			$row2 = $stmt2->fetchAll();
+			if(!count($row2)==0){				
+				$id = $row2[0]["id"];
+				$row[$i]["idCanal"]=$id;
+			}else{
+				$row[$i]["idCanal"]="";
+			}
+		}
+
 		echo json_encode($row);
 	}
 	static function reproduccionesTotales(){
@@ -268,6 +320,23 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetch();
+		
+		
+		//Saco el logo
+		$stmt2 = $db->prepare("SELECT * from canales where nombre=:nombre");
+		// Especificamos el fetch mode antes de llamar a fetch()
+		$stmt2->setFetchMode(PDO::FETCH_ASSOC);
+		$stmt2->bindParam(':nombre', $row["canal"]);
+		// Ejecutamos
+		$stmt2->execute();
+		// Mostramos los resultados
+		$row2 = $stmt2->fetchAll();
+		if(!count($row2)==0){				
+			$id = $row2[0]["id"];
+			$row["idCanal"]=$id;
+		}else{
+			$row["idCanal"]="";
+		}
 		echo json_encode($row);
 	}
 	static function usuarioActivo(){
@@ -290,7 +359,33 @@ class Util{
 		echo json_encode($row);
 	}
 	static function reproduccionesActivas(){
-		echo json_encode(self::reproduccionesActivasAPI());
+		$row = self::reproduccionesActivasAPI();
+		$db = new PDO("mysql:dbname=".self::$base_datos.";host=".self::$servidor."",
+			self::$usuarioBD,
+			self::$contrasenaBD,
+			array(
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8;"
+			)
+		);
+		for ($i=0; $i < $row["totalCount"]; $i++) {
+			//Saco el logo
+			$stmt2 = $db->prepare("SELECT * from canales where nombre=:nombre");
+			// Especificamos el fetch mode antes de llamar a fetch()
+			$stmt2->setFetchMode(PDO::FETCH_ASSOC);
+			$stmt2->bindParam(':nombre', $row["entries"][$i]["channel"]);
+			// Ejecutamos
+			$stmt2->execute();
+			// Mostramos los resultados
+			$row2 = $stmt2->fetchAll();
+			if(!count($row2)==0){				
+				$id = $row2[0]["id"];
+				$row["entries"][$i]["idCanal"]=$id;
+			}else{
+				$row["entries"][$i]["idCanal"]="";
+			}	
+		}
+		echo json_encode($row);
 	}
 
 	static function usuarios(){
@@ -310,6 +405,7 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
+		
 		echo json_encode($row);
 	}
 	static function graficaCanales($usuario, $fechaInicio, $fechaFin, $configuracion){

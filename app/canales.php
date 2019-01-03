@@ -60,11 +60,13 @@
 									<thead>
 										<tr>
 											<th>Nombre</th>
+											<th>Logo</th>
 										</tr>
 									</thead>
 									<tfoot>
 										<tr>
 											<th>Nombre</th>
+											<th>Logo</th>
 										</tr>
 									</tfoot>
 								</table>

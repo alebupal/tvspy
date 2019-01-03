@@ -177,20 +177,26 @@ $(document).ready(function () {
 							if(data["entries"][i]["title"].indexOf("DVR:") > -1){
 								accion = "grabando";
 							}
+							var logo="img/sin-logo.png";
+							if(data["entries"][i]["idCanal"]!=""){
+								logo= "img/canales/"+data["entries"][i]["idCanal"]+".png";
+							}
 							html +='<div class="col-xl-4 col-sm-6 mb-3">'+
-							'<div class="card">'+
-							'<div class="card-body">'+
-							'<h6 class="card-title"><b>'+usuario+'</b> está '+accion+' <b>'+data["entries"][i]["channel"]+'</b></h6>'+
-							'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
-							'<span><b>Inicio</b>: '+unixToDate(fechaInicio)+'</span><br>'+
-							'<span><b>State</b>: '+data["entries"][i]["state"]+'</span><br>'+
-							'<span><b>IP</b>: '+hostname+'</span><br>'+
-							'<span><b>Service</b>: '+data["entries"][i]["service"]+'</span><br>'+
-							'<span><b>Profile</b>: '+data["entries"][i]["profile"]+'</span><br>'+
-							'<span><b>Errors</b>: '+data["entries"][i]["errors"]+'</span>'+
-							'</div>'+
-							'</div>'+
-							'</div>';
+								'<div class="card">'+
+									'<div class="card-body">'+
+										'<div class="text-center"><img class="logoCanalActivo" src="'+logo+'"></div>'+
+										'<h6 class="card-title"><b>'+usuario+'</b> está '+accion+' <b>'+data["entries"][i]["channel"]+'</b></h6>'+
+										'<h7 class="card-subtitle mb-2 text-muted">'+data["entries"][i]["title"]+'</h7><br>'+
+										'<span><b>Inicio</b>: '+unixToDate(fechaInicio)+'</span><br>'+
+										'<span><b>Estado</b>: '+data["entries"][i]["state"]+'</span><br>'+
+										'<span><b>IP</b>: '+hostname+'</span><br>'+
+										'<span><b>Servicio</b>: '+data["entries"][i]["service"]+'</span><br>'+
+										'<span><b>Perfil</b>: '+data["entries"][i]["profile"]+'</span><br>'+
+										'<span><b>Descifra</b>: '+data["entries"][i]["descramble"]+'</span><br>'+
+										'<span><b>Errores</b>: '+data["entries"][i]["errors"]+'</span>'+
+										'</div>'+
+									'</div>'+
+								'</div>';
 						}
 					}
 					$(".divReproduccion").html(html);
@@ -222,7 +228,11 @@ $(document).ready(function () {
 			success: function (data) {
 				if(data!=false){
 					data = $.parseJSON(data);
-					var texto ="";
+					var logo="<img src='img/sin-logo.png'>";
+					if(data["idCanal"]!=""){
+						logo = "<img src='img/canales/"+data['idCanal']+".png'>";
+					}
+					$(".logoCanalActivo").html(logo);
 					$(".canalActivo").html(data["canal"]);
 				}else{
 					$(".canalActivo").html("--");
@@ -253,12 +263,23 @@ $(document).ready(function () {
 				if(data!=false){
 					data = $.parseJSON(data);
 					var texto ="";
+					var logo="<img class='logoCanal' src='img/sin-logo.png'>";
 					for (var i = 0; i < data.length; i++) {
+						if(data[i]["idCanal"]!=""){
+							logo = "<img class='logoCanal' src='img/canales/"+data[i]["idCanal"]+".png'>";
+						}
 						texto+='<a class="list-group-item list-group-item-action">'+
 							'<div class="media">'+
 								'<div class="media-body">'+
-									'<strong>'+data[i]["usuario"]+'</strong> ha empezado a reproducir <strong>'+data[i]["canal"]+'</strong>.'+
-									'<div class="text-muted smaller">'+data[i]["inicio"]+'</div>'+
+									'<div class="row">'+
+										'<div class="col-sm-2">'+
+											logo+
+										'</div>'+
+										'<div class="col-sm-10">'+
+											'<strong>'+data[i]["usuario"]+'</strong> ha empezado a reproducir <strong>'+data[i]["canal"]+'</strong>.'+
+											'<div class="text-muted smaller">'+data[i]["inicio"]+'</div>'+
+										'</div>'+
+									'</div>'+
 								'</div>'+
 							'</div>'+
 						'</a>';
@@ -285,12 +306,23 @@ $(document).ready(function () {
 				if(data!=false){
 					data = $.parseJSON(data);
 					var texto ="";
+					var logo="<img class='logoCanal' src='img/sin-logo.png'>";
 					for (var i = 0; i < data.length; i++) {
+						if(data[i]["idCanal"]!=""){
+							logo = "<img class='logoCanal' src='img/canales/"+data[i]["idCanal"]+".png'>";
+						}
 						texto+='<a class="list-group-item list-group-item-action">'+
 							'<div class="media">'+
 								'<div class="media-body">'+
-									'<strong>'+data[i]["usuario"]+'</strong> ha parado de reproducir <strong>'+data[i]["canal"]+'</strong>.'+
-									'<div class="text-muted smaller">'+data[i]["fin"]+'</div>'+
+									'<div class="row">'+
+										'<div class="col-sm-2">'+
+											logo+
+										'</div>'+
+										'<div class="col-sm-10">'+
+											'<strong>'+data[i]["usuario"]+'</strong> ha empezado a reproducir <strong>'+data[i]["canal"]+'</strong>.'+
+											'<div class="text-muted smaller">'+data[i]["fin"]+'</div>'+
+										'</div>'+
+									'</div>'+
 								'</div>'+
 							'</div>'+
 						'</a>';
@@ -328,10 +360,10 @@ $(document).ready(function () {
 			if(ips != null){
 				for (var i = 0; i < ips.length; i++) {
 					input_ip += '<div class="form-group col-md-3">'+
-					'<input type="text" class="form-control input_ip" id="ip_'+i+'" name="ip_'+i+'" value="'+ips[i]+'">'+
+						'<input type="text" class="form-control input_ip" id="ip_'+i+'" name="ip_'+i+'" value="'+ips[i]+'">'+
 					'</div>'+
 					'<div class="form-group mt-2 col-md-1">'+
-					'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
+						'<a class="btnQuitarIP"><i class="fas fa-trash-alt"></i></a>'+
 					'</div>';
 				}
 				$(".contenedor_ip").html(input_ip);
@@ -735,8 +767,17 @@ $(document).ready(function () {
 				'colvis',
 			],
 			order: [[ 0, "asc" ]],
+			columnDefs: [
+				{ className: "divLogo", "targets": [ 1 ] }
+			],
 			columns: [
-				{data: "1"}
+				{data: "1"},
+				{data: null,
+					render: function (data, type, row) {
+						var logo = "<img class='logo' width='100' src='img/canales/"+row[0]+".png'>";
+						return logo;
+					}
+				},
 			],
 			initComplete: function() {
 				table.columns().every( function (){

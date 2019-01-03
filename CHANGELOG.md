@@ -1,3 +1,7 @@
+## [2.0.2] - 2018-12-29
+- Añadidos logos de canales a la hora de importar los canales
+- Añadido selector de usuarios a la gráfica Tiempo reproducido por canal (Minutos)
+
 ## [2.0.1] - 2018-12-29
 - Arreglado fallo que no notificaba al empezar una reproducción
 - Añadido selector de usuarios a la gráfica Tiempo reproducido por canal (Minutos)
