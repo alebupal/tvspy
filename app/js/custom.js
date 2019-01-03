@@ -1,12 +1,13 @@
 $(document).ready(function () {
 	var arrayConfiguracion = new Array();
-	var version = "2.0.1";
+	var version = "2.0.2";
 
 	comprobarVersion(version);
 	gestionMenu();
 	cargarConfiguracion(arrayConfiguracion);
 
 	function comprobarVersion(version){
+		$(".version").text(version);
 		$.ajax({
 			type: "GET",
 			dataType:'json',

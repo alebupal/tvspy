@@ -1,4 +1,4 @@
-# TVSPY 2.0.1
+# TVSPY 2.0.2
 
 Aplicación web para monitorizar TvHeadend
 

@@ -4,8 +4,8 @@
  */
 class Util{
 	public static $servidor= "localhost";
-	public static $usuarioBD= "root";
-	public static $contrasenaBD = "";
+	public static $usuarioBD= "tvspy";
+	public static $contrasenaBD = "tvspy";
 	public static $base_datos = "tvspy";
 
 	static function arrayBonito($array){
@@ -158,8 +158,14 @@ class Util{
 				array_push($items,$canal);
 				$url = "http://".$configuracion["usuario"].":".$configuracion["contrasena"]."@".$ipuerto."/".$array_canales["entries"][$i]["icon_public_url"];
 				$nombreImg = str_replace("picon://", "", $array_canales["entries"][$i]["icon"]);
-				$img = '../img/canales/'.count($items).".png";
-				file_put_contents($img, file_get_contents($url));
+				$img = '../img/canales/'.count($items).'.png';
+				
+				if(self::get_http_response_code($url) != "200"){
+					//echo "error";
+					copy('../img/sin-logo.png', '../img/canales/'.count($items).'.png');
+				}else{
+					file_put_contents($img, file_get_contents($url));
+				}
 			}
 			//Insert all of the items in the array
 			foreach ($items as $item) {
@@ -1211,6 +1217,10 @@ class Util{
 	static function separar_comas($commaSepStr) {
 		$myArray = explode(',', $commaSepStr);
 		return $myArray ;
+	}
+	static function get_http_response_code($url) {
+		$headers = get_headers($url);
+		return substr($headers[0], 9, 3);
 	}
 
 
