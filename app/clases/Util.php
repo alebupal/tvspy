@@ -116,13 +116,13 @@ class Util{
 		var_dump($stmt->fetch());
 		//return $stmt->fetch();
 	}
-	static function importarCanales(){		
+	static function importarCanales(){
 		$configuracion = self::cargarConfiguracion();
 		$array_canales = self::canalesAPI();
 		$ipuerto =  $configuracion["ip"].":".$configuracion["puerto"];
-		
+
 		/*Eliminamos imagenes anteriores*/
-		$files = glob('../img/canales/*'); // get all file names
+		$files = glob('../img/canales/*.png'); // get all file names
 		foreach($files as $file){ // iterate files
 			if(is_file($file)){
 				unlink($file); // delete file
@@ -159,7 +159,7 @@ class Util{
 				$url = "http://".$configuracion["usuario"].":".$configuracion["contrasena"]."@".$ipuerto."/".$array_canales["entries"][$i]["icon_public_url"];
 				$nombreImg = str_replace("picon://", "", $array_canales["entries"][$i]["icon"]);
 				$img = '../img/canales/'.count($items).'.png';
-				
+
 				if(self::get_http_response_code($url) != "200"){
 					//echo "error";
 					copy('../img/sin-logo.png', '../img/canales/'.count($items).'.png');
@@ -231,7 +231,7 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
-		
+
 		for ($i=0; $i < count($row); $i++) {
 			//Saco el logo
 			$stmt2 = $db->prepare("SELECT * from canales where nombre=:nombre");
@@ -269,7 +269,7 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
-		
+
 		for ($i=0; $i < count($row); $i++) {
 			//Saco el logo
 			$stmt2 = $db->prepare("SELECT * from canales where nombre=:nombre");
@@ -280,7 +280,7 @@ class Util{
 			$stmt2->execute();
 			// Mostramos los resultados
 			$row2 = $stmt2->fetchAll();
-			if(!count($row2)==0){				
+			if(!count($row2)==0){
 				$id = $row2[0]["id"];
 				$row[$i]["idCanal"]=$id;
 			}else{
@@ -326,8 +326,8 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetch();
-		
-		
+
+
 		//Saco el logo
 		$stmt2 = $db->prepare("SELECT * from canales where nombre=:nombre");
 		// Especificamos el fetch mode antes de llamar a fetch()
@@ -337,7 +337,7 @@ class Util{
 		$stmt2->execute();
 		// Mostramos los resultados
 		$row2 = $stmt2->fetchAll();
-		if(!count($row2)==0){				
+		if(!count($row2)==0){
 			$id = $row2[0]["id"];
 			$row["idCanal"]=$id;
 		}else{
@@ -384,12 +384,12 @@ class Util{
 			$stmt2->execute();
 			// Mostramos los resultados
 			$row2 = $stmt2->fetchAll();
-			if(!count($row2)==0){				
+			if(!count($row2)==0){
 				$id = $row2[0]["id"];
 				$row["entries"][$i]["idCanal"]=$id;
 			}else{
 				$row["entries"][$i]["idCanal"]="";
-			}	
+			}
 		}
 		echo json_encode($row);
 	}
@@ -411,7 +411,7 @@ class Util{
 		$stmt->execute();
 		// Mostramos los resultados
 		$row = $stmt->fetchAll();
-		
+
 		echo json_encode($row);
 	}
 	static function graficaCanales($usuario, $fechaInicio, $fechaFin, $configuracion){
