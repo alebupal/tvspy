@@ -29,13 +29,13 @@
 - Ahora el idReproduccion de la BD es un varchar 200
 
 ## [1.2.3] - 2018-06-01
-- Corrección notificación doble
+- Correción notificación doble
 
 ## [1.2.2] - 2018-06-01
-- Corrección notificación tiempo de más
+- Correción notificación tiempo de más
 
 ## [1.2.1] - 2018-06-01
-- Corrección, no salía la fecha en el mensaje de Telegram
+- Correción, no salía la fecha en el mensaje de Telegram
 
 ## [1.2.0] - 2018-06-01
 - El tiempo en la base de datos ahora se guarda en segundos
