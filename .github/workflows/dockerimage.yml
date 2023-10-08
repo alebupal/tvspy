@@ -1,63 +1,34 @@
-name: Build and Push Docker Image tvspy to Docker Hub
+name: ci
 
 on:
   push:
     branches:
       - dev
-      - main
-    tags:
-      - 'release/*'
-
-env:
-  # Use docker.io for Docker Hub if empty
-  REGISTRY: docker.io
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker-compose build --no-cache --force-rm 
-
-  test:
+  docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Test the Docker image
-        run: docker-compose up -d 
-
-  push_to_registry:
-    name: Push Docker image to Docker Hub
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
-
-      - name: Set up Docker Buildx
+      -
+        name: Checkout
+        uses: actions/checkout@v4
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      -
+        name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+      -
+        name: Build and push
+        uses: docker/build-push-action@v4
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: "{{defaultContext}}"
+          context: .
+          platforms: linux/amd64,linux/arm64
           push: true
-          tags: |
-            ${{ github.ref == 'refs/heads/dev' && 'alebupal/tvspy:dev' || github.ref == 'refs/heads/main' && 'alebupal/tvspy:latest' || github.ref }}:${{ github.ref_name }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:dev
