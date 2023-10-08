@@ -1,4 +1,4 @@
-FROM phusion/baseimage
+FROM phusion/baseimage:jammy-1.0.1
 
 MAINTAINER alebupal <alebupal@gmail.com>
 
@@ -53,8 +53,8 @@ ADD supporting_files/mysqld_innodb.cnf /etc/mysql/conf.d/mysqld_innodb.cnf
 RUN sed -i "s/.*bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
 # Set PHP timezones to Europe/Madrid
-RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/apache2/php.ini
-RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/7.2/cli/php.ini
+RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/8.2/apache2/php.ini
+RUN sed -i "s/;date.timezone =/date.timezone = Europe\/Madrid/g" /etc/php/8.2/cli/php.ini
 
 #Cambiar zona horaria
 RUN apt update && apt install -y tzdata && \
