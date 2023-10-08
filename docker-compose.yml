@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  tvspy:
+    image: alebupal/tvspy:latest
+    restart: unless-stopped
+    container_name: tvspy
+    volumes:
+      - ./tvspy:/var/www/html/bd_backup
+      - ./tvspy/img_canales:/app/img/canales #cachear imagen canales
+    ports:
+      - 80:80
