@@ -3,7 +3,6 @@ name: ci
 on:
   push:
     branches:
-      - "master"
       - "dev"
 
 jobs:
@@ -32,4 +31,4 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:dev
