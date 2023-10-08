@@ -277,7 +277,7 @@ $(document).ready(function () {
 											logo+
 										'</div>'+
 										'<div class="col-sm-10">'+
-											'<strong>'+data[i]["usuario"]+'</strong> ha empezado a reproducir <strong>'+data[i]["canal"]+'</strong>.'+
+											'<strong>'+data[i]["usuario"]+'</strong> ha finalizado la reproducción de <strong>'+data[i]["canal"]+'</strong>.'+
 											'<div class="text-muted smaller">'+data[i]["inicio"]+'</div>'+
 										'</div>'+
 									'</div>'+
