@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "tvspy",
+            "database": "${workspaceFolder:tvspy}/database.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
