@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+      - dev
+      - staging
+  release:
+    types:
+      - released
 
 jobs:
   docker:
@@ -25,10 +30,26 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: Determine Docker Tag
+        id: tag
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            echo "latest"
+          elif [ "$GITHUB_REF" = "refs/heads/dev" ]; then
+            echo "dev"
+          elif [ "$GITHUB_REF" = "refs/heads/staging" ]; then
+            echo "staging"
+          elif [ "$GITHUB_EVENT_NAME" = "release" ]; then
+            echo "${{ github.event.release.tag_name }}"
+          else
+            echo "unknown"
+          fi
+        shell: bash
+      -
         name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:${{ steps.tag.outputs.stdout }}
