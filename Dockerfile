@@ -29,7 +29,7 @@ RUN apt-get update && \
 	apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C && \
 	apt-get update && \
 	apt-get -y upgrade && \
-	apt-get -y install nano supervisor wget git apache2 php-xdebug libapache2-mod-php mysql-server php-mysql pwgen php-apcu php7.0-mcrypt php-gd php-xml php-mbstring php-gettext zip unzip php-zip curl php-curl && \
+	apt-get -y install nano supervisor wget git apache2 php-xdebug libapache2-mod-php mysql-server php-mysql pwgen php-apcu php7.0-mcrypt php-gd php-xml php-mbstring php-php-gettext zip unzip php-zip curl php-curl && \
 	apt-get -y autoremove && \
 	echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
