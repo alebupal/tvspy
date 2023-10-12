@@ -1,0 +1,36 @@
+.circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 1px 1px #0000001a;
+    background: #f11e1e;
+    display: inline-flex;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.pulse {
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% {
+        box-shadow: 0 0 0 0px rgba(0, 0, 0, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 20px rgba(0, 0, 0, 0);
+    }
+}
+.list-group{
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+/* Estilo para la lista con una barra de desplazamiento más delgada */
+.scrollable-list::-webkit-scrollbar {
+    width: 3px; /* Ancho de la barra de desplazamiento */
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px; /* Radio de los bordes de la barra */
+}
