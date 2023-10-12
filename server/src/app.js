@@ -7,6 +7,7 @@ require('./database/seeder');
 const configRoutes = require('./routes/configRoutes'); // Importa las rutas de 'config'
 const registriesRoutes = require('./routes/registriesRoutes'); // Importa las rutas de 'registries'
 const tvheadendRoutes = require('./routes/tvheadendRoutes'); // Importa las rutas de 'tvheeadend'
+const subscriptions = require('./routes/subcriptions'); // Importa las rutas de 'tvheeadend'
 
 
 const app = express();

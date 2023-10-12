@@ -6,7 +6,9 @@ const defaultConfigData = [
     }, {
         name: 'password'
     }, {
-        name: 'host'
+        name: 'protocol'
+    }, {
+        name: 'hostname'
     }, {
         name: 'refresh',
         value: 5

@@ -1,34 +1,18 @@
 const express = require('express');
-const db = require('../database/database');
 const axios = require('axios');
-
 const app = express.Router();
-
-// Función para obtener la configuración desde la tabla 'config'
-const getConfigValues = async () => {
-    return new Promise((resolve, reject) => {
-        db.all('SELECT * FROM config WHERE name IN (?, ?, ?, ?)', [
-            'host', 'username', 'password', 'port'
-        ], (err, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                const configValues = {};
-                rows.forEach((row) => {
-                    configValues[row.name] = row.value;
-                });
-                resolve(configValues);
-            }
-        });
-    });
-};
-
+const { getConfigValues } = require('./configTvheadend')
+;
 // Función para realizar una solicitud a la API externa
 const getExternalData = async (endpoint, res) => {
     try {
         const configValues = await getConfigValues();
 
-        if (!configValues.host || !configValues.username || !configValues.password || !configValues.port) {
+        if (!configValues.protocol ||
+            !configValues.hostname ||
+            !configValues.username ||
+            !configValues.password ||
+            !configValues.port) {
             res
                 .status(404)
                 .json(
@@ -36,9 +20,8 @@ const getExternalData = async (endpoint, res) => {
                 );
             return;
         }
-
-        const fullUrl = `${configValues.host}:${configValues.port}${endpoint}`;
-
+        const fullUrl = `${configValues.protocol}://${configValues.hostname}:${configValues.port}${endpoint}`;
+console.log(fullUrl)
         const response = await axios.get(fullUrl, {
             auth: {
                 username: configValues.username,
