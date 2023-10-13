@@ -1,23 +1,31 @@
 const defaultConfigData = [
     {
-        name: 'port'
+        name: 'port',
+        value: 9981
     }, {
-        name: 'username'
+        name: 'username',
+        value: ''
     }, {
-        name: 'password'
+        name: 'password',
+        value: ''
     }, {
-        name: 'protocol'
+        name: 'protocol',
+        value: 'http'
     }, {
-        name: 'hostname'
+        name: 'hostname',
+        value: ''
     }, {
         name: 'refresh',
         value: 5
     }, {
-        name: 'ip_allowed'
+        name: 'ip_allowed',
+        value: ''
     }, {
-        name: 'telegram_bot_token'
+        name: 'telegram_bot_token',
+        value: ''
     }, {
-        name: 'telegram_id'
+        name: 'telegram_id',
+        value: ''
     }, {
         name: 'telegram_notification',
         value: false
@@ -45,14 +53,17 @@ const defaultConfigData = [
         name: 'telegram_notification_time',
         value: false
     }, {
-        name: 'telegram_notification_time_text'
+        name: 'telegram_notification_time_text',
+        value: ''
     }, {
-        name: 'telegram_time_limit'
+        name: 'telegram_time_limit',
+        value: ''
     }, {
         name: 'telegram_notification_ip_not_allowed',
         value: false
     }, {
-        name: 'telegram_notification_ip_not_allowed_text'
+        name: 'telegram_notification_ip_not_allowed_text',
+        value: ''
     }
 ];
 
