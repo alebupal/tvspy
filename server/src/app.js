@@ -2,6 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const db = require('./database/database');
 require('./database/seeder');
 
 const configRoutes = require('./routes/configRoutes'); // Importa las rutas de 'config'
