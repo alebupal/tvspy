@@ -21,7 +21,6 @@ const getExternalData = async (endpoint, res) => {
             return;
         }
         const fullUrl = `${configValues.protocol}://${configValues.hostname}:${configValues.port}${endpoint}`;
-console.log(fullUrl)
         const response = await axios.get(fullUrl, {
             auth: {
                 username: configValues.username,

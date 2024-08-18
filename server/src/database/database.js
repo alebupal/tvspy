@@ -32,7 +32,6 @@ db.run(`
             console.error('Error creando la tabla registries:', err.message);
             return;
         }
-        console.log('Tablas creadas con éxito.');
     });
 });
 

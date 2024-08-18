@@ -1,0 +1,249 @@
+{
+	"info": {
+		"_postman_id": "d0b99d65-991f-4c28-96bc-acedc7a1ab35",
+		"name": "TVSPY",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17548762"
+	},
+	"item": [
+		{
+			"name": "Config",
+			"item": [
+				{
+					"name": "config",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/config",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "config",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/config/:name",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"config",
+								":name"
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "username"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "config",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test name\",\r\n    \"value\": \"Test value\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/config",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"config"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "config",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"value\": \"Test value\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/config/:name",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"config",
+								":name"
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "username"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Registry",
+			"item": [
+				{
+					"name": "registries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/registries",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"registries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registries id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/registries/:id",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"registries",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registries",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"usuario1\",\r\n    \"channel\": \"canal1\",\r\n    \"hostname\": \"host1\",\r\n    \"client\": \"cliente1\",\r\n    \"service\": \"servicio1\",\r\n    \"errors\": 2,\r\n    \"total_in\": 100,\r\n    \"start\": \"2023-10-08 12:00:00\",\r\n    \"end\": \"2023-10-08 12:30:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/registries",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"registries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registries",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"usuario1\",\r\n    \"channel\": \"canal1\",\r\n    \"hostname\": \"host1\",\r\n    \"client\": \"cliente1\",\r\n    \"service\": \"servicio1\",\r\n    \"errors\": 2,\r\n    \"total_in\": 100,\r\n    \"start\": \"2023-10-08 12:00:00\",\r\n    \"end\": \"2023-10-08 12:30:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/registries/:id",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"registries",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:3001/api",
+			"type": "string"
+		}
+	]
+}

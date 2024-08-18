@@ -1,4 +1,3 @@
-// utilidades.js
 const db = require('../database/database');
 
 async function getConfigValues() {
