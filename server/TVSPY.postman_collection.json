@@ -207,7 +207,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": ""
+									"value": "1"
 								}
 							]
 						}
@@ -215,6 +215,57 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "channels",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/channels",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"channels"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/users",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subscriptions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/subscriptions",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"subscriptions"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [

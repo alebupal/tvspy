@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - dev
+      - main
+      - staging
 
 jobs:
   docker:
@@ -31,4 +33,16 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:dev
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:${{ github.ref_name }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:latest
+        if: github.ref_name == 'main'
+      -
+        name: Build and push other branches
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tvspy:${{ github.ref_name }}
+        if: github.ref_name != 'main'
