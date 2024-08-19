@@ -64,6 +64,9 @@ const defaultConfigData = [
     }, {
         name: 'telegram_notification_ip_not_allowed_text',
         value: ''
+    }, {
+        name: 'languaje',
+        value: 'es'
     }
 ];
 
