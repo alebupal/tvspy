@@ -13,6 +13,7 @@ interface Registry {
     hostname: string;
     client: string;
     service: string;
+    title: string;
     errors: string;
     total_in: number;
     start: string;
@@ -72,6 +73,12 @@ const TableRegistry: React.FC = () => {
         {
             name: t('Service'),
             selector: row => t(row.service),
+            sortable: true,
+            wrap: true   
+        },
+        {
+            name: t('Title'),
+            selector: row => t(row.title),
             sortable: true,
             wrap: true   
         },

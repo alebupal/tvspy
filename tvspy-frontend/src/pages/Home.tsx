@@ -38,6 +38,12 @@ const Home: React.FC = () => {
   const [wsServerUrl, setWsServerUrl] = useState<string>('');
   const [totalBandwidth, setTotalBandwidth] = useState<number>(0);
   const [totalConsumed, setTotalConsumed] = useState<number>(0);
+  const determineType = (title: string): 'recording' | 'playing' => {
+    return title.includes('DVR:') ? 'recording' : 'playing';
+  };
+  const [ipAllowed, setIpAllowed] = useState<string>('');
+
+  
 
   useEffect(() => {
     const fetchWsServerUrl = async () => {
@@ -57,8 +63,18 @@ const Home: React.FC = () => {
         setLoading(false);
       }
     };
+    
+    const fetchIpAllowed = async () => {
+      try {        
+        const response = await axios.get(`${API_ENDPOINTS.CONFIG}/ip_allowed`);
+        setIpAllowed(response.data.value);
+      } catch (err) {
+        setError(err as Error);
+      }
+    };
 
     fetchWsServerUrl();
+    fetchIpAllowed();
   }, []);
 
   useEffect(() => {
@@ -141,11 +157,13 @@ const Home: React.FC = () => {
             key={msg.id}
             user="alebupal"
             channel={msg.channel}
-            device={msg.client}
+            client={msg.client}
             hostname={msg.hostname}
             service={msg.service}
             bandwidth={msg.in ? formatBytes(msg.in) : 'N/A'}
             total_bandwidth={msg.total_in ? formatBytes(msg.total_in) : 'N/A'}
+            type={determineType(msg.title)}
+            ip_allowed={ipAllowed}
           ></CardDataLive>
         ))
       ) : (

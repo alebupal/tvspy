@@ -7,6 +7,7 @@ require('./database/seeder');
 const configRoutes = require('./routes/configRoutes');
 const registriesRoutes = require('./routes/registriesRoutes');
 const tvheadendRoutes = require('./routes/tvheadendRoutes');
+const subcriptions = require('./routes/subcriptions');
 
 const app = express();
 const port = 3001;

@@ -14,6 +14,7 @@
     "Hostname": "Hostname",
     "Client": "Cliente",
     "Service": "Servicio",
+    "Title": "Titulo",
     "Erros": "Errores",
     "Total in": "Total in",
     "Start": "Inicio",
@@ -26,6 +27,7 @@
     "Refresh Interval": "Intervalo de refresco",
     "IP Allowed": "IP permitidas",
     "Telegram Bot Token": "Telegram Bot Token",
+    "Telegram time limit (MIN)": "Tiempo límite telegram (MIN)",
     "Telegram ID": "Telegram ID",
     "Enable Telegram Notifications": "Activar notificaciones Telegram",
     "Notify on Playback Start": "Notificación empezar reproducción",
@@ -50,11 +52,13 @@
     "Successfully updated": "Actualizado correctamente",
     "Error updating": "Error al actualizar",
     "is playing": "está reproduciendo",
+    "is recording": "está grabando",
     "Device": "Dispositivo",
     "Bandwidth": "Ancho de banda",
     "Consumed": "Consumido",
     "Total bandwidth": "Ancho de banda total",
     "Total consumed": "Total consumido",
-    "No active plays": "Sin reproducciones activas"
+    "No active plays": "Sin reproducciones activas",
+    "The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%": "Se pueden usar las siguiente variables %%username%%, %%channel%%, %%date%%, %%client%% y %%hostname%%"
 }
   

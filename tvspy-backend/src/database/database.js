@@ -22,10 +22,13 @@ db.run(`
         hostname TEXT,
         client TEXT,
         service TEXT,
+        title TEXT,
         errors INTEGER,
         total_in INTEGER,
         start DATETIME,
-        end DATETIME
+        end DATETIME,
+        notification_time BOOLEAN,
+        notification_ip BOOLEAN
       )
     `, (err) => {
         if (err) {
