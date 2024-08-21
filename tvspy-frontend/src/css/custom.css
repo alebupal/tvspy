@@ -1,0 +1,26 @@
+/* Datatable */
+
+.dark .rdt_TableRow {
+    background-color: rgb(36 48 63 / var(--tw-bg-opacity));
+    color: white;
+}
+.dark .rdt_TableRow:hover{
+    background-color: rgb(36 48 63 / var(--tw-bg-opacity));
+    color: white;
+}
+.dark .rdt_TableHeadRow,.dark .rdt_Pagination {
+    background-color: rgb(49 61 74 / var(--tw-bg-opacity));
+    color: #AEB7C0;
+}
+.data-table-extensions {
+    margin-bottom: 20px;
+}
+.data-table-extensions input {
+    padding: 10px;
+}
+.dark .data-table-extensions input{
+    background-color: rgb(49 61 74 / var(--tw-bg-opacity));
+}
+.rdt_Pagination{
+    margin-bottom: 10px;
+}
