@@ -13,7 +13,7 @@ const port = 3001;
 
 // Configura CORS para permitir solicitudes desde el origen de tu frontend
 app.use(cors({
-    origin: 'http://localhost:3000' // Cambia esto al dominio de tu frontend si es necesario
+    origin: 'http://localhost:5173' // Cambia esto al dominio de tu frontend si es necesario
 }));
 
 app.use(bodyParser.json());

@@ -27,6 +27,33 @@
 					"response": []
 				},
 				{
+					"name": "/config/multiple",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"names\": [\"port\", \"username\", \"hostname\", \"password\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/config/multiple",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"config",
+								"multiple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "config",
 					"request": {
 						"method": "GET",

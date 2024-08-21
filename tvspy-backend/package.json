@@ -1,6 +1,6 @@
 {
-  "name": "tvspy",
-  "version": "1.0.0",
+  "name": "tvspy-backend",
+  "version": "3.0.0",
   "description": "",
   "main": "src/app.js",
   "scripts": {
@@ -12,7 +12,11 @@
     "url": "git+https://github.com/alebupal/tvspy.git"
   },
   "keywords": [],
-  "author": "",
+  "author": {
+    "name": "Alejandro Bueno Palma",
+    "email": "alebupal@gmail.com",
+    "url": "https://github.com/alebupal/tvspy"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/alebupal/tvspy/issues"

@@ -16,6 +16,29 @@ app.get('/config', (req, res) => {
     });
 });
 
+app.post('/config/multiple', (req, res) => {
+    const names = req.body.names;
+    if (!Array.isArray(names) || names.length === 0) {
+        res
+            .status(400)
+            .json({error: 'Names must be provided as an array'});
+        return;
+    }
+
+    const placeholders = names.map(() => '?').join(', ');
+    const sql = `SELECT * FROM config WHERE name IN (${placeholders})`;
+
+    db.all(sql, names, (err, rows) => {
+        if (err) {
+            res
+                .status(500)
+                .json({error: err.message});
+            return;
+        }
+        res.json(rows);
+    });
+});
+
 // Endpoint para obtener un valor de configuración específico por su nombre
 app.get('/config/:name', (req, res) => {
     const name = req.params.name;
