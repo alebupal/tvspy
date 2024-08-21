@@ -4,6 +4,7 @@ import CardDataLive from '../components/CardDataLive';
 import Loader from '../common/Loader/index';
 import { API_ENDPOINTS } from '../config/apiConfig';
 import { useTranslation } from 'react-i18next';
+import { formatBytes } from '../utils/formatters'; 
 
 interface SubscriptionMessage {
   id: number;
@@ -37,16 +38,6 @@ const Home: React.FC = () => {
   const [wsServerUrl, setWsServerUrl] = useState<string>('');
   const [totalBandwidth, setTotalBandwidth] = useState<number>(0);
   const [totalConsumed, setTotalConsumed] = useState<number>(0);
-
-  const formatBytes = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = 2; // Decimales
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-  
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  };
 
   useEffect(() => {
     const fetchWsServerUrl = async () => {
