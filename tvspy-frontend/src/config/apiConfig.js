@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = `${window.location.protocol}//${window.location.host}/api`;
 
 export const API_ENDPOINTS = {
   CHANNEL:         `${API_BASE_URL}/channels`,
