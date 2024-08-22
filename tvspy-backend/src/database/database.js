@@ -3,7 +3,7 @@ const path = require('path');
 const defaultConfigData = require('./defaultConfigData');
 
 // Crear una nueva instancia de la base de datos
-const dbPath = path.join(__dirname, '../../database/database.db');
+const dbPath = path.join(__dirname, 'file/database.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error opening database:', err.message);
