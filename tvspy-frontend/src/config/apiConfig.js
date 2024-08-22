@@ -1,4 +1,4 @@
-const API_BASE_URL = `${window.location.protocol}//${window.location.host}/api`;
+const API_BASE_URL = `${window.location.protocol}//${window.location.host}:3001/api`;
 
 export const API_ENDPOINTS = {
   CHANNEL:         `${API_BASE_URL}/channels`,
