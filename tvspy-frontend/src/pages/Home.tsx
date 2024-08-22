@@ -74,26 +74,31 @@ const Home: React.FC = () => {
         const config = response.data.reduce((acc, item) => {
           acc[item.name] = item.value;
           return acc;
-        }, {});
-        const { port, username, hostname: host, password } = config;
-        const url = `ws://${username}:${password}@${host}:${port}/comet/ws`;
-        setWsServerUrl(url);
+        }, {} as Record<string, string | undefined>);
+  
+        const { port, username, hostname, password } = config;
+  
+        if (port && username && hostname && password) {
+          const url = `ws://${username}:${password}@${hostname}:${port}/comet/ws`;
+          setWsServerUrl(url);
+        } else {
+          throw new Error(t('Missing one or more values required to connect with TVHeadend'));
+        }
       } catch (err) {
-        console.error('Error al obtener la URL del WebSocket:', err);
         setError(err as Error);
         setLoading(false);
       }
     };
-    
+  
     const fetchIpAllowed = async () => {
-      try {        
+      try {
         const response = await axios.get(`${API_ENDPOINTS.CONFIG}/ip_allowed`);
         setIpAllowed(response.data.value);
       } catch (err) {
         setError(err as Error);
       }
     };
-
+  
     fetchWsServerUrl();
     fetchIpAllowed();
   }, []);
