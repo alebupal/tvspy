@@ -37,8 +37,8 @@ COPY --from=build-frontend /app/frontend/dist /usr/share/nginx/html
 # Copia la configuración personalizada de Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Exponer puertos para Nginx y Node.js
-EXPOSE 80 3000
+# Exponer puertos para Nginx
+EXPOSE 80
 
 # Iniciar Nginx y el backend Node.js en el contenedor
 CMD ["sh", "-c", "nginx -g 'daemon off;' & node /app/backend/src/app.js"]
