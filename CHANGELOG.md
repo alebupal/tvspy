@@ -1,51 +1,67 @@
+# Changelog TVSPY
+
+## [2.0.3] - 2024-08-22
+
+- Update workflows.
+
 ## [2.0.2] - 2019-01-03
-- Añadidos logos de canales a la hora de importarlos.
-- Añadidos logos en la página de inicio
+
+- Added channel logos during import.
+- Added logos on the home page.
 
 ## [2.0.1] - 2018-12-29
-- Arreglado fallo que no notificaba al empezar una reproducción
-- Añadido selector de usuarios a la gráfica Tiempo reproducido por canal (Minutos)
+
+- Fixed issue where notifications did not appear when playback started.
+- Added user selector to the "Playback Time by Channel (Minutes)" graph.
 
 ## [2.0.0] - 2018-12-05
-- Cambios en la BD, anteriores versiones no son compatibles
-- Añadidos colores a registro según este o no esté permitida la conexión.
-- En configuración se pueden añadir las ip permitidas
-- Localización de ip
-- Reestructuración configuración
-- Reestructuración menú
-- Actualizada plantilla base de Bootstrap
-- Añadida posibilidad de backup y restaurar la base de datos.
-- Compatibilidad si TvHeadend está en inglés.
-- Reestructuración del fichero dockerfile para mejorar compatibilidad
-- Comprueba si hay una versión nueva
-- Notificación por telegram cuando empieza o para de grabar
-- Se registra cuando se graba algo, en la opción de reproductor sale como: "Grabando:"
-- Si existe el archivo /var/www/html/bd_backup/backup.sql se importa al principio
+
+- Database changes, previous versions are not compatible.
+- Added color indicators in logs depending on whether the connection is allowed or not.
+- Allowed IPs can now be added in the configuration.
+- IP localization.
+- Configuration restructuring.
+- Menu restructuring.
+- Updated base Bootstrap template.
+- Added the ability to backup and restore the database.
+- Compatibility with TvHeadend when set to English.
+- Restructured Dockerfile for improved compatibility.
+- Checks for new versions.
+- Telegram notification when recording starts or stops.
+- Logs when something is recorded, shown as "Recording:" in the player option.
+- If the file /var/www/html/bd_backup/backup.sql exists, it is imported at startup.
 
 ## [1.2.4] - 2018-06-21
-- La API de TVHeadend repite id, por lo que a partir de ahora para identificar las reproducciones se utiliza el id y el tiempo de Inicio
-- Redondeo del tiempo en la tabla Registro
-- Cambiado el title del menú Inicio
-- Ahora el idReproduccion de la BD es un varchar 200
+
+- The TVHeadend API repeats IDs, so from now on, playback is identified using the ID and the start time.
+- Rounded time in the log table.
+- Changed the title of the "Home" menu.
+- The idReproduccion field in the database is now a varchar(200).
 
 ## [1.2.3] - 2018-06-01
-- Corrección notificación doble
+
+- Fixed double notification issue.
 
 ## [1.2.2] - 2018-06-01
-- Corrección notificación tiempo de más
+
+- Fixed issue with extra notification time.
 
 ## [1.2.1] - 2018-06-01
-- Corrección, no salía la fecha en el mensaje de Telegram
+
+- Fixed issue where the date was not displayed in Telegram messages.
 
 ## [1.2.0] - 2018-06-01
-- El tiempo en la base de datos ahora se guarda en segundos
-- Posibilidad de seleccionar unidad de tiempo a utilizar en la web
-- Añadida la posibilidad de poner un tiempo mínimo para que se añada como registro
+
+- The time in the database is now stored in seconds.
+- Added the ability to select the time unit to be used on the web.
+- Added the option to set a minimum time for an entry to be recorded.
 
 ## [1.1.0] - 2018-05-31
-- Añadir filtro de fechas en las gráficas
-- Evitar que se meta en la base de datos cuando TvHeadend esté escaneando
-- Corrección para levantar el servicio MySQL y apache
+
+- Added date filter in graphs.
+- Prevent entries from being added to the database when TvHeadend is scanning.
+- Fixed issue with starting MySQL and Apache services.
 
 ## [1.0.0] - 2018-05-25
-- Estable
+
+- Initial release.

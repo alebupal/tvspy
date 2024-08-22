@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	var arrayConfiguracion = new Array();
-	var version = "2.0.2";
+	var version = "2.0.3";
 
 	comprobarVersion(version);
 	gestionMenu();
