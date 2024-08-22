@@ -5,5 +5,6 @@ export const API_ENDPOINTS = {
   REGISTRY:        `${API_BASE_URL}/registries`,
   USER:            `${API_BASE_URL}/users`,
   CONFIG:          `${API_BASE_URL}/config`,
-  CONFIG_LANGUAJE: `${API_BASE_URL}/config/languaje`
+  CONFIG_LANGUAJE: `${API_BASE_URL}/config/languaje`,
+  STATISTICS:      `${API_BASE_URL}/statistics`
 };

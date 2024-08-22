@@ -20,13 +20,11 @@ Websoket is used to save logs and display active connections.
 
 - Charts on statistics
 
-## Instalación
-
-To use it, simply install the docker image <https://hub.docker.com/r/alebupal/tvspy/> and configure the application with the TvHeadend IP and port in the configuration option.
-
-[Capturas](https://github.com/alebupal/tvspy/tree/master/capturas)
+[Screenshoot](https://github.com/alebupal/tvspy/tree/master/screenshoot)
 
 ## Installation
+
+To use it, simply install the docker image <https://hub.docker.com/r/alebupal/tvspy/> and configure the application with the TvHeadend IP and port in the configuration option.
 
 ```
 docker create  \

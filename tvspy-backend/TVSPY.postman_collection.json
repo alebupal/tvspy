@@ -244,6 +244,45 @@
 			]
 		},
 		{
+			"name": "Statistics",
+			"item": [
+				{
+					"name": "statistics/general",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/statistics/general/?type=time&daysAgo=30&limit=10",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"statistics",
+								"general",
+								""
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "time",
+									"description": "'time' or 'uses'"
+								},
+								{
+									"key": "daysAgo",
+									"value": "30"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "channels",
 			"request": {
 				"method": "GET",

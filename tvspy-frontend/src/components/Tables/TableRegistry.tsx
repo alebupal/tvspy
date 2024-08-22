@@ -5,7 +5,7 @@ import axios from 'axios';
 import Loader from '../../common/Loader/index';
 import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/apiConfig';
-import { formatBytes, formatDate } from '../../utils/formatters'; 
+import {useFormatter } from '../../utils/formatters';
 
 interface Registry {
     username: string;
@@ -25,6 +25,7 @@ const TableRegistry: React.FC = () => {
     const [registry, setRegistry] = useState<Registry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const { formatBytes, formatDate, formatTime } = useFormatter();
 
     useEffect(() => {
         const fetchRegistry = async () => {
@@ -48,43 +49,43 @@ const TableRegistry: React.FC = () => {
     const columns = [
         {
             name: t('Username'),
-            selector: row => t(row.username),
+            selector: row => row.username,
             sortable: true,
-            wrap: true           
+            wrap: true,      
         },
         {
             name: t('Channel'),
-            selector: row => t(row.channel),
+            selector: row => row.channel,
             sortable: true,
             wrap: true              
         },
         {
             name: t('Hostname'),
-            selector: row => t(row.hostname),
+            selector: row => row.hostname,
             sortable: true,
             wrap: true              
         },
         {
             name: t('Client'),
-            selector: row => t(row.client),
+            selector: row => row.client,
             sortable: true,
             wrap: true     
         },
         {
             name: t('Service'),
-            selector: row => t(row.service),
+            selector: row => row.service,
             sortable: true,
             wrap: true   
         },
         {
             name: t('Title'),
-            selector: row => t(row.title),
+            selector: row => row.title,
             sortable: true,
             wrap: true   
         },
         {
             name: t('Errors'),
-            selector: row => t(row.errors),
+            selector: row => row.errors,
             sortable: true,
             wrap: true   
         },
@@ -98,7 +99,7 @@ const TableRegistry: React.FC = () => {
             name: t('Start'),
             selector: row => formatDate(row.start),
             sortable: true,
-            wrap: true   
+            wrap: true,
         },
         {
             name: t('End'),
@@ -138,7 +139,9 @@ const TableRegistry: React.FC = () => {
                     selectAllRowsItemText: t('All'),
                 }}
                 noDataComponent={t('No data available')}
-                responsive // Hacer que la tabla sea responsiva
+                responsive
+                defaultSortFieldId={9}
+                defaultSortAsc={false}
             />
         </DataTableExtensions>
       </div>

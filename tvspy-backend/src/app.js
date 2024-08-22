@@ -6,6 +6,7 @@ require('./database/seeder');
 
 const configRoutes = require('./routes/configRoutes');
 const registriesRoutes = require('./routes/registriesRoutes');
+const statisticsRoutes = require('./routes/statisticsRoutes');
 const tvheadendRoutes = require('./routes/tvheadendRoutes');
 const subcriptions = require('./routes/subcriptions');
 
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use('/api', configRoutes);
 app.use('/api', registriesRoutes);
 app.use('/api', tvheadendRoutes);
+app.use('/api', statisticsRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {

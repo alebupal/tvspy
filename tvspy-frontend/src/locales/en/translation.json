@@ -60,6 +60,22 @@
     "Total consumed": "Total consumed",
     "No active plays": "No active plays",
     "The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%": "The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%",
-    "New version available": "New version available"
+    "New version available": "New version available",
+    "Type": "Type",
+    "Time": "Time",
+    "Use": "Use",
+    "Days ago": "Days ago",
+    "hour": "hour",
+    "hours": "hours",
+    "minute": "minute",
+    "minutes": "minutes",
+    "second": "second",
+    "seconds": "seconds",
+    "reproductions": "reproductions",
+    "Top channels": "Top channels",
+    "Top clients": "Top clients",
+    "Top users": "Top users",
+    "Last Reproductions": "Last Reproductions",
+    "Statistics": "Statistics"
 }
   

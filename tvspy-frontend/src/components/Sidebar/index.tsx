@@ -123,7 +123,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           {/* <!-- Menu Group --> */}
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
-              <div className="flex justify-center items-center space-x-4">
+              <div className="flex justify-center items-center space-x-4 mb-4">
                 {/* <!-- Languaje Selector --> */}
                 <LanguajeSelector />
                 {/* <!-- Languaje Selector --> */}

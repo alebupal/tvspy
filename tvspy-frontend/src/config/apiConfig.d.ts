@@ -4,4 +4,5 @@ export const API_ENDPOINTS: {
     USER: string;
     CONFIG: string;
     CONFIG_LANGUAJE: string;
+    STATISTICS: string;
 };
