@@ -1,5 +1,6 @@
-const API_BASE_URL = `${window.location.protocol}//${window.location.host}:3001/api`;
+const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:3001/api`;
 
+console.log(API_BASE_URL);
 export const API_ENDPOINTS = {
   CHANNEL:         `${API_BASE_URL}/channels`,
   REGISTRY:        `${API_BASE_URL}/registries`,
