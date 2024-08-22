@@ -58,7 +58,7 @@ const getExternalData = async (endpoint, res) => {
                 const responseHash = md5(`${A1}:${nonce}:${nc}:${cnonce}:${qop}:${A2}`);
 
                 // Construir el encabezado de autorización
-                const authDigestHeader = `Digest username="${configValues.username}", realm="${realm}", nonce="${nonce}", uri="${uri}", algorithm="MD5", response="${responseHash}", qop=${qop}, nc=${nc}, cnonce="${cnonce}"`;
+                const authDigestHeader = `Digest username="${configValues.username}", realm="undefined", uri="${uri}", algorithm="MD5", qop=${qop}, cnonce="undefined", response="${responseHash}""`;
 
                 // Realizar la solicitud con el encabezado de autenticación Digest
                 const finalResponse = await axios.get(fullUrl, {
