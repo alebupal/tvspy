@@ -1,8 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const db = require('./database/database');
-require('./database/seeder');
+const {  db } = require('./database/database');
 
 const configRoutes = require('./routes/configRoutes');
 const registriesRoutes = require('./routes/registriesRoutes');
