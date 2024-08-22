@@ -1,5 +1,5 @@
 # Etapa 1: Construcción del frontend
-FROM node:18-alpine AS build-frontend
+FROM node:20.16.0-alpine AS build-frontend
 
 WORKDIR /app/frontend
 
@@ -10,7 +10,7 @@ COPY tvspy-frontend/ ./
 RUN npm run build
 
 # Etapa 2: Configuración del backend
-FROM node:18-alpine AS build-backend
+FROM node:20.16.0-alpine AS build-backend
 
 WORKDIR /app/backend
 
@@ -20,7 +20,7 @@ RUN npm install
 COPY tvspy-backend/ ./
 
 # Etapa 3: Imagen final con Nginx y Node.js
-FROM node:18-alpine AS final
+FROM node:20.16.0-alpine AS final
 
 # Instalar Nginx
 RUN apk add --no-cache nginx
