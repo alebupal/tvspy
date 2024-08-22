@@ -1,4 +1,4 @@
-name: Release Docker
+name: docker-image-releases
 
 on:
   release:
