@@ -29,7 +29,7 @@ To use it, simply install the docker image <https://hub.docker.com/r/alebupal/tv
 ```
 docker create  \
  --name=tvspy \
- -v <path to data>:/app/backend/database.db \
+ -v <path to data>:/app/backend/database/database.db \
  -p xxxxx:80 \
  alebupal/tvspy:latest \
 ```
