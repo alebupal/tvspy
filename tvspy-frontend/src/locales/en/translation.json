@@ -59,6 +59,7 @@
     "Total bandwidth": "Total bandwidth",
     "Total consumed": "Total consumed",
     "No active plays": "No active plays",
-    "The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%": "The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%"
+    "The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%": "The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%",
+    "New version available": "New version available"
 }
   

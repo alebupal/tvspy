@@ -183,7 +183,7 @@ const Settings = () => {
   }, [alerts]);
 
   if (loading) return <Loader />;
-  if (error) return <p>{t('Error')}: {error}</p>;
+  if (error) return <div className="text-red-500"><p>{t('Error')}: {error}</p></div>;
 
   return (
     <>

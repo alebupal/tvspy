@@ -114,7 +114,7 @@ const TableRegistry: React.FC = () => {
     };
 
     if (loading) return <Loader/>;
-    if (error) return <p>{t('Error')}: {error}</p>;
+    if (error) return <div className="text-red-500"><p>{t('Error')}: {error}</p></div>;
 
     return (
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1" style={{ overflowX: 'auto' }}>

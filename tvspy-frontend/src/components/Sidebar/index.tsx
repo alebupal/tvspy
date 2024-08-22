@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../images/logo/logo.svg';
 import DarkModeSwitcher from '../Header/DarkModeSwitcher';
 import LanguajeSelector from '../LanguajeSelector';
@@ -18,10 +17,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const trigger = useRef<any>(null);
   const sidebar = useRef<any>(null);
 
-  const storedSidebarExpanded = localStorage.getItem('sidebar-expanded');
-  const [sidebarExpanded, setSidebarExpanded] = useState(
-    storedSidebarExpanded === null ? false : storedSidebarExpanded === 'true'
-  );
+  const [remoteVersion, setRemoteVersion] = useState(null);
+  const [isNewVersionAvailable, setIsNewVersionAvailable] = useState(false);
+
+  const localVersion = '3.0.0';
 
   const { t } = useTranslation();
 
@@ -52,13 +51,34 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   });
 
   useEffect(() => {
-    localStorage.setItem('sidebar-expanded', sidebarExpanded.toString());
-    if (sidebarExpanded) {
-      document.querySelector('body')?.classList.add('sidebar-expanded');
-    } else {
-      document.querySelector('body')?.classList.remove('sidebar-expanded');
-    }
-  }, [sidebarExpanded]);
+    const compareVersions = (localVer, remoteVer) => {
+      const localParts = localVer.split('.').map(Number);
+      const remoteParts = remoteVer.split('.').map(Number);
+
+      for (let i = 0; i < 3; i++) {
+        if (remoteParts[i] > localParts[i]) {
+          return true; // Hay una nueva versión disponible
+        } else if (remoteParts[i] < localParts[i]) {
+          return false; // La versión local es más reciente o igual
+        }
+      }
+      return false; // Las versiones son iguales
+    };
+
+    // Obtener la versión desde el archivo JSON remoto
+    fetch('https://raw.githubusercontent.com/alebupal/tvspy/main/version.json')
+      .then(response => response.json())
+      .then(data => {
+        const remoteVersion = data.version;
+        setRemoteVersion(remoteVersion);
+
+        // Comprobar si la versión remota es mayor que la local
+        if (compareVersions(localVersion, remoteVersion)) {
+          setIsNewVersionAvailable(true);
+        }
+      })
+      .catch(error => console.error('Error al obtener la versión:', error));
+  }, [localVersion]);
 
   return (
     <aside
@@ -266,6 +286,19 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
             </ul>
           </div>
+          <div className='text-center text-xs'>
+            <p>
+              TVSpy V<span className='version'>{localVersion}</span> - 
+              <a href="https://github.com/alebupal/tvspy" target="_blank"> Github</a> - 
+              <a href="https://hub.docker.com/r/alebupal/tvspy/" target="_blank"> Docker</a> - 
+              <a href="https://www.paypal.me/alebupal" target="_blank"> PayPal</a> - 
+              <a href="https://github.com/TailAdmin/free-react-tailwind-admin-dashboard" target="_blank"> Template TailAdmin React</a>
+            </p>
+            {isNewVersionAvailable && (
+              <p className="text-red-500">¡{t('New version available')} {remoteVersion}!</p>
+            )}
+          </div>
+
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>
