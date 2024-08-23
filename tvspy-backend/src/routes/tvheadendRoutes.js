@@ -103,7 +103,21 @@ const getExternalData = async (endpoint, res) => {
 
 // Rutas
 app.get('/channel', async (req, res) => {
-    await getExternalData('/api/channel/grid?limit=1000000', res);
+    const { name } = req.query; // Obtén el parámetro 'name' de la consulta
+    const limit = 1000000; // O cualquier otro valor que necesites
+
+    // Construye la URL con el parámetro 'name' si está presente
+    let url = `/api/channel/grid?limit=${limit}`;
+    if (name) {
+        url += `&filter=${encodeURIComponent(JSON.stringify([{
+            "type": "string",
+            "value": name,
+            "field": "name"
+        }]))}`;
+    }
+
+    // Obtén datos de la URL construida
+    await getExternalData(url, res);
 });
 
 app.get('/subscriptions', async (req, res) => {

@@ -44,7 +44,20 @@ const TableChannel: React.FC = () => {
         },
         {
             name: t('Logo'),
-            selector: (row: Channel) => <img height="84px" width="56px" alt={row.name} src={row.icon_public_url} />
+            selector: (row: Channel) => row.icon_public_url,
+            cell: (row: Channel) => (
+                <img
+                    src={row.icon_public_url}
+                    alt={row.name}
+                    height="84px"
+                    width="56px"
+                    onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/src/images/notfound.png'; // Usa la URL en línea como reemplazo
+                    }}
+                    style={{ maxWidth: '100%', maxHeight: '100%' }}
+                />
+            ),
         },
     ];
 
