@@ -34,6 +34,8 @@ docker create  \
  alebupal/tvspy:latest \
 ```
 
+Once the connection to tvheadend is configured, the container must be restarted so that the server socket connects correctly and can record data.
+
 ## Canal telegram (<https://t.me/alebupal_tvspy>)
 
 ## Docker (<https://hub.docker.com/r/alebupal/tvspy/>)
