@@ -15,7 +15,7 @@ const fields = [
   'password',
   'protocol',
   'hostname',
-  'refresh',
+  'auth',
   'ip_allowed',
   'telegram_bot_token',
   'telegram_id',
