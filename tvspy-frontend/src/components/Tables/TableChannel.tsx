@@ -5,6 +5,7 @@ import axios from 'axios';
 import Loader from '../../common/Loader/index';
 import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/apiConfig';
+import imgNotFound from '../../images/notfound.png';
 
 interface Channel {
     name: string;
@@ -53,7 +54,7 @@ const TableChannel: React.FC = () => {
                     width="56px"
                     onError={(e) => {
                         const target = e.target as HTMLImageElement;
-                        target.src = '/src/images/notfound.png'; // Usa la URL en línea como reemplazo
+                        target.src = imgNotFound;
                     }}
                     style={{ maxWidth: '100%', maxHeight: '100%' }}
                 />
