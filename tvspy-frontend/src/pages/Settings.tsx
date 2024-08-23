@@ -344,6 +344,29 @@ const Settings = () => {
                       value={formData.port ?? ''} onChange={handleChange}
                     />
                   </div>
+                  <div className="w-full sm:w-1/2">
+                    <label
+                      className="mb-3 block text-sm font-medium text-black dark:text-white"
+                      htmlFor="auth"
+                    >
+                      {t('Authentication')}
+                    </label>
+                    <div className="relative z-20 bg-white dark:bg-form-input">
+                      <select
+                        name='auth'
+                        className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-4.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
+                        value={formData.auth ?? ''}
+                        onChange={handleChange}
+                      >
+                        <option value="plain" className="text-body dark:text-bodydark">
+                          Plain
+                        </option>
+                        <option value="digest" className="text-body dark:text-bodydark">
+                          Digest
+                        </option>
+                      </select>
+                    </div>
+                  </div>
                 </div>                
                 {/* <!-- Group 3 --> */}
                 {/* <!-- Button --> */}

@@ -15,8 +15,8 @@ const defaultConfigData = [
         name: 'hostname',
         value: ''
     }, {
-        name: 'refresh',
-        value: 5
+        name: 'auth',
+        value: 'digest'
     }, {
         name: 'ip_allowed',
         value: ''

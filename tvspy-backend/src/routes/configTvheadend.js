@@ -2,13 +2,14 @@ const db = require('../database/database');
 
 async function getConfigValues() {
   return new Promise((resolve, reject) => {
-    db.all('SELECT * FROM config WHERE name IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    db.all('SELECT * FROM config WHERE name IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       'protocol',
       'hostname',
       'username',
       'password',
       'port',
+      'auth',
       'ip_allowed',
       'telegram_bot_token',
       'telegram_id',
