@@ -80,6 +80,9 @@
     "Missing one or more values required to connect with TVHeadend": "Missing one or more values required to connect with TVHeadend",
     "No data available": "No data available",
     "Authentication": "Authentication",
-    "In TVHeadend Settings>General>Authentication type": "In TVHeadend Settings>General>Authentication type"
+    "In TVHeadend Settings>General>Authentication type": "In TVHeadend Settings>General>Authentication type",
+    "Test": "Test",
+    "Error sending test message to Telegram": "Error sending test message to Telegram",
+    "Test message sent successfully to Telegram": "Test message sent successfully to Telegram"
 }
   

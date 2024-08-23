@@ -8,33 +8,6 @@ import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { API_ENDPOINTS } from '../config/apiConfig';
 import Loader from '../common/Loader/index';
 
-const fields = [
-  'languaje',
-  'port',
-  'username',
-  'password',
-  'protocol',
-  'hostname',
-  'auth',
-  'ip_allowed',
-  'telegram_bot_token',
-  'telegram_id',
-  'telegram_notification',
-  'telegram_notification_start_playback',
-  'telegram_notification_stop_playback',
-  'telegram_notification_start_recording',
-  'telegram_notification_stop_recording',
-  'telegram_notification_start_playback_text',
-  'telegram_notification_stop_playback_text',
-  'telegram_notification_start_recording_text',
-  'telegram_notification_stop_recording_text',
-  'telegram_notification_time',
-  'telegram_notification_time_text',
-  'telegram_time_limit',
-  'telegram_notification_ip_not_allowed',
-  'telegram_notification_ip_not_allowed_text',
-];
-
 interface FormData {
   [key: string]: any;
 }
@@ -75,14 +48,20 @@ const Settings = () => {
   useEffect(() => {
     const fetchInitialValues = async () => {
       try {
-        const initialFormData: FormData = {};
-        for (const field of fields) {
-          const response = await axios.get(`${API_ENDPOINTS.CONFIG}/${field}`);
-          const value: string | boolean | undefined = response.data.value;
-          initialFormData[field] = value;
-        }
+        // Realiza una sola petición para obtener todos los valores de configuración
+        const response = await axios.get(`${API_ENDPOINTS.CONFIG}/`);
+        const configData = response.data;
+  
+        // Construye el objeto initialFormData con los valores obtenidos
+        const initialFormData = configData.reduce((acc, { name, value }) => {
+          acc[name] = value;
+          return acc;
+        }, {});
+  
+        // Establece el estado del formulario
         setFormData(initialFormData);
-
+  
+        // Establece el estado de los switches con valores booleanos
         setSwitches({
           telegram_notification: toBoolean(initialFormData.telegram_notification),
           telegram_notification_start_playback: toBoolean(initialFormData.telegram_notification_start_playback),
@@ -92,7 +71,8 @@ const Settings = () => {
           telegram_notification_time: toBoolean(initialFormData.telegram_notification_time),
           telegram_notification_ip_not_allowed: toBoolean(initialFormData.telegram_notification_ip_not_allowed),
         });
-        
+  
+        // Guarda los valores iniciales en el estado
         setInitialValues(initialFormData);
       } catch (err) {
         if (err instanceof Error) {
@@ -106,7 +86,7 @@ const Settings = () => {
     };
 
     fetchInitialValues();
-  }, []);
+  }, []);  
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -172,6 +152,63 @@ const Settings = () => {
           title: `${t('Error updating')}: ${failedFields.join(', ')} `,
           duration: 5000
         }
+      ]);
+    }
+  };
+
+  const sendTestMessageToTelegram = async () => {
+    try {
+      const telegramBotToken = formData.telegram_bot_token; // Token del bot de Telegram
+      const telegramChatId = formData.telegram_id; // ID del chat de Telegram
+      const testMessage = "Test TVSpy";
+  
+      if (!telegramBotToken || !telegramChatId) {
+        setAlerts((prevAlerts) => [
+          ...prevAlerts,
+          {
+            id: Date.now(),
+            type: 'error',
+            title: `${t('Error sending test message to Telegram')}`,
+            duration: 5000,
+          },
+        ]);
+      }
+  
+      const response = await axios.post(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+        chat_id: telegramChatId,
+        text: testMessage,
+      });
+  
+      if (response.status === 200) {
+        setAlerts((prevAlerts) => [
+          ...prevAlerts,
+          {
+            id: Date.now(),
+            type: 'success',
+            title: t('Test message sent successfully to Telegram'),
+            duration: 5000,
+          },
+        ]);
+      } else {
+        setAlerts((prevAlerts) => [
+          ...prevAlerts,
+          {
+            id: Date.now(),
+            type: 'error',
+            title: `${t('Error sending test message to Telegram')}`,
+            duration: 5000,
+          },
+        ]);
+      }
+    } catch (error) {
+      setAlerts((prevAlerts) => [
+        ...prevAlerts,
+        {
+          id: Date.now(),
+          type: 'error',
+          title: `${t('Error sending test message to Telegram')}`,
+          duration: 5000,
+        },
       ]);
     }
   };
@@ -522,6 +559,16 @@ const Settings = () => {
                           value={formData.telegram_id ?? ''} onChange={handleChange}
                         />
                       </div>
+                      {/* <!-- Button --> */}
+                      <div className="w-full sm:w-1/2 flex items-end">
+                      <a
+                        className="w-full flex justify-center rounded bg-primary py-2 px-6 font-medium text-gray hover:bg-opacity-90 cursor-pointer"
+                        onClick={sendTestMessageToTelegram}  // Llama a la función de prueba aquí
+                      >
+                        {t('Test')}
+                      </a>
+                      </div>   
+                      {/* <!--Button --> */}
                     </div>    
                     {/* <!-- Group 1 --> */}
                     {/* <!-- Group 2 --> */}
