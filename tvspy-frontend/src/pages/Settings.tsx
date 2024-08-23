@@ -366,6 +366,9 @@ const Settings = () => {
                         </option>
                       </select>
                     </div>
+                    <span className="text-gray-500 dark:text-gray-400 text-sm italic">
+                      {t('In TVHeadend Settings>General>Authentication type')}
+                    </span>
                   </div>
                 </div>                
                 {/* <!-- Group 3 --> */}
@@ -452,7 +455,7 @@ const Settings = () => {
                     rows={4}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   ></textarea>
-                  <span className="text-gray-500 dark:text-gray-400 text-sm italic ml-2">
+                  <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                     {t('IP´s separated by commas')}
                   </span>
                 </div>
@@ -546,7 +549,7 @@ const Settings = () => {
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             ></textarea>
-                            <span className="text-gray-500 dark:text-gray-400 text-sm italic ml-2">
+                            <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                               {t('The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%')}
                             </span>
                           </div>
@@ -576,7 +579,7 @@ const Settings = () => {
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             ></textarea>
-                            <span className="text-gray-500 dark:text-gray-400 text-sm italic ml-2">
+                            <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                               {t('The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%')}
                             </span>
 
@@ -610,7 +613,7 @@ const Settings = () => {
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             ></textarea>
-                            <span className="text-gray-500 dark:text-gray-400 text-sm italic ml-2">
+                            <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                               {t('The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%')}
                             </span>
 
@@ -640,7 +643,7 @@ const Settings = () => {
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             ></textarea>
-                            <span className="text-gray-500 dark:text-gray-400 text-sm italic ml-2">
+                            <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                               {t('The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%')}
                             </span>
 
@@ -675,7 +678,7 @@ const Settings = () => {
                                 rows={4}
                                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                               ></textarea>
-                              <span className="text-gray-500 dark:text-gray-400 text-sm italic ml-2">
+                              <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                                 {t('The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%')}
                               </span>
                             </div>
@@ -720,7 +723,7 @@ const Settings = () => {
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                             ></textarea>
-                            <span className="text-gray-500 dark:text-gray-400 text-sm italic ml-2">
+                            <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                               {t('The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%')}
                             </span>
 

@@ -79,6 +79,7 @@
     "Statistics": "Estadisticas",
     "Missing one or more values required to connect with TVHeadend": "Faltan uno o más valores necesarios para conectarse con TVHeadend",
     "No data available": "No hay datos disponibles",
-    "Auth": "Autenticación"
+    "Auth": "Autenticación",
+    "In TVHeadend Settings>General>Authentication type": "En TVHeadend Configuración>General>Authentication type"
 }
   
