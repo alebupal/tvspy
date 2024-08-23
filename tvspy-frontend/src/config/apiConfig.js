@@ -3,7 +3,7 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:3001/api';
 
 export const API_ENDPOINTS = {
-  CHANNEL:         `${API_BASE_URL}/channels`,
+  CHANNEL:         `${API_BASE_URL}/channel`,
   REGISTRY:        `${API_BASE_URL}/registries`,
   USER:            `${API_BASE_URL}/users`,
   CONFIG:          `${API_BASE_URL}/config`,

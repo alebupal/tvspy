@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/apiConfig';
 
 interface Channel {
-    val: string;
+    name: string;
+    icon_public_url: string;
 }
 
 const TableChannel: React.FC = () => {
@@ -38,8 +39,12 @@ const TableChannel: React.FC = () => {
     const columns = [
         {
             name: t('Name'),
-            selector: (row: Channel) => row.val,
+            selector: (row: Channel) => row.name,
             sortable: true,
+        },
+        {
+            name: t('Logo'),
+            selector: (row: Channel) => <img height="84px" width="56px" alt={row.name} src={row.icon_public_url} />
         },
     ];
 

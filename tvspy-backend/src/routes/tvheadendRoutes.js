@@ -102,8 +102,8 @@ const getExternalData = async (endpoint, res) => {
 };
 
 // Rutas
-app.get('/channels', async (req, res) => {
-    await getExternalData('/api/channel/list', res);
+app.get('/channel', async (req, res) => {
+    await getExternalData('/api/channel/grid?limit=1000000', res);
 });
 
 app.get('/subscriptions', async (req, res) => {
@@ -111,7 +111,7 @@ app.get('/subscriptions', async (req, res) => {
 });
 
 app.get('/users', async (req, res) => {
-    await getExternalData('/api/access/entry/grid', res);
+    await getExternalData('/api/access/entry/grid?limit=1000000', res);
 });
 
 module.exports = app;
