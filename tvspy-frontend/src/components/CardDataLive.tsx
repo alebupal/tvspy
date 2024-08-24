@@ -13,7 +13,6 @@ interface CardDataLiveProps {
   total_bandwidth: string;
   type: 'recording' | 'playing';
   ip_allowed: string;
-  name: string; // Agrega el parámetro name para la búsqueda
 }
 
 const CardDataLive: React.FC<CardDataLiveProps> = ({

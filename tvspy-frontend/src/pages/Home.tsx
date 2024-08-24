@@ -8,10 +8,8 @@ import {useFormatter } from '../utils/formatters';
 
 interface SubscriptionMessage {
   id: number;
-  start: number;
-  errors: number;
-  state: string;
   hostname: string;
+  username: string;
   client: string;
   title: string;
   channel: string;
@@ -21,8 +19,6 @@ interface SubscriptionMessage {
   in: number;
   out: number;
   total_in: number;
-  total_out: number;
-  updateEntry: number;
   notificationClass: 'subscriptions';
 }
 
@@ -206,7 +202,7 @@ const Home: React.FC = () => {
           messages.map((msg) => (
             <CardDataLive
               key={msg.id}
-              user="alebupal"
+              user={msg.username}
               channel={msg.channel}
               client={msg.client}
               hostname={msg.hostname}
