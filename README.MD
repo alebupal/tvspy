@@ -40,5 +40,5 @@ docker create  \
 
 - [Telegram](<https://t.me/alebupal_tvspy>)
 - [Docker](<https://hub.docker.com/r/alebupal/tvspy/>)
-- [Changelog](<https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md>)
+- [Changelog](<https://github.com/alebupal/tvspy/blob/master/CHANGELOG.MD>)
 - [Donation](<https://www.paypal.me/alebupal>)

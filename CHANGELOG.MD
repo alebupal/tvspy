@@ -5,7 +5,7 @@
 - Change backend to nodejs
 - Change frontend to reactjs
 - Use MysqlLite
-- Use websocket telegram
+- Use websocket tvheadend
 
 ## [2.0.3] - 2024-08-22
 
