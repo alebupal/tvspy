@@ -16,17 +16,17 @@ Websoket is used to save logs and display active connections.
 - Statistics (top views, top channel, etc...)
 - Notification via Telegram when someone has been playing for x amount of time.
 
+[Screenshoot](https://github.com/alebupal/tvspy/tree/master/screenshoot)
+
 ## Roadmaps
 
 - Charts on statistics
-
-[Screenshoot](https://github.com/alebupal/tvspy/tree/master/screenshoot)
 
 ## Installation
 
 To use it, simply install the docker image <https://hub.docker.com/r/alebupal/tvspy/> and configure the application with the TvHeadend IP and port in the configuration option.
 
-```
+``` bash
 docker create  \
  --name=tvspy \
  -v <path to data>:/app/backend/src/database/file \
@@ -34,12 +34,11 @@ docker create  \
  alebupal/tvspy:latest \
 ```
 
-Once the connection to tvheadend is configured, the container must be restarted so that the server socket connects correctly and can record data.
+ **IMPORTANT! Once the connection to tvheadend is configured, the container must be restarted so that the server socket connects correctly and can record data.**
 
-## Canal telegram (<https://t.me/alebupal_tvspy>)
+## Links
 
-## Docker (<https://hub.docker.com/r/alebupal/tvspy/>)
-
-## Changelog (<https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md>)
-
-## Donación (<https://www.paypal.me/alebupal>)
+- [Telegram](<https://t.me/alebupal_tvspy>)
+- [Docker](<https://hub.docker.com/r/alebupal/tvspy/>)
+- [Changelog](<https://github.com/alebupal/tvspy/blob/master/CHANGELOG.md>)
+- [Donation](<https://www.paypal.me/alebupal>)
