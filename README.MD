@@ -1,4 +1,4 @@
-# TVSPY 3.0.0
+# TVSPY 3.0.1
 
 Web application to monitor TVHeadend.
 It consists of backend and frontend

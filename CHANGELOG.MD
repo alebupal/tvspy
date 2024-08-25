@@ -1,6 +1,10 @@
 # Changelog TVSPY
 
-## [3.0.0] - 2024-08-22
+## [3.0.1] - 2024-08-26
+
+- Security, updating Dependencies
+
+## [3.0.0] - 2024-08-26
 
 - Change backend to nodejs
 - Change frontend to reactjs

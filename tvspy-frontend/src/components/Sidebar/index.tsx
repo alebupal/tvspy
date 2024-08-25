@@ -20,7 +20,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   const [remoteVersion, setRemoteVersion] = useState(null);
   const [isNewVersionAvailable, setIsNewVersionAvailable] = useState(false);
 
-  const localVersion = '3.0.0';
+  const localVersion = '3.0.1';
 
   const { t } = useTranslation();
 
