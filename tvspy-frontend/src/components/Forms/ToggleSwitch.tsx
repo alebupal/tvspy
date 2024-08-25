@@ -30,6 +30,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           className="sr-only"
           checked={checked}
           onChange={onChange}
+          data-label={t(labelKey)}
         />
         <div className="block h-8 w-14 rounded-full bg-meta-9 dark:bg-[#5A616B] mr-2"></div>
         <div

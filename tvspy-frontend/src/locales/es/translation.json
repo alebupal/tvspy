@@ -27,7 +27,7 @@
     "Refresh Interval": "Intervalo de refresco",
     "IP Allowed": "IP permitidas",
     "Telegram Bot Token": "Telegram Bot Token",
-    "Telegram time limit (MIN)": "Tiempo límite telegram (MIN)",
+    "Telegram time limit (Minutes)": "Tiempo límite telegram (Minutos)",
     "Telegram ID": "Telegram ID",
     "Enable Telegram Notifications": "Activar notificaciones Telegram",
     "Notify on Playback Start": "Notificación empezar reproducción",
@@ -84,6 +84,8 @@
     "Test": "Probar",
     "Error sending test message to Telegram": "Error al enviar el mensaje a telegram",
     "Test message sent successfully to Telegram": "Mensaje de telegram enviado correctamente",
-    "Logo": "Logo"
+    "Logo": "Logo",
+    "Minimum time": "Tiempo mínimo",
+    "Minimum time considered to record viewing of a channel": "Tiempo mínimo considerado para registrar el visionado de un canal"
 }
   

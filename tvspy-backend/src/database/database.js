@@ -68,14 +68,8 @@ const initializeDatabase = async () => {
         `);
         console.log('Table "registries" created or already exists.');
 
-        // Verificar si la tabla está vacía antes de insertar datos por defecto
-        const rows = await getSql('SELECT COUNT(*) AS count FROM config');
-        if (rows[0].count === 0) {
-            await insertDefaultConfigData();
-            console.log('Default config data inserted.');
-        } else {
-            console.log('Table "config" is not empty. Skipping default data insertion.');
-        }
+        //await updateRegistriesTable();
+        await insertDefaultConfigData();
     } catch (err) {
         console.error('Error initializing database:', err.message);
     }
@@ -103,6 +97,32 @@ const insertDefaultConfigData = () => {
         });
     });
 };
+
+const updateRegistriesTable = async () => {
+    try {
+        // Verificar si las columnas ya existen
+        const existingColumns = await getSql(`PRAGMA table_info(registries)`);
+        const columnNames = existingColumns.map(col => col.name);
+
+        const newColumns = [
+            { name: 'new_column_1', type: 'TEXT' },
+            { name: 'new_column_2', type: 'INTEGER' },
+            // Añade más columnas según sea necesario
+        ];
+
+        // Agregar las nuevas columnas si no existen
+        for (const column of newColumns) {
+            if (!columnNames.includes(column.name)) {
+                await runSql(`ALTER TABLE registries ADD COLUMN ${column.name} ${column.type}`);
+                console.log(`Column "${column.name}" added to "registries" table.`);
+            }
+        }
+
+    } catch (err) {
+        console.error('Error updating "registries" table:', err.message);
+    }
+};
+
 
 // Ejecutar la inicialización de la base de datos
 initializeDatabase();

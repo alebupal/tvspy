@@ -67,6 +67,9 @@ const defaultConfigData = [
     }, {
         name: 'languaje',
         value: 'es'
+    }, {
+        name: 'minimum_time',
+        value: '10'
     }
 ];
 

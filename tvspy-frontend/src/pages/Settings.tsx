@@ -32,6 +32,7 @@ const Settings = () => {
   const [switches, setSwitches] = useState<Switches>({});
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const alertsRef = useRef<HTMLDivElement | null>(null);
+  const [labels, setLabels] = useState<{ [key: string]: string }>({});
 
   const toBoolean = (value: string | boolean | undefined): boolean => {
     if (value === '1' || value === true) return true;
@@ -89,7 +90,13 @@ const Settings = () => {
   }, []);  
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
+    const { name, value, type, dataset } = e.target;
+
+    // Actualiza el estado de los labels por name del input
+    setLabels(prevLabels => ({
+        ...prevLabels,
+        [name]: dataset.label || name,
+    }));
 
     if (type === 'checkbox' && e.target instanceof HTMLInputElement) {
         const { checked } = e.target;
@@ -122,10 +129,10 @@ const Settings = () => {
         if (newValue !== initialValues[key]) {
           try {
             await axios.put(`${API_ENDPOINTS.CONFIG}/${key}`, { 'value': newValue });
-            updatedFields.push(key);
+            updatedFields.push(labels[key]);
             initialValues[key] = value;
           } catch (error) {
-            failedFields.push(key);
+            failedFields.push(labels[key]);
           }
         }
       }
@@ -286,7 +293,9 @@ const Settings = () => {
                         type="text"
                         name="username"
                         id="username"
-                        value={formData.username ?? ''} onChange={handleChange}
+                        data-label={t('Username')}
+                        value={formData.username ?? ''}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -318,7 +327,9 @@ const Settings = () => {
                         type="text"
                         name="password"
                         id="password"
-                        value={formData.password ?? ''} onChange={handleChange}
+                        data-label={t('Password')}
+                        value={formData.password ?? ''}
+                        onChange={handleChange}
                       />
                     </div>
                   </div>
@@ -337,7 +348,9 @@ const Settings = () => {
                     type="text"
                     name="hostname"
                     id="hostname"
-                    value={formData.hostname ?? ''} onChange={handleChange}
+                    data-label={t('Password')}
+                    value={formData.hostname ?? ''}
+                    onChange={handleChange}
                   />
                 </div>
                 {/* <!-- Group 2 --> */}
@@ -356,6 +369,7 @@ const Settings = () => {
                         className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-4.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                         value={formData.protocol ?? ''}
                         onChange={handleChange}
+                        data-label={t('Protocol')}
                       >
                         <option value="http" className="text-body dark:text-bodydark">
                           HTTP
@@ -378,7 +392,9 @@ const Settings = () => {
                       type="text"
                       name="port"
                       id="port"
-                      value={formData.port ?? ''} onChange={handleChange}
+                      data-label={t('Port')}
+                      value={formData.port ?? ''}
+                      onChange={handleChange}
                     />
                   </div>
                   <div className="w-full sm:w-1/2">
@@ -394,6 +410,7 @@ const Settings = () => {
                         className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-4.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                         value={formData.auth ?? ''}
                         onChange={handleChange}
+                        data-label={t('Authentication')}
                       >
                         <option value="plain" className="text-body dark:text-bodydark">
                           Plain
@@ -471,6 +488,7 @@ const Settings = () => {
                       className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
                       value={formData.languaje ?? ''}
                       onChange={handleChange}
+                      data-label={t('Languaje')}
                     >
                       <option value="en" className="text-body dark:text-bodydark">
                         English
@@ -488,12 +506,33 @@ const Settings = () => {
                   <textarea
                     value={formData.ip_allowed ?? ''}
                     onChange={handleChange}
+                    data-label={t('IP Allowed')}
                     name='ip_allowed'
                     rows={4}
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   ></textarea>
                   <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                     {t('IP´s separated by commas')}
+                  </span>
+                </div>
+                <div className="mb-5.5">
+                  <label
+                    className="mb-3 block text-sm font-medium text-black dark:text-white"
+                    htmlFor="minimum_time"
+                  >
+                    {t('Minimum time')}
+                  </label>
+                  <input
+                    className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
+                    type="number"
+                    name="minimum_time"
+                    id="minimum_time"
+                    value={formData.minimum_time ?? ''}
+                    onChange={handleChange}
+                    data-label={t('Minimum time')}
+                  />
+                  <span className="text-gray-500 dark:text-gray-400 text-sm italic">
+                    {t('Minimum time considered to record viewing of a channel')}
                   </span>
                 </div>
                 {/* <!-- Button --> */}
@@ -541,7 +580,9 @@ const Settings = () => {
                           type="text"
                           name="telegram_bot_token"
                           id="telegram_bot_token"
-                          value={formData.telegram_bot_token ?? ''} onChange={handleChange}
+                          value={formData.telegram_bot_token ?? ''}
+                          onChange={handleChange}
+                          data-label={t('Telegram Bot Token')}
                         />
                       </div>
                       <div className="w-full sm:w-1/2">
@@ -556,7 +597,9 @@ const Settings = () => {
                           type="text"
                           name="telegram_id"
                           id="telegram_id"
-                          value={formData.telegram_id ?? ''} onChange={handleChange}
+                          value={formData.telegram_id ?? ''}
+                          onChange={handleChange}
+                          data-label={t('Telegram ID')}
                         />
                       </div>
                       {/* <!-- Button --> */}
@@ -591,7 +634,8 @@ const Settings = () => {
                             </label>
                             <textarea
                               value={formData.telegram_notification_start_playback_text ?? ''}
-                              onChange={handleChange}
+                              onChange={handleChange}                              
+                              data-label={t('Playback Start Notification Text')}
                               name='telegram_notification_start_playback_text'
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -622,6 +666,7 @@ const Settings = () => {
                             <textarea
                               value={formData.telegram_notification_stop_playback_text ?? ''}
                               onChange={handleChange}
+                              data-label={t('Playback Stop Notification Text')}
                               name='telegram_notification_stop_playback_text'
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -656,6 +701,7 @@ const Settings = () => {
                             <textarea
                               value={formData.telegram_notification_start_recording_text ?? ''}
                               onChange={handleChange}
+                              data-label={t('Recording Start Notification Text')}
                               name='telegram_notification_start_recording_text'
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -686,6 +732,7 @@ const Settings = () => {
                             <textarea
                               value={formData.telegram_notification_stop_recording_text ?? ''}
                               onChange={handleChange}
+                              data-label={t('Recording Stop Notification Text')}
                               name='telegram_notification_stop_recording_text'
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -721,6 +768,7 @@ const Settings = () => {
                               <textarea
                                 value={formData.telegram_notification_time_text ?? ''}
                                 onChange={handleChange}
+                                data-label={t('Time Notification Text')}
                                 name='telegram_notification_time_text'
                                 rows={4}
                                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -734,14 +782,16 @@ const Settings = () => {
                                   className="mb-3 block text-sm font-medium text-black dark:text-white"
                                   htmlFor="telegram_time_limit"
                                 >
-                                  {t('Telegram time limit (MIN)')}
+                                  {t('Telegram time limit (Minutes)')}
                                 </label>
                                 <input
                                   className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                                   type="number"
                                   name="telegram_time_limit"
                                   id="telegram_time_limit"
-                                  value={formData.telegram_time_limit ?? ''} onChange={handleChange}
+                                  value={formData.telegram_time_limit ?? ''}
+                                  onChange={handleChange}
+                                  data-label={t('Telegram time limit (Minutes)')}
                                 />
                               </div>
                           </div>
@@ -769,6 +819,7 @@ const Settings = () => {
                               name='telegram_notification_ip_not_allowed_text'
                               rows={4}
                               className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                              data-label={t('Unauthorized IP Notification Text')}
                             ></textarea>
                             <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                               {t('The following variables can be used %%username%%, %%channel%%, %%date%%, %%client%% and %%hostname%%')}

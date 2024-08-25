@@ -40,10 +40,16 @@ let configValues = {};
                 // Actualizar registros que no están en los datos recibidos y que no tienen fecha de finalización
                 updateExistingRecords(receivedIds, configValues);
 
-                // Insertar nuevos registros
+                // Insertar nuevos registros siempre que el tiempo de reproducción sea mayor al configurado
                 rawMessage.messages.forEach((message) => {
                     if (message.notificationClass === "subscriptions") {
-                        insertIntoDatabase(message, configValues);
+                        const currentTime = Math.floor(Date.now() / 1000); // Fecha y hora actual en formato Unix
+                        const playbackTime = currentTime - message.start; // Diferencia en segundos
+
+                        if (playbackTime > configValues.minimum_time) {
+                            insertIntoDatabase(message, configValues);
+                        }
+                        
                     }
                 });
 
@@ -205,12 +211,12 @@ function insertIntoDatabase(data, configValues) {
                     });
                 }
 
-                // Si el registro ya existe, actualizar los campos service, errors, y total_in
+                // Si el registro ya existe, actualizar los campos errors, y total_in
                 db.run(`
                     UPDATE registries
-                    SET service = ?, errors = ?, total_in = ?
+                    SET errors = ?, total_in = ?
                     WHERE id = ?
-                `, [service, errors, total_in, start], (err) => {
+                `, [errors, total_in, start], (err) => {
                     if (err) {
                         console.error('Error updating record:', err.message);
                         return;
