@@ -283,21 +283,49 @@
 			]
 		},
 		{
-			"name": "channels",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/channels",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"channels"
-					]
+			"name": "Channels",
+			"item": [
+				{
+					"name": "channels",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/channel",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"channel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "channels search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/channel?name=ES-%20Antena%203%20HD",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"channel"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "ES-%20Antena%203%20HD"
+								}
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
 			"name": "users",
