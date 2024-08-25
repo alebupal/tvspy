@@ -1,10 +1,11 @@
 /* Datatable */
 
-.dark .rdt_TableRow {
-    background-color: rgb(36 48 63 / var(--tw-bg-opacity));
-    color: white;
+.rdt_Table {
+    margin-bottom: 10px;
 }
-.dark .rdt_TableRow:hover{
+.dark .rdt_TableRow,
+.dark .rdt_Table, .dark .rdt_Table div,
+dark .rdt_TableRow:hover  {
     background-color: rgb(36 48 63 / var(--tw-bg-opacity));
     color: white;
 }

@@ -4,7 +4,7 @@ import CardDataLive from '../components/CardDataLive';
 import Loader from '../common/Loader/index';
 import { API_ENDPOINTS } from '../config/apiConfig';
 import { useTranslation } from 'react-i18next';
-import {useFormatter } from '../utils/formatters';
+import { useFormatter } from '../utils/formatters';
 
 interface SubscriptionMessage {
   id: number;
@@ -177,6 +177,9 @@ const Home: React.FC = () => {
     setDaysAgo(parseInt(event.target.value, 10) || 30);
   };
 
+  // Verifica si todas las secciones están vacías
+  const isEmptyStatistics = !statistics?.topChannels.length && !statistics?.topClients.length && !statistics?.topUsers.length && !statistics?.lastReproductions.length;
+
   return (
     <div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5 mb-4">
@@ -211,7 +214,7 @@ const Home: React.FC = () => {
               total_bandwidth={msg.total_in ? formatBytes(msg.total_in) : 'N/A'}
               type={determineType(msg.title)}
               ip_allowed={ipAllowed}
-            ></CardDataLive>
+            />
           ))
         ) : (
           <div className="col-span-full text-center text-gray-500">
@@ -261,85 +264,93 @@ const Home: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
-        {statistics ? (
+        {statistics && !isEmptyStatistics ? (
           <>
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  {t('Top channels')}
-                </h3>
+            {statistics?.topChannels.length > 0 && (
+              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                  <h3 className="font-medium text-black dark:text-white">
+                    {t('Top channels')}
+                  </h3>
+                </div>
+                <div className="p-7">
+                  <ul className="space-y-2">
+                    {statistics.topChannels.map((item) => (
+                      <li key={item.channel} className="text-sm text-gray-300">
+                        {item.channel} - {type === 'time' ? formatTime(item.total_time_seconds) : item.count + ' ' + t('reproductions')}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <div className="p-7">
-                <ul className="space-y-2">
-                  {statistics.topChannels.map((item) => (
-                    <li key={item.channel} className="text-sm text-gray-300">
-                      {item.channel} - {type === 'time' ? formatTime(item.total_time_seconds) : item.count + ' ' + t('reproductions')}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            )}
 
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  {t('Top clients')}
-                </h3>
+            {statistics?.topClients.length > 0 && (
+              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                  <h3 className="font-medium text-black dark:text-white">
+                    {t('Top clients')}
+                  </h3>
+                </div>
+                <div className="p-7">
+                  <ul className="space-y-2">
+                    {statistics.topClients.map((item) => (
+                      <li key={item.client} className="text-sm text-gray-300">
+                        {item.client} - {type === 'time' ? formatTime(item.total_time_seconds) :  item.count + ' ' + t('reproductions')}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
-              <div className="p-7">
-                <ul className="space-y-2">
-                  {statistics.topClients.map((item) => (
-                    <li key={item.client} className="text-sm text-gray-300">
-                      {item.client} - {type === 'time' ? formatTime(item.total_time_seconds) :  item.count + ' ' + t('reproductions')}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            )}
 
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  {t('Top users')}
-                </h3>
-              </div>
-              <div className="p-7">
-                <div className="mb-5.5">
-                  <div className="h-40 overflow-y-auto">
-                    <ul className="space-y-2">
-                      {statistics.topUsers.map((item) => (
-                        <li key={item.username} className="text-sm text-gray-300">
-                          {item.username} - {type === 'time' ? formatTime(item.total_time_seconds) :  item.count + ' ' + t('reproductions')}
-                        </li>
-                      ))}
-                    </ul>
+            {statistics?.topUsers.length > 0 && (
+              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                  <h3 className="font-medium text-black dark:text-white">
+                    {t('Top users')}
+                  </h3>
+                </div>
+                <div className="p-7">
+                  <div className="mb-5.5">
+                    <div className="h-40 overflow-y-auto">
+                      <ul className="space-y-2">
+                        {statistics.topUsers.map((item) => (
+                          <li key={item.username} className="text-sm text-gray-300">
+                            {item.username} - {type === 'time' ? formatTime(item.total_time_seconds) :  item.count + ' ' + t('reproductions')}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                <h3 className="font-medium text-black dark:text-white">
-                  {t('Last reproductions')}
-                </h3>
-              </div>
-              <div className="p-7">
-                <div className="mb-5.5">
-                  <div className="h-40 overflow-y-auto">
-                    <ul className="space-y-2">
-                      {statistics.lastReproductions.map((item) => (
-                        <li key={item.id} className="text-sm text-gray-300">
-                          <p><b>{item.username}</b> - {item.channel}</p>
-                          <p className='text-xs'>{item.client}</p>
-                          <p className='text-xs'><i>{formatDate(item.start)}</i></p>
-                        </li>
-                      ))}
-                    </ul>
+            {statistics?.lastReproductions.length > 0 && (
+              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
+                  <h3 className="font-medium text-black dark:text-white">
+                    {t('Last reproductions')}
+                  </h3>
+                </div>
+                <div className="p-7">
+                  <div className="mb-5.5">
+                    <div className="h-40 overflow-y-auto">
+                      <ul className="space-y-2">
+                        {statistics.lastReproductions.map((item) => (
+                          <li key={item.id} className="text-sm text-gray-300">
+                            <p><b>{item.username}</b> - {item.channel}</p>
+                            <p className='text-xs'>{item.client}</p>
+                            <p className='text-xs'><i>{formatDate(item.start)}</i></p>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </>
         ) : (
           <div className="col-span-full text-center text-gray-500">
