@@ -1,4 +1,4 @@
-# TVSPY 3.0.1
+# TVSPY
 
 Web application to monitor TVHeadend.
 It consists of backend and frontend
@@ -38,7 +38,7 @@ docker create  \
 
 ## Links
 
-- [Telegram](<https://t.me/alebupal_tvspy>)
+- [Telegram](<https://t.me/tvspy_news>)
 - [Docker](<https://hub.docker.com/r/alebupal/tvspy/>)
 - [Changelog](<https://github.com/alebupal/tvspy/blob/master/CHANGELOG.MD>)
 - [Donation](<https://www.paypal.me/alebupal>)

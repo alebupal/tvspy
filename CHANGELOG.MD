@@ -2,14 +2,15 @@
 
 ## [3.0.1] - 2024-08-26
 
-- Security, updating Dependencies
+- Updated dependencies to the latest versions for improved security and stability.
 
 ## [3.0.0] - 2024-08-26
 
-- Change backend to nodejs
-- Change frontend to reactjs
-- Use MysqlLite
-- Use websocket tvheadend
+- Backend: Migrated the backend to Node.js.
+- Frontend: Rebuilt the frontend using React.js.
+- Database: Implemented MySQL Lite.
+- Connection: Integrated WebSocket for connection in TVHeadend.
+- In spanish and english
 
 ## [2.0.3] - 2024-08-22
 
