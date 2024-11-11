@@ -1,5 +1,9 @@
 # Changelog TVSPY
 
+## [3.0.2] - 2024-11-11
+
+- Actualización de dependencias a las últimas versiones, añadir TZ y LOCALE.
+
 ## [3.0.1] - 2024-08-26
 
 - Seguridad: Actualización de dependencias a las últimas versiones para mejorar la seguridad y la estabilidad.
