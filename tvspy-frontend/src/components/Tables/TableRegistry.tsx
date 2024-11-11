@@ -5,7 +5,7 @@ import axios from 'axios';
 import Loader from '../../common/Loader/index';
 import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/apiConfig';
-import {useFormatter } from '../../utils/formatters';
+import { useFormatter } from '../../utils/formatters';
 
 interface Registry {
     username: string;
@@ -25,7 +25,7 @@ const TableRegistry: React.FC = () => {
     const [registry, setRegistry] = useState<Registry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const { formatBytes, formatDate, formatTime } = useFormatter();
+    const { formatBytes } = useFormatter();
 
     useEffect(() => {
         const fetchRegistry = async () => {
@@ -97,13 +97,13 @@ const TableRegistry: React.FC = () => {
         },
         {
             name: t('Start'),
-            selector: row => formatDate(row.start),
+            selector: row => row.start,
             sortable: true,
             wrap: true,
         },
         {
             name: t('End'),
-            selector: row => formatDate(row.end),
+            selector: row => row.end,
             sortable: true,
             wrap: true   
         }

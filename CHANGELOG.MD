@@ -1,5 +1,9 @@
 # Changelog TVSPY
 
+## [3.0.2] - 2024-11-11
+
+- Updated dependencies to the latest versions, add TZ and LOCALE.
+
 ## [3.0.1] - 2024-08-26
 
 - Updated dependencies to the latest versions for improved security and stability.
