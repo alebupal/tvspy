@@ -28,6 +28,10 @@ RUN apk add --no-cache nginx
 # Configurar el directorio de trabajo
 WORKDIR /app
 
+# Configurar la zona horaria y localización
+ENV TZ=Europe/Madrid
+ENV LOCALE=es-ES
+
 # Copia el backend al contenedor
 COPY --from=build-backend /app/backend /app/backend
 

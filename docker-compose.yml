@@ -1,4 +1,3 @@
-version: "3.9"
 services:
   tvspy:
     image: alebupal/tvspy:latest
@@ -9,3 +8,6 @@ services:
       - ./tvspy/img_canales:/app/img/canales #cachear imagen canales
     ports:
       - 80:80
+    environment:
+      - TZ=Europe/Madrid
+      - LOCALE=es-ES

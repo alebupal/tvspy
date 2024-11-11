@@ -3,15 +3,33 @@ const db = require('../database/database');
 
 const app = express.Router();
 
+const timezone = process.env.TZ || 'UTC';
+const locale = process.env.LOCALE || 'es-ES';
+
+const formatDate = (date) => new Intl.DateTimeFormat(locale, { 
+    timeZone: timezone, 
+    year: 'numeric', 
+    month: '2-digit', 
+    day: '2-digit', 
+    hour: '2-digit', 
+    minute: '2-digit', 
+    second: '2-digit' 
+}).format(date);
+
+console.log(formatDate);
+
 // Endpoint para consultar la tabla 'registries'
 app.get('/registries', (req, res) => {
     db.all('SELECT * FROM registries', (err, rows) => {
         if (err) {
-            res
-                .status(500)
-                .json({error: err.message});
+            res.status(500).json({ error: err.message });
             return;
         }
+        // Formatear la fecha en cada fila
+        rows.forEach(row => {
+            row.start = formatDate(new Date(row.start));
+            row.end = formatDate(new Date(row.end));
+        });
         res.json(rows);
     });
 });
@@ -21,17 +39,16 @@ app.get('/registries/:id', (req, res) => {
     const id = req.params.id;
     db.get('SELECT * FROM registries WHERE id = ?', [id], (err, row) => {
         if (err) {
-            res
-                .status(500)
-                .json({error: err.message});
+            res.status(500).json({ error: err.message });
             return;
         }
         if (!row) {
-            res
-                .status(404)
-                .json({error: 'Registry not found'});
+            res.status(404).json({ error: 'Registry not found' });
             return;
         }
+        // Formatear la fecha
+        row.start = formatDate(new Date(row.start));
+        row.end = formatDate(new Date(row.end));
         res.json(row);
     });
 });

@@ -31,8 +31,13 @@ docker create  \
  --name=tvspy \
  -v <ruta a los datos>:/app/backend/src/database/file \
  -p xxxxx:80 \
+ -e TZ=Europe/Madrid \
+ -e LOCALE=es-ES \
  alebupal/tvspy:latest \
 ```
+
+- [Lista Timezone] <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
+- [Lista Locale] <https://simplelocalize.io/data/locales/>
 
  **¡IMPORTANTE! Una vez configurada la conexión a TVHeadend, el contenedor debe reiniciarse para que el socket del servidor se conecte correctamente y pueda registrar datos.**
 
