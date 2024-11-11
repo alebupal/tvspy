@@ -5,7 +5,7 @@ import axios from 'axios';
 import Loader from '../../common/Loader/index';
 import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/apiConfig';
-import {useFormatter } from '../../utils/formatters';
+import { useFormatter } from '../../utils/formatters';
 
 interface Registry {
     username: string;
