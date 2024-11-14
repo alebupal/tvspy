@@ -46,7 +46,7 @@ docker create  \
 Iniciar tvspy-backend
 
 ``` bash
-npm start
+npm run dev
 ```
 
 Iniciar tvspy-frontend
