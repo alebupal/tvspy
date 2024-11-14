@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../../images/logo/logo.svg';
 import DarkModeSwitcher from '../Header/DarkModeSwitcher';
-import LanguajeSelector from '../LanguajeSelector';
+import LanguageSelector from '../LanguageSelector';
 import { useTranslation } from 'react-i18next';
 
 interface SidebarProps {
@@ -124,9 +124,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
               <div className="flex justify-center items-center space-x-4 mb-4">
-                {/* <!-- Languaje Selector --> */}
-                <LanguajeSelector />
-                {/* <!-- Languaje Selector --> */}
+                {/* <!-- Language Selector --> */}
+                <LanguageSelector />
+                {/* <!-- Language Selector --> */}
                 {/* <!-- Dark Mode Toggler --> */}
                 <DarkModeSwitcher />
                 {/* <!-- Dark Mode Toggler --> */}
