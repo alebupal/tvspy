@@ -26,7 +26,7 @@ interface Alert {
 
 const Settings = () => {
   const { t } = useTranslation();
-  const { debugMode } = useDebug();
+  const { debugMode, setDebugMode } = useDebug();
   const [formData, setFormData] = useState<FormData>({});
   const [initialValues, setInitialValues] = useState<FormData>({});
   const [loading, setLoading] = useState(true);
@@ -141,11 +141,16 @@ const Settings = () => {
             initialValues[key] = value;
 
             if (key === 'debug_mode') {
-              localStorage.setItem('debug_mode', newValue);
+              // Convierte 1 a true y 0 a false
+              const booleanValue = newValue === 1 || newValue === '1';  // Compara también como cadena si 'newValue' es cadena
+              setDebugMode(booleanValue); // Establece el estado de debugMode con el valor booleano
+            
+              // Guarda el valor en localStorage como cadena 'true' o 'false'
+              localStorage.setItem('debug_mode', booleanValue.toString());
             }
 
             if (key === 'language') {
-              localStorage.setItem('language' ,newValue);
+              localStorage.setItem('language', newValue);
             }
 
           } catch (error) {
