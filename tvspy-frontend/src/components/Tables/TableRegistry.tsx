@@ -6,6 +6,7 @@ import Loader from '../../common/Loader/index';
 import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/apiConfig';
 import { useFormatter } from '../../utils/formatters';
+import { useDebug } from '../../context/DebugContext';
 
 interface Registry {
     username: string;
@@ -22,15 +23,21 @@ interface Registry {
 
 const TableRegistry: React.FC = () => {
     const { t } = useTranslation();
+    const { formatBytes } = useFormatter();
+    const { debugMode } = useDebug();
     const [registry, setRegistry] = useState<Registry[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const { formatBytes } = useFormatter();
 
     useEffect(() => {
         const fetchRegistry = async () => {
             try {
                 const response = await axios.get(API_ENDPOINTS.REGISTRY);
+
+                if (debugMode) {
+                    console.log('TableRegistry', response);
+                }
+
                 setRegistry(response.data);
             } catch (err) {
                 if (err instanceof Error) {

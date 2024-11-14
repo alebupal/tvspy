@@ -47,7 +47,6 @@ const initializeDatabase = async () => {
                 value TEXT
             )
         `);
-        console.log('Table "config" created or already exists.');
 
         await runSql(`
             CREATE TABLE IF NOT EXISTS registries (
@@ -66,7 +65,6 @@ const initializeDatabase = async () => {
                 notification_ip BOOLEAN
             )
         `);
-        console.log('Table "registries" created or already exists.');
 
         //await updateRegistriesTable();
         await insertDefaultConfigData();
@@ -75,28 +73,53 @@ const initializeDatabase = async () => {
     }
 };
 
-const insertDefaultConfigData = () => {
-    return new Promise((resolve, reject) => {
+const insertDefaultConfigData = async () => {
+    try {
+        // Primero, obtenemos todos los registros actuales en la tabla "config"
+        const currentConfigs = await getSql('SELECT name FROM config');
+        const currentConfigNames = currentConfigs.map(config => config.name);
+
+        // Obtener los nombres de las configuraciones por defecto
+        const defaultConfigNames = defaultConfigData.map(data => data.name);
+
+        // Eliminar los registros que no están en defaultConfigData
+        const namesToDelete = currentConfigNames.filter(name => !defaultConfigNames.includes(name));
+        if (namesToDelete.length > 0) {
+            const deleteStmt = db.prepare('DELETE FROM config WHERE name = ?');
+            namesToDelete.forEach((name) => {
+                deleteStmt.run(name, (err) => {
+                    if (err) {
+                        console.error(`Error deleting record with name ${name}:`, err.message);
+                    }
+                });
+            });
+            deleteStmt.finalize();
+            console.log(`Deleted ${namesToDelete.length} records from "config" table.`);
+        }
+
+        // Insertar los datos por defecto si no existen
         const stmt = db.prepare('INSERT OR IGNORE INTO config (name, value) VALUES (?, ?)');
         defaultConfigData.forEach((data, index) => {
             stmt.run(data.name, data.value, (err) => {
                 if (err) {
-                    reject(err);
+                    console.error(`Error inserting record with name ${data.name}:`, err.message);
                 }
             });
-            // Ensure all data is inserted before finalizing
+
+            // Asegurarse de que todos los datos se insertaron antes de finalizar
             if (index === defaultConfigData.length - 1) {
                 stmt.finalize((err) => {
                     if (err) {
-                        reject(err);
-                    } else {
-                        resolve();
+                        console.error('Error finalizing insert statement:', err.message);
                     }
                 });
             }
         });
-    });
+    } catch (err) {
+        console.error('Error inserting default config data:', err.message);
+    }
 };
+
 
 const updateRegistriesTable = async () => {
     try {
@@ -122,7 +145,6 @@ const updateRegistriesTable = async () => {
         console.error('Error updating "registries" table:', err.message);
     }
 };
-
 
 // Ejecutar la inicialización de la base de datos
 initializeDatabase();

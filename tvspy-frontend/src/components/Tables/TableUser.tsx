@@ -5,6 +5,7 @@ import axios from 'axios';
 import Loader from '../../common/Loader/index';
 import { useTranslation } from 'react-i18next';
 import { API_ENDPOINTS } from '../../config/apiConfig';
+import { useDebug } from '../../context/DebugContext';
 
 interface User {
     username: string;
@@ -12,6 +13,7 @@ interface User {
 
 const TableUser: React.FC = () => {
     const { t } = useTranslation();
+    const { debugMode } = useDebug();
     const [user, setUser] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -20,6 +22,11 @@ const TableUser: React.FC = () => {
         const fetchUser = async () => {
             try {
                 const response = await axios.get(API_ENDPOINTS.USER);
+
+                if (debugMode) {
+                    console.log('TableUser', response);
+                }
+
                 setUser(response.data.entries);
             } catch (err) {
                 if (err instanceof Error) {

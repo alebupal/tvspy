@@ -1,5 +1,9 @@
 # Changelog TVSPY
 
+## [3.0.3] - 2024-11-14
+
+- Añadir modo debug
+
 ## [3.0.2] - 2024-11-11
 
 - Actualización de dependencias a las últimas versiones, añadir TZ y LOCALE.

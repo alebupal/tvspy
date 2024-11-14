@@ -16,8 +16,6 @@ const formatDate = (date) => new Intl.DateTimeFormat(locale, {
     second: '2-digit' 
 }).format(date);
 
-console.log(formatDate);
-
 // Endpoint para consultar la tabla 'registries'
 app.get('/registries', (req, res) => {
     db.all('SELECT * FROM registries', (err, rows) => {
