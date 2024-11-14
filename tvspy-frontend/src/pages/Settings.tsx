@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
 import { API_ENDPOINTS } from '../config/apiConfig';
 import Loader from '../common/Loader/index';
+import { useDebug } from '../context/DebugContext';
 
 interface FormData {
   [key: string]: any;
@@ -25,6 +26,7 @@ interface Alert {
 
 const Settings = () => {
   const { t } = useTranslation();
+  const { debugMode } = useDebug();
   const [formData, setFormData] = useState<FormData>({});
   const [initialValues, setInitialValues] = useState<FormData>({});
   const [loading, setLoading] = useState(true);
@@ -51,6 +53,11 @@ const Settings = () => {
       try {
         // Realiza una sola petición para obtener todos los valores de configuración
         const response = await axios.get(`${API_ENDPOINTS.CONFIG}/`);
+
+        if (debugMode) {
+          console.log('Settings', response);
+        }
+
         const configData = response.data;
   
         // Construye el objeto initialFormData con los valores obtenidos
@@ -64,6 +71,7 @@ const Settings = () => {
   
         // Establece el estado de los switches con valores booleanos
         setSwitches({
+          debug_mode: toBoolean(initialFormData.debug_mode),
           telegram_notification: toBoolean(initialFormData.telegram_notification),
           telegram_notification_start_playback: toBoolean(initialFormData.telegram_notification_start_playback),
           telegram_notification_stop_playback: toBoolean(initialFormData.telegram_notification_stop_playback),
@@ -131,6 +139,15 @@ const Settings = () => {
             await axios.put(`${API_ENDPOINTS.CONFIG}/${key}`, { 'value': newValue });
             updatedFields.push(labels[key]);
             initialValues[key] = value;
+
+            if (key === 'debug_mode') {
+              localStorage.setItem('debug_mode', newValue);
+            }
+
+            if (key === 'language') {
+              localStorage.setItem('language' ,newValue);
+            }
+
           } catch (error) {
             failedFields.push(labels[key]);
           }
@@ -448,9 +465,9 @@ const Settings = () => {
                 <div className="mb-5.5">
                   <label
                     className="mb-3 block text-sm font-medium text-black dark:text-white"
-                    htmlFor="languaje"
+                    htmlFor="language"
                   >
-                    {t('Languaje')}
+                    {t('Language')}
                   </label>
                   <div className="relative z-20 bg-white dark:bg-form-input">
                     <span className="absolute top-1/2 left-4 z-30 -translate-y-1/2">
@@ -484,11 +501,11 @@ const Settings = () => {
                       </svg>
                     </span>
                     <select
-                      name='languaje'
+                      name='language'
                       className="relative z-20 w-full appearance-none rounded border border-stroke bg-transparent py-3 px-12 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-                      value={formData.languaje ?? ''}
+                      value={formData.language ?? ''}
                       onChange={handleChange}
-                      data-label={t('Languaje')}
+                      data-label={t('Language')}
                     >
                       <option value="en" className="text-body dark:text-bodydark">
                         English
@@ -534,6 +551,16 @@ const Settings = () => {
                   <span className="text-gray-500 dark:text-gray-400 text-sm italic">
                     {t('Minimum time considered to record viewing of a channel')}
                   </span>
+                </div>
+                <div className="mb-5.5">
+                  <ToggleSwitch
+                      name="debug_mode"
+                      id="debug_mode"
+                      switches={switches.debug_mode}
+                      checked={toBoolean(formData.debug_mode)}
+                      onChange={handleChange}
+                      labelKey="Enable debug mode"
+                    />
                 </div>
                 {/* <!-- Button --> */}
                 <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">

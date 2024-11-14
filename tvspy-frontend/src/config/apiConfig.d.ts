@@ -4,5 +4,6 @@ export const API_ENDPOINTS: {
     USER: string;
     CONFIG: string;
     CONFIG_LANGUAJE: string;
+    DEBUG_MODE: string;
     STATISTICS: string;
 };

@@ -65,11 +65,14 @@ const defaultConfigData = [
         name: 'telegram_notification_ip_not_allowed_text',
         value: ''
     }, {
-        name: 'languaje',
+        name: 'language',
         value: 'es'
     }, {
         name: 'minimum_time',
         value: '10'
+    }, {
+        name: 'debug_mode',
+        value: false
     }
 ];
 

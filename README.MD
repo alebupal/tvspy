@@ -41,6 +41,20 @@ docker create  \
 
  **IMPORTANT! Once the connection to tvheadend is configured, the container must be restarted so that the server socket connects correctly and can record data.**
 
+## Dev
+
+Start tvspy-backend
+
+``` bash
+npm start
+```
+
+Start tvspy-frontend
+
+``` bash
+npm run dev
+```
+
 ## Links
 
 - [Telegram](<https://t.me/tvspy_news>)

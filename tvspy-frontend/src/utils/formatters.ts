@@ -48,8 +48,6 @@ export const useFormatter = () => {
         return parts.join(', ');
     };
 
-
-
     return {
         formatBytes,
         formatDate,
