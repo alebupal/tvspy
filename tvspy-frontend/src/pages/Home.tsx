@@ -5,6 +5,7 @@ import Loader from '../common/Loader/index';
 import { API_ENDPOINTS } from '../config/apiConfig';
 import { useTranslation } from 'react-i18next';
 import { useFormatter } from '../utils/formatters';
+import { useDebug } from '../context/DebugContext';
 
 interface SubscriptionMessage {
   id: number;
@@ -43,6 +44,8 @@ type Statistics = {
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
+  const { debugMode } = useDebug();
+  const { formatBytes, formatDate, formatTime } = useFormatter();
   const [messages, setMessages] = useState<SubscriptionMessage[]>([]);
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -53,7 +56,6 @@ const Home: React.FC = () => {
   const [ipAllowed, setIpAllowed] = useState<string>('');
   const [type, setType] = useState<'time' | 'uses'>('time');
   const [daysAgo, setDaysAgo] = useState<number>(30);
-  const { formatBytes, formatDate, formatTime } = useFormatter();
 
   const determineType = (title: string | undefined): 'recording' | 'playing' => {
     if (title && title.includes('DVR:')) {
@@ -67,6 +69,12 @@ const Home: React.FC = () => {
       try {
         const names = ['port', 'username', 'hostname', 'password'];
         const response = await axios.post(`${API_ENDPOINTS.CONFIG}/multiple`, { names });
+
+        if (debugMode) {
+          console.log('Home - fetchWsServerUrl - names', names);
+          console.log('Home - fetchWsServerUrl', response);
+        }
+
         const config = response.data.reduce((acc, item) => {
           acc[item.name] = item.value;
           return acc;
@@ -89,6 +97,11 @@ const Home: React.FC = () => {
     const fetchIpAllowed = async () => {
       try {
         const response = await axios.get(`${API_ENDPOINTS.CONFIG}/ip_allowed`);
+
+        if (debugMode) {
+          console.log('Home - fetchIpAllowed', response);
+        }
+
         setIpAllowed(response.data.value);
       } catch (err) {
         setError(err as Error);
@@ -105,6 +118,13 @@ const Home: React.FC = () => {
         const response = await axios.get(`${API_ENDPOINTS.STATISTICS}/general`, {
           params: { type, daysAgo }
         });
+
+        if (debugMode) {
+          console.log('Home - fetchStatistics - type', type);
+          console.log('Home - fetchStatistics - daysAgo', daysAgo);
+          console.log('Home - fetchStatistics', response);
+        }
+
         setStatistics(response.data);
       } catch (err) {
         setError(err as Error);
@@ -122,17 +142,28 @@ const Home: React.FC = () => {
     const socket = new WebSocket(wsServerUrl, ['tvheadend-comet']);
 
     socket.onopen = () => {
-      console.log('WebSocket - Conectado al servidor');
+      if (debugMode) {
+        console.log('WebSocket', 'Conectado al servidor');
+      }
     };
 
     socket.onmessage = (event) => {
       try {
         const data: MessageType = JSON.parse(event.data);
 
+        if (debugMode) {
+          console.log('WebSocket - event', event);
+          console.log('WebSocket - data', data);
+        }
+
         let subscriptionMessages: SubscriptionMessage[] = [];
         subscriptionMessages = data.messages.filter(
           (msg): msg is SubscriptionMessage => msg.notificationClass === 'subscriptions'
         );
+
+        if (debugMode) {
+          console.log('WebSocket - subscriptionMessages', subscriptionMessages);
+        }
 
         setMessages(subscriptionMessages.length > 0 ? subscriptionMessages : []);
 

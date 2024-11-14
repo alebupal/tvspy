@@ -4,9 +4,16 @@ const db = require('../database/database');
 const axios = require('axios');
 
 let configValues = {};
+let debugLog;
 
 (async () => {
     try {
+        // Obtener el valor de debug_mode
+        const isDebugMode = await getDebugMode();
+
+        // Función para mostrar logs solo si debug_mode es true
+        debugLog = isDebugMode ? console.log : () => {}; // Si es false, no hace nada
+
         await refreshConfig(); // Inicializa configValues
 
         // Validación de que los valores de configValues no estén vacíos o sean null
@@ -19,7 +26,7 @@ let configValues = {};
         try {
             ws = new WebSocket(`ws://${configValues.username}:${configValues.password}@${configValues.hostname}:${configValues.port}/comet/ws`, ['tvheadend-comet']);
         } catch (err) {
-            throw new Error(`WebSocket - Failed to establish the WebSocket connection: ${err.message}`);
+            throw new Error(`WebSocket - Failed to establish the WebSocket connection: ${err}`);
         }
 
         ws.on('open', () => {
@@ -31,6 +38,8 @@ let configValues = {};
                 refreshConfig();
                 
                 const rawMessage = JSON.parse(data);
+
+                debugLog('rawMessage', rawMessage);
 
                 // Obtener la lista de IDs recibidos en el mensaje
                 const receivedIds = rawMessage.messages
@@ -49,17 +58,16 @@ let configValues = {};
                         if (playbackTime > configValues.minimum_time) {
                             insertIntoDatabase(message, configValues);
                         }
-                        
                     }
                 });
 
             } catch (e) {
-                console.error(`WebSocket - Failed to parse message: ${e.message}`);
+                console.error(`WebSocket - Failed to parse message: ${e}`);
             }
         });
 
         ws.on('error', (err) => {
-            console.error(`WebSocket - error: ${err.message}`);
+            console.error(`WebSocket - error: ${err}`);
         });
 
         ws.on('close', () => {
@@ -67,7 +75,7 @@ let configValues = {};
         });
 
     } catch (error) {
-        console.error(`WebSocket - error: ${error.message}`);
+        console.error(`WebSocket - error: ${error}`);
     }
 })();
 
@@ -121,7 +129,7 @@ function updateExistingRecords(receivedStarts, configValues) {
                         }
                     }
 
-                    //console.log('Record updated with end date for id:', id);
+                    debugLog('Record updated with end date for id:', id);
                 });
             }
         });
@@ -181,7 +189,7 @@ function insertIntoDatabase(data, configValues) {
                             console.error('Error updating record:', err.message);
                             return;
                         }
-                        //console.log('notification_time Record updated successfully with id:', start);
+                        debugLog('notification_time Record updated successfully with id:', start);
                     });
                 }
                 
@@ -207,7 +215,7 @@ function insertIntoDatabase(data, configValues) {
                             console.error('Error updating record:', err.message);
                             return;
                         }
-                        //console.log('notification_time Record updated successfully with id:', start);
+                        debugLog('notification_time Record updated successfully with id:', start);
                     });
                 }
 
@@ -221,7 +229,7 @@ function insertIntoDatabase(data, configValues) {
                         console.error('Error updating record:', err.message);
                         return;
                     }
-                    //console.log('Record updated successfully with id:', start);
+                    debugLog('Record updated successfully with id:', start);
                 });
                 return;
             }
@@ -260,7 +268,7 @@ function insertIntoDatabase(data, configValues) {
                     }
                 }
 
-                //console.log('Record inserted successfully');
+                debugLog('Record inserted successfully:', start);
             });
         });
     }
@@ -310,4 +318,18 @@ function formatISODate(isoDateString) {
 
     // Formatear como 'YYYY-MM-DD HH:mm:ss'
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
+function getDebugMode() {
+    return new Promise((resolve, reject) => {
+        // Consulta SQL corregida para obtener el valor de debug_mode
+        db.get('SELECT value FROM config WHERE name = ?', ['debug_mode'], (err, row) => {
+            if (err) {
+                reject('Error fetching debug_mode: ' + err.message);
+            } else {
+                // Si el valor es 1, lo interpretamos como true (habilitado), y si es 0 como false (deshabilitado)
+                resolve(row ? row.value === '1' : false); // Si no existe, consideramos debug_mode como false
+            }
+        });
+    });
 }

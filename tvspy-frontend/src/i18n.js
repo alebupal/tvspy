@@ -27,14 +27,25 @@ i18n
 // Función para actualizar el idioma basado en la respuesta de la API
 const updateLanguageFromAPI = async () => {
   try {
-    // Obtén el idioma por defecto de la API
-    const response = await axios.get(API_ENDPOINTS.CONFIG_LANGUAJE);
-    const defaultLanguage = response.data.value;
+    // Verifica si ya existe un idioma guardado en localStorage
+    const savedLanguage = localStorage.getItem('language');
     
-    // Actualiza el idioma de i18next
-    i18n.changeLanguage(defaultLanguage);
+    // Si no hay idioma guardado, realiza la solicitud a la API
+    if (!savedLanguage) {
+      const response = await axios.get(API_ENDPOINTS.CONFIG_LANGUAJE);
+      const defaultLanguage = response.data.value;
+      
+      // Si se obtiene un idioma válido, actualiza i18n y lo guarda en localStorage
+      if (defaultLanguage) {
+        localStorage.setItem('language', defaultLanguage);
+        i18n.changeLanguage(defaultLanguage);
+      }
+    } else {
+      // Si ya hay un idioma guardado en localStorage, actualiza i18n con él
+      i18n.changeLanguage(savedLanguage);
+    }
   } catch (error) {
-    console.error('Error al obtener el idioma por defecto:', error);
+    console.error('Error al obtener el idioma desde la API:', error);
   }
 };
 
