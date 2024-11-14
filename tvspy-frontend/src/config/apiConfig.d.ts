@@ -3,7 +3,7 @@ export const API_ENDPOINTS: {
     REGISTRY: string;
     USER: string;
     CONFIG: string;
-    CONFIG_LANGUAJE: string;
+    CONFIG_LANGUAGE: string;
     DEBUG_MODE: string;
     STATISTICS: string;
 };

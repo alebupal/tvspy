@@ -32,7 +32,7 @@ const updateLanguageFromAPI = async () => {
     
     // Si no hay idioma guardado, realiza la solicitud a la API
     if (!savedLanguage) {
-      const response = await axios.get(API_ENDPOINTS.CONFIG_LANGUAJE);
+      const response = await axios.get(API_ENDPOINTS.CONFIG_LANGUAGE);
       const defaultLanguage = response.data.value;
       
       // Si se obtiene un idioma válido, actualiza i18n y lo guarda en localStorage
