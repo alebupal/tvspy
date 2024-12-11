@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { DebugProvider } from './context/DebugContext';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -27,55 +28,57 @@ function App() {
   return loading ? (
     <Loader />
   ) : (
-    <DefaultLayout>
-      <Routes>
-        <Route
-          index
-          element={
-            <>
-              <PageTitle title={`${t('Home')} - TVSpy`} />
-              <Home />
-            </>
-          }
-        />
-        <Route
-          path="/registry"
-          element={
-            <>
-              <PageTitle title={`${t('Registry')} - TVSpy`} />
-              <Registry />
-            </>
-          }
-        />
-        <Route
-          path="/channels"
-          element={
-            <>
-              <PageTitle title={`${t('Channels')} - TVSpy`} />
-              <Channel />
-            </>
-          }
-        />
-        <Route
-          path="/users"
-          element={
-            <>
-              <PageTitle title={`${t('Users')} - TVSpy`} />
-              <User />
-            </>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <>
-              <PageTitle title={`${t('Settings')} - TVSpy`} />
-              <Settings />
-            </>
-          }
-        />
-      </Routes>
-    </DefaultLayout>
+    <DebugProvider>
+      <DefaultLayout>
+        <Routes>
+          <Route
+            index
+            element={
+              <>
+                <PageTitle title={`${t('Home')} - TVSpy`} />
+                <Home />
+              </>
+            }
+          />
+          <Route
+            path="/registry"
+            element={
+              <>
+                <PageTitle title={`${t('Registry')} - TVSpy`} />
+                <Registry />
+              </>
+            }
+          />
+          <Route
+            path="/channels"
+            element={
+              <>
+                <PageTitle title={`${t('Channels')} - TVSpy`} />
+                <Channel />
+              </>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <>
+                <PageTitle title={`${t('Users')} - TVSpy`} />
+                <User />
+              </>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <>
+                <PageTitle title={`${t('Settings')} - TVSpy`} />
+                <Settings />
+              </>
+            }
+          />
+        </Routes>
+      </DefaultLayout>
+    </DebugProvider>
   );
 }
 

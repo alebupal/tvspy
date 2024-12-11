@@ -36,10 +36,24 @@ docker create  \
  alebupal/tvspy:latest \
 ```
 
-- [Timezone list] <https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>
-- [Locale list] <https://simplelocalize.io/data/locales/>
+- [Timezone list](<https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>)
+- [Locale list](<https://simplelocalize.io/data/locales/>)
 
  **IMPORTANT! Once the connection to tvheadend is configured, the container must be restarted so that the server socket connects correctly and can record data.**
+
+## Dev
+
+Start tvspy-backend
+
+``` bash
+npm run dev
+```
+
+Start tvspy-frontend
+
+``` bash
+npm run dev
+```
 
 ## Links
 

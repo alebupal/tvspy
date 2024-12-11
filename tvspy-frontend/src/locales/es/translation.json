@@ -43,7 +43,7 @@
     "Time Limit": "Tiempo límite",
     "Notify on Unauthorized IP": "Notificación IP no autorizada",
     "Unauthorized IP Notification Text": "Texto notificación IP no autorizada",
-    "Languaje": "Idioma",
+    "Language": "Idioma",
     "TVHeadend": "TVHeadend",
     "General": "General",
     "Save": "Guardar",
@@ -87,6 +87,7 @@
     "Logo": "Logo",
     "Minimum time": "Tiempo mínimo",
     "Minimum time considered to record viewing of a channel": "Tiempo mínimo considerado para registrar el visionado de un canal",
-    "No statistics available": "No hay estadisticas disponibles"
+    "No statistics available": "No hay estadisticas disponibles",
+    "Enable debug mode": "Activar modo debug"
 }
   
