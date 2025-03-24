@@ -1,5 +1,5 @@
 # Etapa 1: Construcción del frontend
-FROM node:20.16.0-alpine AS build-frontend
+FROM node:20.16.0-bookworm AS build-frontend
 
 WORKDIR /app/frontend
 
@@ -10,7 +10,7 @@ COPY tvspy-frontend/ ./
 RUN npm run build
 
 # Etapa 2: Configuración del backend
-FROM node:20.16.0-alpine AS build-backend
+FROM node:20.16.0-bookworm AS build-backend
 
 WORKDIR /app/backend
 
@@ -20,10 +20,13 @@ RUN npm install
 COPY tvspy-backend/ ./
 
 # Etapa 3: Imagen final con Nginx y Node.js
-FROM node:20.16.0-alpine AS final
+FROM node:20.16.0-bookworm AS final
 
 # Instalar Nginx
-RUN apk add --no-cache nginx
+RUN apt update && apt install -y nginx && apt clean
+
+# Crear el usuario nginx para evitar errores
+RUN useradd -r -u 101 nginx
 
 # Configurar el directorio de trabajo
 WORKDIR /app
@@ -40,6 +43,9 @@ COPY --from=build-frontend /app/frontend/dist /usr/share/nginx/html
 
 # Copia la configuración personalizada de Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
+
+# Asignar los permisos correctos a los archivos de Nginx
+RUN chown -R nginx:nginx /var/log/nginx /var/lib/nginx /usr/share/nginx/html
 
 # Exponer puertos para Nginx
 EXPOSE 80
