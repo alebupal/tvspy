@@ -1,5 +1,9 @@
 # Changelog TVSPY
 
+## [3.0.4] - 2025-03-24
+
+- Compatibilidad con arm32/v7
+
 ## [3.0.3] - 2024-11-14
 
 - Añadir modo debug
