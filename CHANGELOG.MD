@@ -1,5 +1,9 @@
 # Changelog TVSPY
 
+## [3.0.5] - 2025-12-29
+
+- Updated dependencies to the latest versions for improved security and stability.
+
 ## [3.0.4] - 2025-03-24
 
 - Support for arm32/v7
