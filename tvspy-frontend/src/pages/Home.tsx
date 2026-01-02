@@ -37,7 +37,7 @@ type MessageType = {
 
 type Statistics = {
   topChannels: { channel: string, total_time_seconds: number, count: number }[];
-  topClients: { client: string | null, total_time_seconds: number, count: number  }[];
+  topClients: { client: string | null, total_time_seconds: number, count: number }[];
   topUsers: { username: string, total_time_seconds: number, count: number }[];
   lastReproductions: Registry[];
 };
@@ -79,12 +79,12 @@ const Home: React.FC = () => {
           acc[item.name] = item.value;
           return acc;
         }, {} as Record<string, string | undefined>);
-  
+
         const { port, username, hostname, password } = config;
-  
+
         if (port && username && hostname && password) {
           const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-          const url = `${protocol}://${username}:${password}@${hostname}:${port}/comet/ws`;
+          const url = `${protocol}://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostname}:${port}/comet/ws`;
           setWsServerUrl(url);
         } else {
           throw new Error(t('Missing one or more values required to connect with TVHeadend'));
@@ -94,7 +94,7 @@ const Home: React.FC = () => {
         setLoading(false);
       }
     };
-  
+
     const fetchIpAllowed = async () => {
       try {
         const response = await axios.get(`${API_ENDPOINTS.CONFIG}/ip_allowed`);
@@ -108,7 +108,7 @@ const Home: React.FC = () => {
         setError(err as Error);
       }
     };
-  
+
     fetchWsServerUrl();
     fetchIpAllowed();
   }, []);
@@ -328,7 +328,7 @@ const Home: React.FC = () => {
                   <ul className="space-y-2">
                     {statistics.topClients.map((item) => (
                       <li key={item.client} className="text-sm text-gray-300">
-                        {item.client} - {type === 'time' ? formatTime(item.total_time_seconds) :  item.count + ' ' + t('reproductions')}
+                        {item.client} - {type === 'time' ? formatTime(item.total_time_seconds) : item.count + ' ' + t('reproductions')}
                       </li>
                     ))}
                   </ul>
@@ -349,7 +349,7 @@ const Home: React.FC = () => {
                       <ul className="space-y-2">
                         {statistics.topUsers.map((item) => (
                           <li key={item.username} className="text-sm text-gray-300">
-                            {item.username} - {type === 'time' ? formatTime(item.total_time_seconds) :  item.count + ' ' + t('reproductions')}
+                            {item.username} - {type === 'time' ? formatTime(item.total_time_seconds) : item.count + ' ' + t('reproductions')}
                           </li>
                         ))}
                       </ul>

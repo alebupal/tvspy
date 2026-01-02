@@ -6,6 +6,7 @@
 - Arreglado bug que impedía el envío de notificaciones de Telegram (problema de tipos y valores por defecto faltantes).
 - Frontend: Añadida dependencia faltante `styled-components` que causaba errores en el build.
 - Frontend: Solucionado error de Mixed Content usando WSS cuando es apropiado.
+- Frontend: Codificadas credenciales de WebSocket para soportar caracteres especiales.
 
 ## [3.0.4] - 2025-03-24
 
