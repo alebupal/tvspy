@@ -33,12 +33,14 @@ const defaultConfigData = [
         name: 'telegram_notification_start_playback',
         value: false
     }, {
-        name: 'telegram_notification_start_playback_text'
+        name: 'telegram_notification_start_playback_text',
+        value: 'El usuario %%username%% ha empezado a reproducir %%channel%% a las %%date%% con el reproductor %%client%% y desde la IP: %%hostname%%'
     }, {
         name: 'telegram_notification_stop_playback',
         value: false
     }, {
-        name: 'telegram_notification_stop_playback_text'
+        name: 'telegram_notification_stop_playback_text',
+        value: 'El usuario %%username%% ha parado de reproducir el %%channel%% a las %%date%%'
     }, {
         name: 'telegram_notification_start_recording',
         value: false
