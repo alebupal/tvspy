@@ -1,5 +1,9 @@
 # Changelog TVSPY
 
+## [3.0.5] - 2025-12-29
+
+- Seguridad: Actualización de dependencias a las últimas versiones para mejorar la seguridad y la estabilidad.
+
 ## [3.0.4] - 2025-03-24
 
 - Compatibilidad con arm32/v7
