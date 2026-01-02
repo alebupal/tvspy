@@ -5,7 +5,7 @@ WORKDIR /app/frontend
 
 # Copia los archivos de configuración y el código del frontend
 COPY tvspy-frontend/package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY tvspy-frontend/ ./
 RUN npm run build
 
