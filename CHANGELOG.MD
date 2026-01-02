@@ -1,8 +1,10 @@
 # Changelog TVSPY
 
-## [3.0.5] - 2025-12-29
+## [3.0.5] - 2026-01-02
 
 - Updated dependencies to the latest versions for improved security and stability.
+- Fixed bug preventing Telegram notifications from sending (issue with types and missing default values).
+- Frontend: Added missing dependency `styled-components` which caused build errors.
 
 ## [3.0.4] - 2025-03-24
 

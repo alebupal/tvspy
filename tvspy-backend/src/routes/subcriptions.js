@@ -12,7 +12,7 @@ let debugLog;
         const isDebugMode = await getDebugMode();
 
         // Función para mostrar logs solo si debug_mode es true
-        debugLog = isDebugMode ? console.log : () => {}; // Si es false, no hace nada
+        debugLog = isDebugMode ? console.log : () => { }; // Si es false, no hace nada
 
         await refreshConfig(); // Inicializa configValues
 
@@ -36,7 +36,7 @@ let debugLog;
         ws.on('message', (data) => {
             try {
                 refreshConfig();
-                
+
                 const rawMessage = JSON.parse(data);
 
                 debugLog('rawMessage', rawMessage);
@@ -100,7 +100,7 @@ function updateExistingRecords(receivedStarts, configValues) {
                 username: username,
                 channel: channel,
                 date: formatISODate(start),
-                client: client, 
+                client: client,
                 hostname: hostname
             };
 
@@ -114,14 +114,14 @@ function updateExistingRecords(receivedStarts, configValues) {
 
                     // Verificar el título para determinar qué notificación enviar
                     if (title && title.includes('DVR:')) {
-                        if (configValues.telegram_notification === "1" && configValues.telegram_notification_stop_recording === "1") {
+                        if (configValues.telegram_notification == "1" && configValues.telegram_notification_stop_recording == "1") {
                             sendTelegramMessage(
                                 formatMessage(configValues.telegram_notification_stop_recording_text, replacements),
                                 configValues
                             );
                         }
                     } else {
-                        if (configValues.telegram_notification === "1" && configValues.telegram_notification_stop_playback === "1") {
+                        if (configValues.telegram_notification == "1" && configValues.telegram_notification_stop_playback == "1") {
                             sendTelegramMessage(
                                 formatMessage(configValues.telegram_notification_stop_playback_text, replacements),
                                 configValues
@@ -139,13 +139,13 @@ function updateExistingRecords(receivedStarts, configValues) {
 // Función para insertar datos en la base de datos
 function insertIntoDatabase(data, configValues) {
     const {
-        start, 
-        errors = 0, 
-        hostname = '', 
-        client = '', 
-        channel = '', 
-        service = '', 
-        total_in = 0, 
+        start,
+        errors = 0,
+        hostname = '',
+        client = '',
+        channel = '',
+        service = '',
+        total_in = 0,
         username = 'No user',
         title = ''
     } = data;
@@ -166,14 +166,14 @@ function insertIntoDatabase(data, configValues) {
                     username: row.username,
                     channel: row.channel,
                     date: formatISODate(row.start),
-                    client: row.client, 
+                    client: row.client,
                     hostname: row.hostname
                 };
-                
-                 //Notificaciones Tiempo
-                if (configValues.telegram_notification === "1" && 
-                    configValues.telegram_notification_time === "1" && 
-                    parseInt(differenceInMinutes) > parseInt(configValues.telegram_time_limit) && 
+
+                //Notificaciones Tiempo
+                if (configValues.telegram_notification == "1" &&
+                    configValues.telegram_notification_time == "1" &&
+                    parseInt(differenceInMinutes) > parseInt(configValues.telegram_time_limit) &&
                     !row.notification_time
                 ) {
                     sendTelegramMessage(
@@ -192,17 +192,17 @@ function insertIntoDatabase(data, configValues) {
                         debugLog('notification_time Record updated successfully with id:', start);
                     });
                 }
-                
+
                 //Notificaciones IP
-                const allowedIPs =  configValues.ip_allowed
+                const allowedIPs = configValues.ip_allowed
                     ? configValues.ip_allowed.split(',').map(ip => ip.trim())
                     : [];
-                if (configValues.telegram_notification === "1" && 
-                    configValues.telegram_notification_ip_not_allowed === "1" &&
+                if (configValues.telegram_notification == "1" &&
+                    configValues.telegram_notification_ip_not_allowed == "1" &&
                     !allowedIPs.includes(row.hostname) &&
                     !row.notification_ip
                 ) {
-                    sendTelegramMessage(                        
+                    sendTelegramMessage(
                         formatMessage(configValues.telegram_notification_ip_not_allowed_text, replacements),
                         configValues
                     );
@@ -248,19 +248,19 @@ function insertIntoDatabase(data, configValues) {
                     username: username,
                     channel: channel,
                     date: formatISODate(unixToISO(start)),
-                    client: client, 
+                    client: client,
                     hostname: hostname
                 };
 
                 if (title && title.includes('DVR:')) {
-                    if (configValues.telegram_notification === "1" && configValues.telegram_notification_start_recording === "1") {
+                    if (configValues.telegram_notification == "1" && configValues.telegram_notification_start_recording == "1") {
                         sendTelegramMessage(
                             formatMessage(configValues.telegram_notification_start_recording_text, replacements),
                             configValues
                         );
                     }
                 } else {
-                    if (configValues.telegram_notification === "1" && configValues.telegram_notification_start_playback === "1") {
+                    if (configValues.telegram_notification == "1" && configValues.telegram_notification_start_playback == "1") {
                         sendTelegramMessage(
                             formatMessage(configValues.telegram_notification_start_playback_text, replacements),
                             configValues
@@ -297,6 +297,7 @@ async function refreshConfig() {
 }
 
 function formatMessage(template, values) {
+    if (!template) return '';
     return template
         .replace('%%username%%', values.username || '')
         .replace('%%channel%%', values.channel || '')
