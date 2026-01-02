@@ -83,7 +83,8 @@ const Home: React.FC = () => {
         const { port, username, hostname, password } = config;
   
         if (port && username && hostname && password) {
-          const url = `ws://${username}:${password}@${hostname}:${port}/comet/ws`;
+          const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+          const url = `${protocol}://${username}:${password}@${hostname}:${port}/comet/ws`;
           setWsServerUrl(url);
         } else {
           throw new Error(t('Missing one or more values required to connect with TVHeadend'));

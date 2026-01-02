@@ -5,6 +5,7 @@
 - Seguridad: Actualización de dependencias a las últimas versiones para mejorar la seguridad y la estabilidad.
 - Arreglado bug que impedía el envío de notificaciones de Telegram (problema de tipos y valores por defecto faltantes).
 - Frontend: Añadida dependencia faltante `styled-components` que causaba errores en el build.
+- Frontend: Solucionado error de Mixed Content usando WSS cuando es apropiado.
 
 ## [3.0.4] - 2025-03-24
 

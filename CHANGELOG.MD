@@ -5,6 +5,7 @@
 - Updated dependencies to the latest versions for improved security and stability.
 - Fixed bug preventing Telegram notifications from sending (issue with types and missing default values).
 - Frontend: Added missing dependency `styled-components` which caused build errors.
+- Frontend: Fixed Mixed Content error by using WSS when appropriate.
 
 ## [3.0.4] - 2025-03-24
 
