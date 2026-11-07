@@ -138,7 +138,7 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
         <div className="flex items-center gap-2 flex-shrink-0">
           {subscription.errors !== undefined && subscription.errors > 0 && (
             <span
-              title={`${subscription.errors} errores de transporte de señal / paquetes discontinuos`}
+              title={t('Transport signal errors / discontinuous packets', { count: subscription.errors })}
               className="flex items-center gap-1 rounded-md bg-amber-500/10 px-2 py-0.5 text-[11px] font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20 cursor-help"
             >
               <FiAlertTriangle className="text-xs" />

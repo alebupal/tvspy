@@ -61,21 +61,21 @@ export const DiskSpaceWidget: React.FC<DiskSpaceWidgetProps> = ({ onOpenDvrModal
           <div>
             <div className="flex items-center gap-2">
               <h4 className="text-sm font-semibold text-black dark:text-white">
-                {t('TVHeadend Storage') || 'Almacenamiento TVHeadend'}
+                {t('TVHeadend Storage')}
               </h4>
               {disk?.isLowSpace && (
                 <span className="flex items-center gap-1 rounded bg-rose-500/10 px-1.5 py-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400 border border-rose-500/20">
                   <FiAlertTriangle className="text-xs" />
-                  {t('Low disk space') || 'Espacio bajo'}
+                  {t('Low disk space')}
                 </span>
               )}
             </div>
             <p className="text-xs text-body dark:text-bodydark">
               {hasStorageData
-                ? `${formatBytes(disk.used)} ${t('used of') || 'usados de'} ${formatBytes(disk.total)} (${disk.usedPercentage}%)`
+                ? `${formatBytes(disk.used)} ${t('used of')} ${formatBytes(disk.total)} (${disk.usedPercentage}%)`
                 : loading
-                ? t('Checking storage...') || 'Consultando espacio en disco...'
-                : t('No storage paths reported by TVHeadend') || 'Sin rutas de grabación activas en TVHeadend'}
+                ? t('Checking storage...')
+                : t('No storage paths reported by TVHeadend')}
             </p>
           </div>
         </div>
@@ -87,7 +87,7 @@ export const DiskSpaceWidget: React.FC<DiskSpaceWidgetProps> = ({ onOpenDvrModal
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold hover:bg-purple-500/20 transition border border-purple-500/20"
             >
               <FiHardDrive className="text-xs" />
-              <span>{t('Upcoming recordings') || 'Grabaciones'}</span>
+              <span>{t('Upcoming recordings')}</span>
               {upcomingCount > 0 && (
                 <span className="rounded-full bg-purple-600 text-white px-1.5 py-0.2 text-[10px] font-bold">
                   {upcomingCount}
@@ -118,8 +118,8 @@ export const DiskSpaceWidget: React.FC<DiskSpaceWidgetProps> = ({ onOpenDvrModal
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-body dark:text-bodydark">
-            <span>{formatBytes(disk.free)} {t('available') || 'disponibles'}</span>
-            <span className="font-medium">{disk.freePercentage}% {t('free') || 'libre'}</span>
+            <span>{formatBytes(disk.free)} {t('available')}</span>
+            <span className="font-medium">{disk.freePercentage}% {t('free')}</span>
           </div>
         </>
       ) : (
@@ -127,8 +127,8 @@ export const DiskSpaceWidget: React.FC<DiskSpaceWidgetProps> = ({ onOpenDvrModal
           <FiInfo className="text-sm text-primary flex-shrink-0" />
           <span>
             {hasError
-              ? t('Could not query TVHeadend disk space API') || 'No se pudo consultar el espacio en disco de TVHeadend.'
-              : t('To display storage metrics, ensure DVR recording profiles are configured in TVHeadend.') || 'Para mostrar el uso de disco, configura una ruta de grabación en TVHeadend (Configuración > Grabaciones).'}
+              ? t('Could not query TVHeadend disk space API')
+              : t('To display storage metrics, ensure DVR recording profiles are configured in TVHeadend.')}
           </span>
         </div>
       )}

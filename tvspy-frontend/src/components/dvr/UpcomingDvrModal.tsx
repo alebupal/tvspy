@@ -50,9 +50,9 @@ export const UpcomingDvrModal: React.FC<UpcomingDvrModalProps> = ({ isOpen, onCl
     if (typeof entry.title === 'string') return entry.title;
     if (entry.title && typeof entry.title === 'object') {
       const lang = i18n.language || 'es';
-      return entry.title[lang] || entry.title['default'] || Object.values(entry.title)[0] || 'Grabación';
+      return entry.title[lang] || entry.title['default'] || Object.values(entry.title)[0] || t('Recording');
     }
-    return 'Grabación programada';
+    return t('Scheduled recording');
   };
 
   const formatScheduleTime = (startEpoch: number, stopEpoch: number) => {
@@ -74,11 +74,13 @@ export const UpcomingDvrModal: React.FC<UpcomingDvrModalProps> = ({ isOpen, onCl
 
     let relativeStr = '';
     if (diffSec < 0 && stopEpoch * 1000 > now) {
-      relativeStr = t('Recording now') || 'Grabando ahora';
+      relativeStr = t('Recording now');
     } else if (diffSec > 0 && diffSec < 3600 * 24) {
       const hours = Math.floor(diffSec / 3600);
       const minutes = Math.floor((diffSec % 3600) / 60);
-      relativeStr = hours > 0 ? `En ${hours}h ${minutes}m` : `En ${minutes}m`;
+      relativeStr = hours > 0
+        ? t('In {{hours}}h {{minutes}}m', { hours, minutes })
+        : t('In {{minutes}}m', { minutes });
     }
 
     return {
@@ -219,7 +221,7 @@ export const UpcomingDvrModal: React.FC<UpcomingDvrModalProps> = ({ isOpen, onCl
                             : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                         }`}
                       >
-                        {timing.isLiveRecording ? 'Grabando' : entry.sched_status || 'Programada'}
+                        {timing.isLiveRecording ? t('Recording') : entry.sched_status === 'scheduled' ? t('Scheduled') : entry.sched_status || t('Scheduled')}
                       </span>
                     </div>
                   </div>
@@ -235,7 +237,7 @@ export const UpcomingDvrModal: React.FC<UpcomingDvrModalProps> = ({ isOpen, onCl
             onClick={onClose}
             className="px-4 py-2 rounded-xl bg-gray-200 text-black text-xs font-semibold hover:bg-gray-300 dark:bg-meta-4 dark:text-white dark:hover:bg-meta-4/80 transition"
           >
-            {t('Close') || 'Cerrar'}
+            {t('Close')}
           </button>
         </div>
       </div>

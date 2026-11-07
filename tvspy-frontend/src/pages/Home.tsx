@@ -200,7 +200,7 @@ const Home: React.FC = () => {
 
         if (isUnauthorized && settings.unauthorizedIpAlerts) {
           playAlertChime();
-          sendBrowserNotification(`⚠️ ${t('Unauthorized IP Alert') || 'Alerta: IP no autorizada'}`, {
+          sendBrowserNotification(`⚠️ ${t('Unauthorized IP Alert')}`, {
             body: `${stream.hostname} (${userLabel} - ${channelLabel})`,
           });
         } else {
@@ -208,7 +208,7 @@ const Home: React.FC = () => {
             playNotificationChime();
           }
           if (settings.desktopNotifications) {
-            sendBrowserNotification(t('Stream started') || 'Nueva emisión iniciada', {
+            sendBrowserNotification(t('Stream started'), {
               body: `${userLabel} - ${channelLabel} (${stream.client || 'TV'})`,
             });
           }
@@ -300,7 +300,7 @@ const Home: React.FC = () => {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold hover:bg-purple-500/20 transition shadow-sm"
             >
               <FiHardDrive className="text-xs" />
-              <span>{t('Upcoming DVR') || 'Próximas grabaciones DVR'}</span>
+              <span>{t('Upcoming DVR')}</span>
               {upcomingDvrCount > 0 && (
                 <span className="rounded-full bg-purple-600 text-white px-1.5 py-0.2 text-[10px] font-bold">
                   {upcomingDvrCount}

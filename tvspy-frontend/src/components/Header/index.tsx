@@ -59,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="rounded-lg border border-stroke p-2 text-black hover:bg-gray-100 dark:border-strokedark dark:text-white dark:hover:bg-meta-4 lg:hidden"
-            aria-label="Abrir menú"
+            aria-label={t('Open Menu')}
           >
             <FiMenu className="text-xl" />
           </button>
@@ -123,7 +123,7 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
             onClick={toggleFullscreen}
             title={isFullscreen ? t('Exit Fullscreen') : t('Fullscreen / Kiosk Mode')}
             className="flex h-8.5 w-8.5 items-center justify-center rounded-full border border-stroke bg-gray hover:text-primary dark:border-strokedark dark:bg-meta-4 dark:hover:text-primary transition text-sm"
-            aria-label="Pantalla completa"
+            aria-label={t('Fullscreen')}
           >
             {isFullscreen ? <FiMinimize /> : <FiMaximize />}
           </button>

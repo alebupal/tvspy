@@ -144,7 +144,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
         {/* Navegación */}
         <div className="px-4 py-6">
           <p className="px-3 text-xs font-semibold uppercase tracking-wider text-body dark:text-bodydark mb-3">
-            Menú Principal
+            {t('Main Menu')}
           </p>
 
           <nav className="space-y-1.5">

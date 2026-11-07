@@ -59,8 +59,8 @@ const Changelog: React.FC = () => {
   }, [activeTab, currentLang]);
 
   const tabs: TabItem[] = [
-    { id: 'changelog', label: 'Changelog / Versiones', icon: <FiList /> },
-    { id: 'readme', label: 'README / Documentación', icon: <FiBookOpen /> },
+    { id: 'changelog', label: t('Changelog / Versions'), icon: <FiList /> },
+    { id: 'readme', label: t('README / Documentation'), icon: <FiBookOpen /> },
   ];
 
   // Parser simple de Markdown para mostrar el texto estilizado
@@ -139,7 +139,7 @@ const Changelog: React.FC = () => {
             {t('Changelog & Docs')}
           </h2>
           <p className="text-xs text-body dark:text-bodydark mt-0.5">
-            Lee directamente los archivos oficiales del repositorio
+            {t('Read official repository documentation directly')}
           </p>
         </div>
       </div>
@@ -152,7 +152,7 @@ const Changelog: React.FC = () => {
           </div>
           <div>
             <h4 className="font-semibold text-xs text-black dark:text-white">
-              ¿Te resulta útil TVSPY?
+              {t('Do you find TVSPY useful?')}
             </h4>
             <p className="text-[11px] text-body dark:text-bodydark mt-0.5 max-w-xl">
               {t('Support project')}
@@ -176,7 +176,7 @@ const Changelog: React.FC = () => {
         <Tabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
         {filename && (
           <span className="text-[11px] font-mono text-body dark:text-bodydark hidden sm:inline">
-            Archivo: {filename}
+            {t('File')}: {filename}
           </span>
         )}
       </div>

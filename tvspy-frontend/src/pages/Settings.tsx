@@ -176,7 +176,7 @@ const Settings: React.FC = () => {
         toast.success(t('You are using the latest version'));
       }
     } catch (err: any) {
-      toast.error(err.message || 'Error al comprobar actualizaciones');
+      toast.error(err.message || t('Error checking for updates'));
     } finally {
       setCheckingUpdate(false);
     }
@@ -200,13 +200,13 @@ const Settings: React.FC = () => {
         loadDbInfo();
         systemApi.checkUpdate(false).then((u) => setUpdateInfo(u)).catch(() => {});
       } catch (err) {
-        toast.error('Error al cargar la configuración');
+        toast.error(t('Error loading configuration'));
       } finally {
         setLoading(false);
       }
     };
     loadConfig();
-  }, []);
+  }, [t]);
 
   const handleChange = (key: string, value: string) => {
     setConfig((prev) => ({ ...prev, [key]: value }));
@@ -236,12 +236,12 @@ const Settings: React.FC = () => {
         localStorage.removeItem('tvspy_pin_enabled');
         localStorage.removeItem('tvspy_pin_length');
       }
-      toast.success(t('Successfully updated') || 'Configuración guardada correctamente');
+      toast.success(t('Successfully updated'));
       if (config.language && config.language !== i18n.language) {
         i18n.changeLanguage(config.language);
       }
     } catch (err: any) {
-      toast.error(err?.message || t('Error updating') || 'Error al guardar');
+      toast.error(err?.message || t('Error updating'));
     } finally {
       setSaving(false);
     }
@@ -261,11 +261,11 @@ const Settings: React.FC = () => {
         auth: config.auth,
       });
       if (res.success) {
-        setTvhTestResult({ success: true, msg: '¡Conexión establecida con éxito con TVHeadend!' });
-        toast.success('Conexión con TVHeadend exitosa');
+        setTvhTestResult({ success: true, msg: t('TVHeadend connection successful') });
+        toast.success(t('TVHeadend connection successful'));
       }
     } catch (err: any) {
-      const msg = err.response?.data?.error || err.message || 'Error al conectar con TVHeadend';
+      const msg = err.response?.data?.error || err.message || t('Error connecting to TVHeadend');
       setTvhTestResult({ success: false, msg });
       toast.error(`Error: ${msg}`);
     } finally {
@@ -281,7 +281,7 @@ const Settings: React.FC = () => {
         botToken: config.telegram_bot_token,
         chatId: config.telegram_id,
       });
-      toast.success(t('Test message sent successfully to Telegram') || 'Mensaje de prueba enviado');
+      toast.success(t('Test message sent successfully to Telegram'));
     } catch (err: any) {
       toast.error(err.response?.data?.error || t('Error sending test message to Telegram'));
     } finally {
@@ -297,9 +297,9 @@ const Settings: React.FC = () => {
         webhookUrl: config.webhook_url,
         webhookType: config.webhook_type || 'discord',
       });
-      toast.success('¡Webhook probado con éxito!');
+      toast.success(t('Webhook tested successfully!'));
     } catch (err: any) {
-      toast.error(err.response?.data?.error || err.message || 'Error al probar webhook');
+      toast.error(err.response?.data?.error || err.message || t('Error testing webhook'));
     } finally {
       setTestingWebhook(false);
     }
@@ -307,7 +307,7 @@ const Settings: React.FC = () => {
 
   // Purgar BD
   const handlePurgeDb = async () => {
-    if (!window.confirm(`¿Seguro que deseas eliminar los registros de más de ${purgeDays} días y compactar la base de datos?`)) {
+    if (!window.confirm(t('Purge confirm', { days: purgeDays }))) {
       return;
     }
 
@@ -317,7 +317,7 @@ const Settings: React.FC = () => {
       toast.success(res.message);
       loadDbInfo();
     } catch (err: any) {
-      toast.error(err.message || 'Error al purgar registros');
+      toast.error(err.message || t('Error purging records'));
     } finally {
       setPurging(false);
     }
@@ -325,7 +325,7 @@ const Settings: React.FC = () => {
 
   const tabs: TabItem[] = [
     { id: 'tvheadend', label: t('TVHeadend'), icon: <FiTv /> },
-    { id: 'notifications', label: t('Notifications') || 'Notificaciones', icon: <FiBell /> },
+    { id: 'notifications', label: t('Notifications'), icon: <FiBell /> },
     { id: 'security', label: t('Security & Filters'), icon: <FiShield /> },
     { id: 'system', label: t('System & Database'), icon: <FiCpu /> },
   ];
@@ -485,10 +485,10 @@ const Settings: React.FC = () => {
           <div className="space-y-6">
             <div>
               <h3 className="text-sm font-semibold text-black dark:text-white mb-1">
-                {t('Notifications') || 'Centro de Notificaciones'}
+                {t('Notifications Center')}
               </h3>
               <p className="text-xs text-body dark:text-bodydark">
-                Avisos en pantalla y acústicos, alertas automáticas de Telegram, Discord / Webhooks y monitor de TVHeadend.
+                {t('Notifications Center description')}
               </p>
             </div>
 
@@ -501,10 +501,10 @@ const Settings: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-black dark:text-white">
-                      {t('Desktop Notifications & Sound Alerts') || 'Avisos de Escritorio y Sonido en Vivo'}
+                      {t('Desktop Notifications & Sound Alerts')}
                     </h4>
                     <p className="text-[11px] text-body dark:text-bodydark">
-                      Alertas visuales nativas en el navegador y timbres acústicos sintetizados con Web Audio API.
+                      {t('Desktop notifications description')}
                     </p>
                   </div>
                 </div>
@@ -514,18 +514,18 @@ const Settings: React.FC = () => {
                     type="button"
                     onClick={() => {
                       if (notificationSettings.desktopNotifications) {
-                        sendBrowserNotification(t('TVSPY Test Notification') || 'Notificación de prueba TVSPY', {
-                          body: t('Desktop notifications are active and working!') || '¡Las notificaciones de escritorio están funcionando correctamente!',
+                        sendBrowserNotification(t('TVSPY Test Notification'), {
+                          body: t('Desktop notifications are active and working!'),
                         });
-                        toast.success(t('Test notification sent') || 'Notificación de prueba enviada');
+                        toast.success(t('Test notification sent'));
                       } else {
-                        toast(t('Enable desktop notifications first') || 'Activa primero las notificaciones de escritorio');
+                        toast(t('Enable desktop notifications first'));
                       }
                     }}
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 transition"
                   >
                     <FiBell className="text-xs" />
-                    {t('Test notification') || 'Probar aviso'}
+                    {t('Test notification')}
                   </button>
 
                   <button
@@ -534,7 +534,7 @@ const Settings: React.FC = () => {
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 transition"
                   >
                     <FiVolume2 className="text-xs" />
-                    {t('Test sound') || 'Probar sonido'}
+                    {t('Test sound')}
                   </button>
                 </div>
               </div>
@@ -542,11 +542,11 @@ const Settings: React.FC = () => {
               <div className="space-y-3 pt-1">
                 <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
                   <ToggleSwitch
-                    label={t('Browser Desktop Notifications') || 'Notificaciones de escritorio del navegador'}
+                    label={t('Browser Desktop Notifications')}
                     description={
                       browserPermission === 'denied'
-                        ? t('Notifications blocked in browser permissions') || 'Bloqueadas en los permisos del navegador. Desbloquéalas en la barra de direcciones.'
-                        : t('Show native OS/browser notification banner when a new stream starts') || 'Muestra un aviso nativo del sistema operativo al iniciarse una emisión'
+                        ? t('Notifications blocked in browser permissions')
+                        : t('Show native OS/browser notification banner when a new stream starts')
                     }
                     enabled={notificationSettings.desktopNotifications}
                     onChange={handleToggleDesktopNotif}
@@ -555,8 +555,8 @@ const Settings: React.FC = () => {
 
                 <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
                   <ToggleSwitch
-                    label={t('Stream Start Sound Chime') || 'Sonido de aviso al iniciar emisión'}
-                    description={t('Play a subtle chime using Web Audio when a playback or recording begins') || 'Reproduce un tono sonoro sutil al detectar una nueva reproducción o grabación'}
+                    label={t('Stream Start Sound Chime')}
+                    description={t('Play a subtle chime using Web Audio when a playback or recording begins')}
                     enabled={notificationSettings.soundAlerts}
                     onChange={handleToggleSound}
                   />
@@ -564,8 +564,8 @@ const Settings: React.FC = () => {
 
                 <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
                   <ToggleSwitch
-                    label={t('Alert on Unauthorized IP') || 'Alerta sonora y visual en IPs no autorizadas'}
-                    description={t('Play warning sound and send high-priority alert if connection is not in allowed list') || 'Aviso destacado inmediato cuando un cliente se conecte desde una IP fuera de la lista permitida'}
+                    label={t('Alert on Unauthorized IP')}
+                    description={t('Play warning sound and send high-priority alert if connection is not in allowed list')}
                     enabled={notificationSettings.unauthorizedIpAlerts}
                     onChange={handleToggleUnauthAlert}
                   />
@@ -582,10 +582,10 @@ const Settings: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-black dark:text-white">
-                      Notificaciones de Telegram
+                      {t('Telegram Notifications')}
                     </h4>
                     <p className="text-[11px] text-body dark:text-bodydark">
-                      Alertas automáticas enviadas a tu bot, canal o chat privado de Telegram.
+                      {t('Telegram notifications description')}
                     </p>
                   </div>
                 </div>
@@ -612,7 +612,7 @@ const Settings: React.FC = () => {
               />
               <Input
                 label={t('Telegram ID')}
-                placeholder="Chat ID o ID del Canal"
+                placeholder={t('Chat ID or Channel ID')}
                 value={config.telegram_id || ''}
                 onChange={(e) => handleChange('telegram_id', e.target.value)}
               />
@@ -622,7 +622,7 @@ const Settings: React.FC = () => {
             <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
               <ToggleSwitch
                 label={t('Enable Telegram Notifications')}
-                description="Habilitar el motor de envío de notificaciones automáticas a Telegram"
+                description={t('Enable automated Telegram notifications description')}
                 enabled={isEnabled('telegram_notification')}
                 onChange={(v) => handleToggle('telegram_notification', v)}
               />
@@ -706,7 +706,7 @@ const Settings: React.FC = () => {
               <div className="border border-stroke rounded-lg p-4 dark:border-strokedark space-y-3">
                 <ToggleSwitch
                   label={t('Notify on Specific Time')}
-                  description="Enviar aviso si un usuario excede un límite de minutos reproduciendo"
+                  description={t('Notify on time limit description')}
                   enabled={isEnabled('telegram_notification_time')}
                   onChange={(v) => handleToggle('telegram_notification_time', v)}
                 />
@@ -731,7 +731,7 @@ const Settings: React.FC = () => {
               <div className="border border-stroke rounded-lg p-4 dark:border-strokedark space-y-3">
                 <ToggleSwitch
                   label={t('Notify on Unauthorized IP')}
-                  description="Enviar alerta cuando la conexión provenga de una IP fuera de la lista de permitidas"
+                  description={t('Notify on unauthorized IP description')}
                   enabled={isEnabled('telegram_notification_ip_not_allowed')}
                   onChange={(v) => handleToggle('telegram_notification_ip_not_allowed', v)}
                 />
@@ -742,6 +742,16 @@ const Settings: React.FC = () => {
                     onChange={(e) => handleChange('telegram_notification_ip_not_allowed_text', e.target.value)}
                   />
                 )}
+              </div>
+
+              {/* Evento 7: Caída o desconexión del servidor TVHeadend */}
+              <div className="border border-stroke rounded-lg p-4 dark:border-strokedark space-y-3">
+                <ToggleSwitch
+                  label={t('Notify on Server Down')}
+                  description={t('Sends alert if connection with TVHeadend is lost for more than 2 minutes and another when recovered')}
+                  enabled={isEnabled('notify_server_down')}
+                  onChange={(v) => handleToggle('notify_server_down', v)}
+                />
               </div>
 
             </div>
@@ -757,10 +767,10 @@ const Settings: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-black dark:text-white">
-                      Discord / Gotify / Webhooks
+                      {t('Discord / Gotify / Webhooks')}
                     </h4>
                     <p className="text-[11px] text-body dark:text-bodydark">
-                      Envía eventos a canales de Discord, servidores Gotify o Home Assistant.
+                      {t('Discord / Webhooks description')}
                     </p>
                   </div>
                 </div>
@@ -773,14 +783,14 @@ const Settings: React.FC = () => {
                 >
                   {testingWebhook && <FiRefreshCw className="animate-spin text-xs" />}
                   <FiShare2 className="text-xs" />
-                  Probar Webhook
+                  {t('Test Webhook')}
                 </button>
               </div>
 
               <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
                 <ToggleSwitch
-                  label="Habilitar notificaciones por Webhook"
-                  description="Transmitir eventos de transmisiones en tiempo real al webhook configurado"
+                  label={t('Enable Webhook Notifications')}
+                  description={t('Stream real-time events to configured webhook')}
                   enabled={isEnabled('webhook_enabled')}
                   onChange={(v) => handleToggle('webhook_enabled', v)}
                 />
@@ -790,7 +800,7 @@ const Settings: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
                   <div className="sm:col-span-1">
                     <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
-                      Tipo de Webhook
+                      {t('Webhook Type')}
                     </label>
                     <select
                       value={config.webhook_type || 'discord'}
@@ -799,13 +809,13 @@ const Settings: React.FC = () => {
                     >
                       <option value="discord">Discord (Rich Embeds)</option>
                       <option value="gotify">Gotify</option>
-                      <option value="generic">Genérico (JSON POST)</option>
+                      <option value="generic">{t('Generic (JSON POST)')}</option>
                     </select>
                   </div>
 
                   <div className="sm:col-span-2">
                     <Input
-                      label="URL del Webhook"
+                      label={t('Webhook URL')}
                       placeholder="https://discord.com/api/webhooks/... o https://gotify.local/message?token=..."
                       value={config.webhook_url || ''}
                       onChange={(e) => handleChange('webhook_url', e.target.value)}
@@ -814,37 +824,18 @@ const Settings: React.FC = () => {
                 </div>
               )}
             </div>
-
-            {/* SECCIÓN 4: RESILIENCIA Y MONITOR TVHEADEND */}
-            <div className="rounded-xl border border-stroke dark:border-strokedark p-4.5 bg-gray-50/60 dark:bg-meta-4/20 space-y-3">
-              <div className="flex items-center gap-2 mb-1">
-                <FiTv className="text-primary text-base" />
-                <h4 className="text-sm font-bold text-black dark:text-white">
-                  Estado y Caídas del Servidor TVHeadend
-                </h4>
-              </div>
-
-              <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
-                <ToggleSwitch
-                  label={t('Notify on Server Down') || 'Notificar si TVHeadend se desconecta o cae (> 2 min)'}
-                  description={t('Sends alert if connection with TVHeadend is lost for more than 2 minutes and another when recovered') || 'Envía una alerta automática si se pierde la conexión con TVHeadend por más de 2 minutos y otra al restablecerse'}
-                  enabled={isEnabled('notify_server_down')}
-                  onChange={(v) => handleToggle('notify_server_down', v)}
-                />
-              </div>
-            </div>
           </div>
         )}
 
-        {/* PESTAÑA 4: FILTROS Y SEGURIDAD */}
+        {/* PESTAÑA 3: FILTROS Y SEGURIDAD */}
         {activeTab === 'security' && (
           <div className="space-y-6">
             <div>
               <h3 className="text-sm font-semibold text-black dark:text-white mb-1">
-                Filtros de Red y Reglas
+                {t('Network Filters & Rules')}
               </h3>
               <p className="text-xs text-body dark:text-bodydark">
-                Control de acceso por IP y parámetros mínimos de registro.
+                {t('Network filters description')}
               </p>
             </div>
 
@@ -935,7 +926,7 @@ const Settings: React.FC = () => {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="ej. 192.168.1.100, 192.168.1.* o 10.0.0.0/24"
+                  placeholder={t('IP filter placeholder')}
                   value={newIpInput}
                   onChange={(e) => setNewIpInput(e.target.value)}
                   onKeyDown={(e) => {
@@ -1033,7 +1024,7 @@ const Settings: React.FC = () => {
                 {t('System & Database')}
               </h3>
               <p className="text-xs text-body dark:text-bodydark">
-                {t('Language')}, modo debug, comprobación de versiones y mantenimiento de la base de datos.
+                {t('System tab description')}
               </p>
             </div>
 
