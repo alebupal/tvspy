@@ -253,11 +253,51 @@ class TvheadendService extends EventEmitter {
         }
     }
 
+    isScanOrInternalSubscription(sub) {
+        if (!sub) return true;
+
+        // Si es una grabación de DVR, nunca es un escaneo interno
+        if (sub.title && sub.title.includes('DVR:')) {
+            return false;
+        }
+
+        const title = (sub.title || '').toLowerCase().trim();
+        const client = (sub.client || '').toLowerCase().trim();
+        const channel = (sub.channel || '').trim();
+        const hostname = (sub.hostname || '').trim();
+        const username = (sub.username || '').toLowerCase().trim();
+
+        // 1. Detección explícita de escaneo o tareas internas en title o client
+        const scanKeywords = ['scan', 'epggrab', 'epg', 'service mapper', 'probe', 'mux scan'];
+        if (scanKeywords.some(kw => title.includes(kw) || client.includes(kw))) {
+            return true;
+        }
+
+        // 2. Si no tiene canal, ni usuario real, ni cliente, ni IP/hostname, es un escaneo de mux/servicio interno
+        const hasChannel = channel.length > 0;
+        const hasUser = username.length > 0 && username !== 'no user' && username !== 'sin usuario';
+        const hasClient = client.length > 0 && client !== 'n/a';
+        const hasHostname = hostname.length > 0 && hostname !== 'n/a' && hostname !== '127.0.0.1' && hostname !== '::1';
+
+        // Para ser una emisión legítima visible para el usuario, debe tener al menos:
+        // (un canal asociado) O (una IP remota y un cliente/usuario que está viendo el servicio en bruto)
+        if (!hasChannel && !hasUser && !hasClient && !hasHostname) {
+            return true;
+        }
+
+        if (!hasChannel && (!hasClient || !hasHostname)) {
+            return true;
+        }
+
+        return false;
+    }
+
     async handleWsMessage(rawMessage) {
         if (!rawMessage || !Array.isArray(rawMessage.messages)) return;
 
-        // Filtrar suscripciones
-        const subscriptionMsgs = rawMessage.messages.filter(m => m.notificationClass === 'subscriptions');
+        // Filtrar suscripciones y descartar escaneos internos de muxes/EPG/listas m3u
+        const rawSubscriptionMsgs = rawMessage.messages.filter(m => m.notificationClass === 'subscriptions');
+        const subscriptionMsgs = rawSubscriptionMsgs.filter(m => !this.isScanOrInternalSubscription(m));
 
         this.activeSubscriptions = subscriptionMsgs;
 
@@ -311,6 +351,7 @@ class TvheadendService extends EventEmitter {
                         client: row.client,
                         hostname: row.hostname
                     };
+                    const isDvr = row.title && row.title.includes('DVR:');
 
                     // Notificación Webhook / Discord
                     if (this.cachedConfig.webhook_enabled === '1' || this.cachedConfig.webhook_enabled === 'true') {

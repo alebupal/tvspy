@@ -79,10 +79,10 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
       />
 
       {/* Cabecera: Canal y Badges */}
-      <div className="flex items-start justify-between gap-3 mb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           <div
-            className={`flex h-11 w-11 items-center justify-center rounded-xl font-bold text-white shadow-sm ${
+            className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl font-bold text-white shadow-sm ${
               isDvr
                 ? 'bg-gradient-to-tr from-purple-600 to-indigo-500'
                 : 'bg-gradient-to-tr from-primary to-blue-500'
@@ -90,20 +90,23 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
           >
             {isDvr ? <FiHardDrive className="text-xl" /> : <FiTv className="text-xl" />}
           </div>
-          <div>
-            <h4 className="font-semibold text-black dark:text-white line-clamp-1 text-base">
+          <div className="min-w-0 flex-1">
+            <h4
+              className="font-semibold text-black dark:text-white truncate text-base"
+              title={subscription.channel || t('Unknown channel')}
+            >
               {subscription.channel || t('Unknown channel')}
             </h4>
             <div className="flex items-center gap-2 mt-0.5">
-              <span className="text-xs text-body dark:text-bodydark flex items-center gap-1">
-                <FiUser className="text-xs" />
-                {subscription.username || t('No user')}
+              <span className="text-xs text-body dark:text-bodydark flex items-center gap-1 truncate">
+                <FiUser className="text-xs flex-shrink-0" />
+                <span className="truncate">{subscription.username || t('No user')}</span>
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           {subscription.errors !== undefined && subscription.errors > 0 && (
             <span
               title={`${subscription.errors} errores de transporte de señal / paquetes discontinuos`}

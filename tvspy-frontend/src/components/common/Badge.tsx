@@ -25,10 +25,10 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${styles[variant]} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border whitespace-nowrap flex-shrink-0 select-none leading-none ${styles[variant]} ${className}`}
     >
       {pulse && (
-        <span className="relative flex h-2 w-2">
+        <span className="relative flex h-2 w-2 flex-shrink-0">
           <span
             className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
               variant === 'success'
@@ -41,7 +41,7 @@ export const Badge: React.FC<BadgeProps> = ({
             }`}
           />
           <span
-            className={`relative inline-flex rounded-full h-2 w-2 ${
+            className={`relative inline-flex rounded-full h-2 w-2 flex-shrink-0 ${
               variant === 'success'
                 ? 'bg-emerald-500'
                 : variant === 'danger'
@@ -53,7 +53,7 @@ export const Badge: React.FC<BadgeProps> = ({
           />
         </span>
       )}
-      {children}
+      <span>{children}</span>
     </span>
   );
 };
