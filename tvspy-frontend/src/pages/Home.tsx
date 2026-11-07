@@ -59,11 +59,16 @@ const Home: React.FC = () => {
     fetchStats();
   }, [statsType, daysAgo]);
 
+  const subs = Array.isArray(subscriptions) ? subscriptions : [];
+  const bw = metrics?.totalBandwidth || 0;
+  const consumed = metrics?.totalConsumed || 0;
+  const dvrCount = subs.filter((s) => s.title && s.title.includes('DVR:')).length;
+
   // Contar usuarios únicos en vivo
   const uniqueUsersCount = useMemo(() => {
-    const users = new Set(subscriptions.map((s) => s.username).filter(Boolean));
+    const users = new Set(subs.map((s) => s.username).filter(Boolean));
     return users.size;
-  }, [subscriptions]);
+  }, [subs]);
 
   return (
     <div className="space-y-6">
@@ -90,16 +95,16 @@ const Home: React.FC = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title={t('Bandwidth')}
-          value={formatBandwidth(metrics.totalBandwidth)}
+          value={formatBandwidth(bw)}
           subtitle={t('Total bandwidth')}
           color="primary"
-          sparkline={<LiveSparkline currentValue={metrics.totalBandwidth} />}
+          sparkline={<LiveSparkline currentValue={bw} />}
           icon={<FiActivity className="text-2xl" />}
         />
 
         <StatCard
           title={t('Total consumed')}
-          value={formatBytes(metrics.totalConsumed)}
+          value={formatBytes(consumed)}
           subtitle={t('Consumed across active sessions')}
           color="success"
           icon={<FiHardDrive className="text-2xl" />}
@@ -107,8 +112,8 @@ const Home: React.FC = () => {
 
         <StatCard
           title={t('Active streams')}
-          value={subscriptions.length}
-          subtitle={`${subscriptions.filter((s) => s.title?.includes('DVR:')).length} ${t('DVR recordings')}`}
+          value={subs.length}
+          subtitle={`${dvrCount} ${t('DVR recordings')}`}
           color="warning"
           icon={<FiTv className="text-2xl" />}
         />
@@ -130,14 +135,14 @@ const Home: React.FC = () => {
               {t('Live Transmissions')}
             </h2>
             <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary dark:text-secondary">
-              {subscriptions.length}
+              {subs.length}
             </span>
           </div>
         </div>
 
-        {subscriptions.length > 0 ? (
+        {subs.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {subscriptions.map((sub) => (
+            {subs.map((sub) => (
               <LiveStreamCard
                 key={sub.id || sub.start}
                 subscription={sub}

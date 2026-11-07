@@ -16,7 +16,9 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subtitle,
   icon,
+  trend,
   badge,
+  sparkline,
   color = 'primary',
 }) => {
   const bgStyles = {

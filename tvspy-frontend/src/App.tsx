@@ -17,7 +17,7 @@ import DefaultLayout from './layout/DefaultLayout';
 import { configApi } from './api';
 
 function App() {
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
 
@@ -26,20 +26,19 @@ function App() {
   }, [pathname]);
 
   useEffect(() => {
-    // Cargar idioma guardado en base de datos si existe
+    // Sincronizar idioma guardado en la base de datos si difiere
     configApi
       .getAll()
       .then((configs) => {
-        const langConfig = configs.find((c) => c.name === 'language');
-        if (langConfig?.value && langConfig.value !== i18n.language) {
-          i18n.changeLanguage(langConfig.value);
+        if (Array.isArray(configs)) {
+          const langConfig = configs.find((c) => c.name === 'language');
+          if (langConfig?.value && langConfig.value !== i18n.language) {
+            i18n.changeLanguage(langConfig.value);
+          }
         }
       })
-      .catch(() => {})
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [i18n]);
+      .catch(() => {});
+  }, []);
 
   return loading ? (
     <Loader />

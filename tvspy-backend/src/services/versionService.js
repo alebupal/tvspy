@@ -112,3 +112,4 @@ class VersionService {
 }
 
 module.exports = new VersionService();
+
