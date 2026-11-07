@@ -5,14 +5,21 @@
 - **Guía EPG en Vivo en Emisiones**:
   - Integración de guía EPG en tiempo real en las tarjetas de emisión activa: muestra el título del programa en emisión, minutos restantes y barra de progreso temporal interactiva con descripción detallada en tooltip.
 - **Monitor de Espacio en Disco de TVHeadend**:
-  - Widget en el panel principal para monitoreo de disco en TVHeadend con espacio total, usado, libre, porcentaje y aviso preventivo de espacio bajo (<10%).
+  - Integración nativa con `/comet/poll` y eventos WebSocket `accessUpdate` de TVHeadend para reflejar en tiempo real la capacidad total, espacio libre y uso por grabaciones DVR.
+  - Barra de progreso interactiva con aviso preventivo de espacio bajo (<10%).
 - **Modal de Próximas Grabaciones DVR**:
   - Vista modal dedicada para "Próximas Grabaciones DVR" con lista cronológica de temporizadores programados, canales, horarios y estado en tiempo real.
 - **Notificaciones Nativas de Escritorio y Timbre Acústico**:
   - Alertas visuales nativas del sistema operativo / navegador mediante Web Notification API al iniciarse nuevas emisiones.
   - Notificación de seguridad prioritaria ante detecciones de reproducciones desde IPs no autorizadas.
   - Timbres sonoros sintetizados nativos con Web Audio API (sin dependencias ni descargas de archivos externos) con botones de prueba en Ajustes.
-- **Mejoras de Diseño y UI**:
+- **Centro de Notificaciones y Ajustes Unificados**:
+  - Pestaña unificada de **Centro de Notificaciones** en Ajustes para avisos de escritorio, Telegram y Webhooks/Discord.
+  - Ocultación automática de eventos y plantillas de Telegram cuando las notificaciones están desactivadas.
+  - Integración del aviso de caída del servidor TVHeadend dentro del listado de eventos de Telegram.
+- **Localización Completa y Limpieza de Código**:
+  - 100% de paridad y cobertura en español e inglés en todos los nuevos componentes, modales y widgets.
+  - Eliminación de scripts redundantes (`dev.bat`, `dev.ps1`) en favor del comando estándar `npm run dev`.
   - Rediseño sutil e integrado del botón de donación de PayPal en la barra lateral y en la vista de documentación.
 
 ## [3.1.0] - 2026-11-07

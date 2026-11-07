@@ -14,13 +14,25 @@
 
 - 📡 **Real-time Live Stream Monitoring**:
   - Displays real channel logos with graceful fallbacks.
+  - **Live EPG in Stream Cards**: Shows currently broadcasting program title, summary, progress bar, and remaining minutes.
   - Who is online, what channel they are watching, client player (VLC, Kodi, TiviMate, etc.), and instant bitrate pulse via WebSockets.
   - **Kill Stream**: Remote stream termination button directly stopping playbacks via TVHeadend API.
   - **Signal Health**: Real-time error packet counter and transport stream degradation warning.
   - **Bandwidth Sparklines**: Live chart showing bitrate fluctuations per session.
   - **GeoIP & Local IP Recognition**: Country flags and automatic local area network (LAN) detection.
   - **Smart Scan Filtering**: Automatically filters out internal TVHeadend IPTV/M3U mux scans and EPG grabber tasks.
-- 🔴 **DVR Recording Detection**: Clear visual distinction between live streaming and scheduled recordings with dynamic badges.
+- 💾 **TVHeadend Storage & Disk Space Monitor**:
+  - Real-time disk capacity, free space, and used space metrics queried directly from TVHeadend `/comet/poll` and WebSocket events.
+  - Color-coded progress bar with low-space alerts (< 10%).
+  - DVR recording storage utilization breakdown.
+- 🔴 **DVR Recording Detection & Upcoming Schedules**:
+  - Clear visual distinction between live streaming and scheduled recordings with dynamic badges.
+  - **Upcoming DVR Recordings Modal**: Inspect all scheduled timers and automated series recordings in TVHeadend with countdowns.
+- 🔔 **Multi-Platform Notifications & Web Audio Alerts**:
+  - **Unified Notifications Center** in Settings grouping all alert mechanisms.
+  - **Browser Desktop Notifications & Sound Chimes**: Native OS notification banners and synthesized two-tone chimes (Web Audio API) when new playbacks start or unauthorized IPs connect.
+  - **Telegram**, **Discord** (Rich Embeds), **Gotify**, and custom **HTTP POST Webhooks**.
+  - Notifications on playback/recording start, stop, extended viewing limits, unauthorized IP access, and TVHeadend server disconnection/recovery.
 - 📺 **Dual Views & In-Depth Analytics for Channels & Users**:
   - Switch between **Grid** and **Detailed Table / List** views in both Channels and Users sections with persistent preference.
   - **Channel Profile Modal**: Detailed statistics (total plays, accumulated duration, bytes downloaded, unique viewers, top viewers, and recent logs).
@@ -35,15 +47,28 @@
   - **PIN Lock Screen**: Secure your TVSpy panel with a custom numeric PIN, dynamic digits, and physical keyboard support.
   - **Interactive IP Whitelist**: Manage authorized IPs with interactive tags/chips, quick presets, wildcard (`192.168.1.*`), and CIDR subnet (`10.0.0.0/24`) support.
   - **Local Server & LAN Protection**: Loopback connections (`127.0.0.1`, `localhost`, `::1`) are always permitted by default, with optional one-click auto-authorization for all private LANs.
-- 🔔 **Multi-Platform Notifications**:
-  - **Telegram**, **Discord** (Rich Embeds), **Gotify**, and custom **HTTP POST Webhooks**.
-  - Notifications on playback/recording start, stop, extended viewing limits, unauthorized IP access, and TVHeadend server disconnection/recovery.
 - 🔄 **Server Health, Reliability & Maintenance**:
   - **Heartbeat Monitor**: Detects TVHeadend connection drops (> 2 min) and sends automatic alerts and recovery notices.
   - **Scheduled Auto-Purge**: Background scheduler with configurable retention days and automatic SQLite database `VACUUM`.
   - **Direct Backup**: Download `.db` database copies with one click.
   - **Hot Reconnection**: Updating credentials in Settings triggers an immediate hot reconnection **without needing to restart the container**.
 - 🌓 **Fullscreen / Kiosk Mode**, Dark/Light Theme, GitHub Version Checker, and complete **Spanish / English** translations.
+
+---
+
+## 📸 Screenshots
+
+| Live Dashboard & Storage | Channels View |
+| :---: | :---: |
+| ![Live Dashboard](screenshoot/Screenshot_1.png) | ![Channels](screenshoot/Screenshot_2.png) |
+
+| Users & Activity | Streaming History |
+| :---: | :---: |
+| ![Users](screenshoot/Screenshot_3.png) | ![Registry](screenshoot/Screenshot_4.png) |
+
+| Analytics & Trends | Unified Settings |
+| :---: | :---: |
+| ![Statistics](screenshoot/Screenshot_5.png) | ![Settings](screenshoot/Screenshot_6.png) |
 
 ---
 
@@ -105,8 +130,6 @@ npm run install:all
 # 3. Launch Backend (port 3001) and Frontend (port 5173) concurrently
 npm run dev
 ```
-
-> **On Windows**: You can also double-click `dev.bat` or run `./dev.ps1`.
 
 ### Individual commands:
 - `npm run dev:backend` - Starts only the backend with nodemon.

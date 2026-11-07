@@ -4,16 +4,23 @@
 
 - **Live EPG in Active Stream Cards**:
   - Real-time EPG integration directly in active stream cards: displays current programme title, remaining duration, and progress bar with tooltip descriptions.
-- **TVHeadend Storage Monitor**:
-  - Live TVHeadend disk space monitor widget on the dashboard displaying used, total, available space and percentage bar, with automatic warning when free space is below 10%.
+- **TVHeadend Storage & Disk Monitor**:
+  - Direct integration with TVHeadend native `/comet/poll` and WebSocket `accessUpdate` events to query partition capacity, free space, and DVR recording utilization.
+  - Color-coded progress bar with low-space alerts (< 10%).
 - **Upcoming DVR Recordings Panel**:
   - Dedicated "Upcoming DVR Recordings" slide-over modal displaying scheduled recordings, channels, time ranges, and active recording badges.
 - **Native Browser Desktop Notifications & Web Audio Chimes**:
   - Web Notification API integration for native OS/browser banner alerts when new playbacks or recordings begin.
   - High-priority security desktop notification when a playback is detected from an unauthorized IP.
   - Zero-dependency Web Audio API acoustic chimes (subtle two-tone chime for new streams and warning chime for unauthorized IPs) with test triggers in Settings.
-- **UI & UX Refinements**:
-  - Muted, discreet redesign for the PayPal donation button across the sidebar and documentation views.
+- **Settings Reorganization & Notification Center**:
+  - Unified all alert mechanisms (Desktop, Audio, Telegram, Webhooks) into a single cohesive **Notifications Center** tab.
+  - Telegram events and templates are automatically hidden when Telegram notifications are toggled off.
+  - Integrated TVHeadend Server Down failure alert directly into Telegram events list.
+- **Complete Localization & Cleanup**:
+  - 100% Spanish and English localization across all newly introduced components, widgets, and modals.
+  - Removed redundant root startup scripts (`dev.bat`, `dev.ps1`) in favor of standard `npm run dev`.
+  - Discreet, subtle redesign for the PayPal donation button in sidebar and docs.
 
 ## [3.1.0] - 2026-11-07
 
