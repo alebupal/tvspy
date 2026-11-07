@@ -25,6 +25,7 @@ class TvheadendService extends EventEmitter {
         this.downTimer = null;
         this.downNotified = false;
         this.autoPurgeTimer = null;
+        this.latestDiskSpace = null;
     }
 
     async init() {
@@ -377,6 +378,26 @@ class TvheadendService extends EventEmitter {
 
     async handleWsMessage(rawMessage) {
         if (!rawMessage || !Array.isArray(rawMessage.messages)) return;
+
+        // Capturar métricas de espacio en disco de TVHeadend si están presentes en cualquier mensaje (ej. accessUpdate)
+        for (const m of rawMessage.messages) {
+            if (m.totaldiskspace !== undefined || m.freediskspace !== undefined) {
+                const total = Number(m.totaldiskspace) || 0;
+                const free = Number(m.freediskspace) || 0;
+                const usedTvh = Number(m.useddiskspace) || 0;
+                const used = total > free ? (total - free) : usedTvh;
+                if (total > 0 || free > 0) {
+                    this.latestDiskSpace = {
+                        total,
+                        free,
+                        used,
+                        usedByTvh: usedTvh,
+                        updatedAt: Date.now()
+                    };
+                }
+                break;
+            }
+        }
 
         // Filtrar suscripciones y descartar escaneos internos de muxes/EPG/listas m3u
         const rawSubscriptionMsgs = rawMessage.messages.filter(m => m.notificationClass === 'subscriptions');

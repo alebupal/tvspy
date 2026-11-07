@@ -118,7 +118,14 @@ export const DiskSpaceWidget: React.FC<DiskSpaceWidgetProps> = ({ onOpenDvrModal
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-body dark:text-bodydark">
-            <span>{formatBytes(disk.free)} {t('available')}</span>
+            <span>
+              {formatBytes(disk.free)} {t('available')}
+              {disk.usedByTvh !== undefined && (
+                <span className="opacity-75 ml-2">
+                  • {t('DVR usage')}: {formatBytes(disk.usedByTvh)}
+                </span>
+              )}
+            </span>
             <span className="font-medium">{disk.freePercentage}% {t('free')}</span>
           </div>
         </>

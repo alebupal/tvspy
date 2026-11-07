@@ -286,5 +286,6 @@
   "In {{minutes}}m": "In {{minutes}}m",
   "Transport signal errors / discontinuous packets": "{{count}} transport signal errors / discontinuous packets",
   "Open Menu": "Open menu",
-  "Fullscreen": "Fullscreen"
+  "Fullscreen": "Fullscreen",
+  "DVR usage": "DVR usage"
 }

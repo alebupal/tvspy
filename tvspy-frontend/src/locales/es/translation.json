@@ -286,5 +286,6 @@
   "In {{minutes}}m": "En {{minutes}}m",
   "Transport signal errors / discontinuous packets": "{{count}} errores de transporte de señal / paquetes discontinuos",
   "Open Menu": "Abrir menú",
-  "Fullscreen": "Pantalla completa"
+  "Fullscreen": "Pantalla completa",
+  "DVR usage": "Grabaciones"
 }

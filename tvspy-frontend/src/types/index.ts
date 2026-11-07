@@ -106,6 +106,7 @@ export interface DiskSpaceInfo {
   total: number;
   free: number;
   used: number;
+  usedByTvh?: number;
   usedPercentage: number;
   freePercentage: number;
   isLowSpace: boolean;

@@ -65,41 +65,72 @@ class TvheadendController {
 
     async getDiskSpace(req, res) {
         try {
-            let data = null;
-            try {
-                data = await tvheadendService.queryApi('/api/status/diskspace');
-            } catch {
+            let diskData = null;
+
+            // 1. Usar métrica en memoria de tvheadendService si es reciente (menos de 60s)
+            if (tvheadendService.latestDiskSpace && tvheadendService.latestDiskSpace.total > 0) {
+                const age = Date.now() - (tvheadendService.latestDiskSpace.updatedAt || 0);
+                if (age < 60000) {
+                    diskData = tvheadendService.latestDiskSpace;
+                }
+            }
+
+            // 2. Consultar /comet/poll (el endpoint nativo de TVHeadend que provee freediskspace y totaldiskspace)
+            if (!diskData || diskData.total === 0) {
                 try {
-                    data = await tvheadendService.queryApi('/status/diskspace');
-                } catch {
-                    data = null;
+                    const pollRes = await tvheadendService.queryApi('/comet/poll');
+                    if (pollRes?.messages && Array.isArray(pollRes.messages)) {
+                        for (const m of pollRes.messages) {
+                            if (m.totaldiskspace !== undefined || m.freediskspace !== undefined) {
+                                const total = Number(m.totaldiskspace) || 0;
+                                const free = Number(m.freediskspace) || 0;
+                                const usedTvh = Number(m.useddiskspace) || 0;
+                                const used = total > free ? (total - free) : usedTvh;
+                                diskData = {
+                                    total,
+                                    free,
+                                    used,
+                                    usedByTvh: usedTvh,
+                                    updatedAt: Date.now()
+                                };
+                                tvheadendService.latestDiskSpace = diskData;
+                                break;
+                            }
+                        }
+                    }
+                } catch (pollErr) {
+                    // Continuar al fallback
                 }
             }
 
-            let total = 0;
-            let free = 0;
-            let used = 0;
-
-            const entries = Array.isArray(data?.entries)
-                ? data.entries
-                : Array.isArray(data)
-                ? data
-                : [];
-
-            if (entries.length > 0) {
-                for (const e of entries) {
-                    const eTotal = Number(e.total ?? e.totaldiskspace ?? e.total_space ?? 0) || 0;
-                    const eFree = Number(e.free ?? e.freediskspace ?? e.free_space ?? 0) || 0;
-                    const eUsed = Number(e.used ?? e.useddiskspace ?? (eTotal > eFree ? eTotal - eFree : 0)) || 0;
-                    total += eTotal;
-                    free += eFree;
-                    used += eUsed;
-                }
-            } else if (data) {
-                total = Number(data.totaldiskspace ?? data.total ?? data.total_space ?? 0) || 0;
-                free = Number(data.freediskspace ?? data.free ?? data.free_space ?? 0) || 0;
-                used = Number(data.useddiskspace ?? data.used ?? (total > free ? total - free : 0)) || 0;
+            // 3. Fallbacks secundarios: /api/dvr/config/grid o /api/status/diskspace
+            if (!diskData || diskData.total === 0) {
+                try {
+                    const data = await tvheadendService.queryApi('/api/status/diskspace');
+                    const entries = Array.isArray(data?.entries) ? data.entries : (Array.isArray(data) ? data : []);
+                    if (entries.length > 0) {
+                        let total = 0;
+                        let free = 0;
+                        let used = 0;
+                        for (const e of entries) {
+                            const eTotal = Number(e.total ?? e.totaldiskspace ?? e.total_space ?? 0) || 0;
+                            const eFree = Number(e.free ?? e.freediskspace ?? e.free_space ?? 0) || 0;
+                            const eUsed = Number(e.used ?? e.useddiskspace ?? (eTotal > eFree ? eTotal - eFree : 0)) || 0;
+                            total += eTotal;
+                            free += eFree;
+                            used += eUsed;
+                        }
+                        if (total > 0) {
+                            diskData = { total, free, used, usedByTvh: 0, updatedAt: Date.now() };
+                        }
+                    }
+                } catch {}
             }
+
+            const total = diskData?.total || 0;
+            const free = diskData?.free || 0;
+            const used = diskData?.used || 0;
+            const usedByTvh = diskData?.usedByTvh ?? 0;
 
             const usedPercentage = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0;
             const freePercentage = total > 0 ? Math.max(0, 100 - usedPercentage) : 100;
@@ -109,10 +140,10 @@ class TvheadendController {
                 total,
                 free,
                 used,
+                usedByTvh,
                 usedPercentage,
                 freePercentage,
-                isLowSpace,
-                raw: data
+                isLowSpace
             });
         } catch (err) {
             res.status(502).json({ error: 'Error al consultar espacio en disco de TVHeadend', details: err.message });
