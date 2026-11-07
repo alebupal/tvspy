@@ -51,7 +51,7 @@ export const configApi = {
     return res.data;
   },
 
-  getPinStatus: async (): Promise<{ enabled: boolean }> => {
+  getPinStatus: async (): Promise<{ enabled: boolean; length?: number }> => {
     const res = await apiClient.get('/config/pin-status');
     return res.data;
   },

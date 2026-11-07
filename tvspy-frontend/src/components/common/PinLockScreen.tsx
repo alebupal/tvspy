@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { configApi } from '../../api';
 import Logo from '../../images/logo/logo-icon.svg';
@@ -7,16 +7,23 @@ import toast from 'react-hot-toast';
 
 interface PinLockScreenProps {
   onUnlock: () => void;
+  expectedLength?: number;
 }
 
-export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
+export const PinLockScreen: React.FC<PinLockScreenProps> = ({
+  onUnlock,
+  expectedLength = 4,
+}) => {
   const { t } = useTranslation();
   const [pin, setPin] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
+  // Cantidad de puntos a mostrar (se adapta exactamente al tamaño del PIN configurado)
+  const dotsCount = Math.max(expectedLength, pin.length, 4);
+
   const handleKeyPress = (num: string) => {
-    if (pin.length < 8) {
+    if (pin.length < 12) {
       setError(null);
       setPin((prev) => prev + num);
     }
@@ -32,14 +39,14 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
     setPin('');
   };
 
-  const handleSubmit = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!pin) return;
+  const handleSubmit = async (codeToSubmit?: string) => {
+    const code = codeToSubmit || pin;
+    if (!code) return;
 
     setLoading(true);
     setError(null);
     try {
-      const res = await configApi.verifyPin(pin);
+      const res = await configApi.verifyPin(code);
       if (res.success) {
         sessionStorage.setItem('tvspy_unlocked', '1');
         toast.success(t('Access granted') || 'Acceso concedido');
@@ -55,6 +62,30 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
       setLoading(false);
     }
   };
+
+  // Envío automático cuando se alcanza la longitud configurada
+  useEffect(() => {
+    if (expectedLength && pin.length === expectedLength) {
+      handleSubmit(pin);
+    }
+  }, [pin, expectedLength]);
+
+  // Soporte de teclado físico (números, borrar, enter)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key >= '0' && e.key <= '9') {
+        handleKeyPress(e.key);
+      } else if (e.key === 'Backspace') {
+        handleDelete();
+      } else if (e.key === 'Enter') {
+        handleSubmit();
+      } else if (e.key === 'Escape') {
+        handleClear();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [pin]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-whiten/90 dark:bg-boxdark-2/95 backdrop-blur-md p-4">
@@ -72,12 +103,12 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
           {t('Enter your PIN to access TVSPY') || 'Introduce tu código PIN para acceder a TVSPY'}
         </p>
 
-        {/* Círculos / Display del PIN */}
-        <div className="my-6 flex justify-center gap-3">
-          {[0, 1, 2, 3].map((idx) => (
+        {/* Círculos / Display del PIN dinámico según la longitud real */}
+        <div className="my-6 flex justify-center gap-2.5 flex-wrap max-w-[260px] mx-auto">
+          {Array.from({ length: dotsCount }).map((_, idx) => (
             <div
               key={idx}
-              className={`h-4 w-4 rounded-full border transition-all duration-200 ${
+              className={`h-3.5 w-3.5 rounded-full border transition-all duration-200 ${
                 pin.length > idx
                   ? 'border-primary bg-primary scale-110 shadow-sm'
                   : 'border-stroke bg-gray-100 dark:border-strokedark dark:bg-meta-4'
@@ -144,4 +175,3 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({ onUnlock }) => {
 };
 
 export default PinLockScreen;
-

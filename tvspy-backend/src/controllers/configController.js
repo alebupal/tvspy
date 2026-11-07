@@ -127,7 +127,8 @@ class ConfigController {
             const enabledVal = await configRepository.getByName('pin_enabled');
             const pinVal = await configRepository.getByName('pin_code');
             const isEnabled = (enabledVal === '1' || enabledVal === 'true') && Boolean(pinVal && pinVal.trim());
-            res.json({ enabled: isEnabled });
+            const length = isEnabled ? pinVal.trim().length : 4;
+            res.json({ enabled: isEnabled, length });
         } catch (err) {
             res.status(500).json({ error: err.message });
         }

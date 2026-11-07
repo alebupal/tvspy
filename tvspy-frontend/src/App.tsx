@@ -20,6 +20,7 @@ import { configApi } from './api';
 function App() {
   const [loading, setLoading] = useState<boolean>(false);
   const [isLocked, setIsLocked] = useState<boolean>(false);
+  const [pinLength, setPinLength] = useState<number>(4);
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
 
@@ -34,6 +35,9 @@ function App() {
       .then((res) => {
         if (res && res.enabled && sessionStorage.getItem('tvspy_unlocked') !== '1') {
           setIsLocked(true);
+          if (res.length) {
+            setPinLength(res.length);
+          }
         }
       })
       .catch(() => {});
@@ -53,7 +57,7 @@ function App() {
   }, []);
 
   if (isLocked) {
-    return <PinLockScreen onUnlock={() => setIsLocked(false)} />;
+    return <PinLockScreen expectedLength={pinLength} onUnlock={() => setIsLocked(false)} />;
   }
 
   return loading ? (
