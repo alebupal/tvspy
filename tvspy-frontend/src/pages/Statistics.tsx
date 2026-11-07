@@ -303,11 +303,11 @@ const Statistics: React.FC = () => {
             aria-label="Periodo de tiempo"
             className="rounded-lg border border-stroke bg-white px-3 py-2 text-xs font-medium text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-boxdark dark:text-white"
           >
-            <option value={7}>Últimos 7 días</option>
-            <option value={14}>Últimos 14 días</option>
-            <option value={30}>Últimos 30 días</option>
-            <option value={90}>Últimos 90 días</option>
-            <option value={365}>Último año</option>
+            <option value={7}>{t('Last 7 days')}</option>
+            <option value={14}>14 {t('days')}</option>
+            <option value={30}>{t('Last 30 days')}</option>
+            <option value={90}>{t('Last 90 days')}</option>
+            <option value={365}>{t('Last year')}</option>
           </select>
 
           <button
@@ -322,37 +322,37 @@ const Statistics: React.FC = () => {
       {/* Tarjetas KPI de Resumen */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <StatCard
-          title="Total Reproducciones"
+          title={t('Total Reproductions')}
           value={summary?.total_reproductions || 0}
-          subtitle={`En los últimos ${daysAgo} días`}
+          subtitle={`${t('In the last')} ${daysAgo} ${t('days')}`}
           color="primary"
           icon={<FiTrendingUp className="text-xl" />}
         />
         <StatCard
-          title="Tiempo Acumulado"
+          title={t('Accumulated Time')}
           value={formatSeconds(summary?.total_duration_seconds)}
-          subtitle="Horas totales en pantalla"
+          subtitle={t('Hours in screen')}
           color="success"
           icon={<FiClock className="text-xl" />}
         />
         <StatCard
-          title="Tráfico Descargado"
+          title={t('Downloaded Traffic')}
           value={formatBytes(summary?.total_consumed_bytes)}
-          subtitle="Consumo de ancho de banda"
+          subtitle={t('Bandwidth consumption')}
           color="info"
           icon={<FiHardDrive className="text-xl" />}
         />
         <StatCard
-          title="Canales Vistos"
+          title={t('Watched Channels')}
           value={summary?.unique_channels || 0}
-          subtitle="Canales diferentes reproducidos"
+          subtitle={t('Different channels played')}
           color="warning"
           icon={<FiTv className="text-xl" />}
         />
         <StatCard
-          title="Usuarios Activos"
+          title={t('Active Users')}
           value={summary?.unique_users || 0}
-          subtitle="Espectadores registrados"
+          subtitle={t('Registered viewers')}
           color="primary"
           icon={<FiUsers className="text-xl" />}
         />
@@ -369,7 +369,7 @@ const Statistics: React.FC = () => {
           }`}
         >
           <FiTrendingUp className="text-sm" />
-          Evolución Diaria
+          {t('Daily Evolution')}
         </button>
         <button
           onClick={() => setChartType('channels')}
@@ -380,7 +380,7 @@ const Statistics: React.FC = () => {
           }`}
         >
           <FiTv className="text-sm" />
-          Top Canales
+          {t('Top channels')}
         </button>
         <button
           onClick={() => setChartType('clients')}
@@ -391,7 +391,7 @@ const Statistics: React.FC = () => {
           }`}
         >
           <FiPieChart className="text-sm" />
-          Dispositivos y Clientes
+          {t('Top clients')}
         </button>
         <button
           onClick={() => setChartType('hours')}
@@ -402,7 +402,7 @@ const Statistics: React.FC = () => {
           }`}
         >
           <FiClock className="text-sm" />
-          Franja Horaria (Horas Pico)
+          {t('Peak Hours (24h)')}
         </button>
       </div>
 

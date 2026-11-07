@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../../images/logo/logo.svg';
 import { useTranslation } from 'react-i18next';
 import { useWebSocket } from '../../context/WebSocketContext';
+import { systemApi } from '../../api';
 import {
   FiGrid,
   FiList,
@@ -35,6 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const sidebar = useRef<HTMLElement | null>(null);
 
   const [remoteVersion, setRemoteVersion] = useState<string | null>(null);
+  const [releaseUrl, setReleaseUrl] = useState<string>('https://github.com/alebupal/tvspy/releases');
   const [isNewVersionAvailable, setIsNewVersionAvailable] = useState(false);
 
   // Cerrar al hacer clic fuera
@@ -58,23 +60,15 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
     return () => document.removeEventListener('keydown', keyHandler);
   }, [sidebarOpen, setSidebarOpen]);
 
-  // Comprobar versión remota
+  // Comprobar versión remota mediante el backend
   useEffect(() => {
-    fetch('https://raw.githubusercontent.com/alebupal/tvspy/main/version.json')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.version) {
-          setRemoteVersion(data.version);
-          const localParts = CURRENT_VERSION.split('.').map(Number);
-          const remoteParts = data.version.split('.').map(Number);
-          for (let i = 0; i < 3; i++) {
-            if ((remoteParts[i] || 0) > (localParts[i] || 0)) {
-              setIsNewVersionAvailable(true);
-              break;
-            } else if ((remoteParts[i] || 0) < (localParts[i] || 0)) {
-              break;
-            }
-          }
+    systemApi
+      .checkUpdate()
+      .then((info) => {
+        if (info) {
+          setRemoteVersion(info.latestVersion);
+          setIsNewVersionAvailable(info.hasUpdate);
+          if (info.releaseUrl) setReleaseUrl(info.releaseUrl);
         }
       })
       .catch(() => {});
@@ -114,7 +108,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
     },
     {
       to: '/changelog',
-      label: 'Changelog & Docs',
+      label: t('Changelog & Docs'),
       icon: <FiFileText className="text-xl" />,
     },
   ];
@@ -202,12 +196,12 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 p-2.5 text-xs font-bold text-white shadow-sm hover:from-amber-600 hover:to-orange-600 transition"
         >
           <FiHeart className="text-sm fill-current" />
-          <span>Donar con PayPal</span>
+          <span>{t('Donate with PayPal')}</span>
         </a>
 
         {isNewVersionAvailable && (
           <a
-            href="https://github.com/alebupal/tvspy/releases"
+            href={releaseUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-lg bg-amber-500/10 p-2.5 text-xs font-medium text-amber-600 dark:text-amber-400 border border-amber-500/20 hover:bg-amber-500/20 transition"

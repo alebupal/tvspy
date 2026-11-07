@@ -52,16 +52,18 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
 
   // Cancelar stream
   const handleKillStream = async () => {
-    if (!window.confirm(`¿Seguro que deseas desconectar la transmisión de "${subscription.username || 'usuario'}" en "${subscription.channel}"?`)) {
+    const userLabel = subscription.username || t('No user');
+    const chanLabel = subscription.channel || t('Unknown channel');
+    if (!window.confirm(t('Disconnect stream confirm', { username: userLabel, channel: chanLabel }))) {
       return;
     }
 
     setCancelling(true);
     try {
       await tvheadendApi.cancelSubscription(subscription.id || subscription.start);
-      toast.success('Transmisión desconectada con éxito');
+      toast.success(t('Stream disconnected successfully'));
     } catch (err: any) {
-      toast.error(err.response?.data?.details || err.message || 'Error al desconectar');
+      toast.error(err.response?.data?.details || err.message || t('Error disconnecting stream'));
     } finally {
       setCancelling(false);
     }
@@ -95,7 +97,7 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
             <div className="flex items-center gap-2 mt-0.5">
               <span className="text-xs text-body dark:text-bodydark flex items-center gap-1">
                 <FiUser className="text-xs" />
-                {subscription.username || 'No user'}
+                {subscription.username || t('No user')}
               </span>
             </div>
           </div>
@@ -116,7 +118,7 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
           <button
             onClick={handleKillStream}
             disabled={cancelling}
-            title="Desconectar / Expulsar esta transmisión"
+            title={t('Disconnect stream')}
             className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-500/30 text-rose-500 hover:bg-rose-500 hover:text-white transition opacity-80 group-hover:opacity-100 disabled:opacity-40"
           >
             {cancelling ? (

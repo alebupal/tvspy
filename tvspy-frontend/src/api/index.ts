@@ -139,6 +139,13 @@ export const systemApi = {
     const res = await apiClient.get(`/system/geoip/${encodeURIComponent(ip)}`);
     return res.data;
   },
+
+  checkUpdate: async (force?: boolean): Promise<import('../types').UpdateCheckResult> => {
+    const res = await apiClient.get('/system/check-update', {
+      params: force ? { force: true } : undefined,
+    });
+    return res.data;
+  },
 };
 
 export const docsApi = {

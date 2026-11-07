@@ -51,7 +51,7 @@ const User: React.FC = () => {
             {t('Users')}
           </h2>
           <p className="text-xs text-body dark:text-bodydark mt-0.5">
-            Usuarios con acceso configurados en TVHeadend
+            {t('Users configured in TVHeadend')}
           </p>
         </div>
 
@@ -70,7 +70,7 @@ const User: React.FC = () => {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-body dark:text-bodydark" />
             <input
               type="text"
-              placeholder={`${t('Search')} usuario...`}
+              placeholder={t('Filter users...')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-lg border border-stroke bg-transparent pl-9 pr-4 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white"
@@ -78,7 +78,7 @@ const User: React.FC = () => {
           </div>
 
           <div className="text-xs text-body dark:text-bodydark font-medium">
-            Total: <b>{filteredUsers.length}</b> usuarios
+            {t('Total')}: <b>{filteredUsers.length}</b> {t('Users').toLowerCase()}
           </div>
         </div>
 

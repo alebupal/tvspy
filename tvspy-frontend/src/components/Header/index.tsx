@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWebSocket } from '../../context/WebSocketContext';
 import DarkModeSwitcher from './DarkModeSwitcher';
 import LanguageSelector from '../LanguageSelector';
 import Badge from '../common/Badge';
 import { formatBandwidth } from '../../utils/formatters';
-import { FiMenu, FiActivity, FiTv } from 'react-icons/fi';
+import { FiMenu, FiActivity, FiTv, FiAlertCircle } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
+import { systemApi } from '../../api';
+import { UpdateCheckResult } from '../../types';
 
 interface HeaderProps {
   sidebarOpen: boolean;
@@ -15,6 +17,18 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const { t } = useTranslation();
   const { status, metrics, error } = useWebSocket();
+  const [updateInfo, setUpdateInfo] = useState<UpdateCheckResult | null>(null);
+
+  useEffect(() => {
+    systemApi
+      .checkUpdate()
+      .then((res) => {
+        if (res && res.hasUpdate) {
+          setUpdateInfo(res);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <header className="sticky top-0 z-40 flex w-full border-b border-stroke bg-white/80 backdrop-blur-md dark:border-strokedark dark:bg-boxdark/80">
@@ -62,8 +76,21 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </div>
 
-        {/* Lado derecho: Idioma y Modo Oscuro */}
+        {/* Lado derecho: Alerta actualización, Idioma y Modo Oscuro */}
         <div className="flex items-center gap-3">
+          {updateInfo && updateInfo.hasUpdate && (
+            <a
+              href={updateInfo.releaseUrl || 'https://github.com/alebupal/tvspy/releases'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-xs font-semibold hover:bg-amber-500/20 transition shadow-sm animate-pulse"
+              title={t('Update available')}
+            >
+              <FiAlertCircle className="text-sm" />
+              <span>{t('New version available')}: <b>v{updateInfo.latestVersion}</b></span>
+            </a>
+          )}
+
           <LanguageSelector />
           <div className="h-6 w-px bg-stroke dark:bg-strokedark" />
           <DarkModeSwitcher />

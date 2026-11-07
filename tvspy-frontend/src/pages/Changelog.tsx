@@ -136,7 +136,7 @@ const Changelog: React.FC = () => {
         <div>
           <h2 className="text-xl font-bold text-black dark:text-white flex items-center gap-2">
             <FiBookOpen className="text-primary" />
-            Documentación & Changelog
+            {t('Changelog & Docs')}
           </h2>
           <p className="text-xs text-body dark:text-bodydark mt-0.5">
             Lee directamente los archivos oficiales del repositorio
@@ -154,8 +154,8 @@ const Changelog: React.FC = () => {
             <h4 className="font-bold text-sm text-black dark:text-white">
               ¿Te resulta útil TVSPY?
             </h4>
-            <p className="text-xs text-body dark:text-bodydark mt-0.5">
-              Este proyecto es de código abierto y mantenido con dedicación. Si deseas apoyar su desarrollo continuo, puedes invitarme a un café.
+            <p className="text-xs text-body dark:text-bodydark mt-0.5 max-w-xl">
+              {t('Support project')}
             </p>
           </div>
         </div>
@@ -167,7 +167,7 @@ const Changelog: React.FC = () => {
           className="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-xs font-bold text-white hover:bg-amber-600 transition whitespace-nowrap"
         >
           <FiHeart className="text-sm fill-white" />
-          Donar en PayPal
+          {t('Donate with PayPal')}
         </a>
       </div>
 

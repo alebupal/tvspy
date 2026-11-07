@@ -105,7 +105,7 @@ const Registry: React.FC = () => {
             {t('Registry')}
           </h2>
           <p className="text-xs text-body dark:text-bodydark mt-0.5">
-            Histórico detallado de todas las reproducciones y grabaciones
+            {t('Detailed history of all playbacks and recordings')}
           </p>
         </div>
 
@@ -135,7 +135,7 @@ const Registry: React.FC = () => {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-body dark:text-bodydark" />
             <input
               type="text"
-              placeholder={`${t('Search')} por canal, usuario, cliente, IP...`}
+              placeholder={t('Filter by channel, user, client, IP...')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-lg border border-stroke bg-transparent pl-9 pr-4 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white"

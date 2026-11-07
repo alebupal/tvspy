@@ -108,7 +108,7 @@ const Home: React.FC = () => {
         <StatCard
           title={t('Active streams')}
           value={subscriptions.length}
-          subtitle={`${subscriptions.filter((s) => s.title?.includes('DVR:')).length} grabaciones DVR`}
+          subtitle={`${subscriptions.filter((s) => s.title?.includes('DVR:')).length} ${t('DVR recordings')}`}
           color="warning"
           icon={<FiTv className="text-2xl" />}
         />
@@ -154,7 +154,7 @@ const Home: React.FC = () => {
               {t('No active plays')}
             </h3>
             <p className="text-xs text-body dark:text-bodydark mt-1 max-w-sm mx-auto">
-              Cuando un cliente inicie una reproducción o grabación en TVHeadend aparecerá aquí en tiempo real.
+              {t('No active streams description')}
             </p>
           </div>
         )}
@@ -169,7 +169,7 @@ const Home: React.FC = () => {
               {t('Statistics')}
             </h2>
             <p className="text-xs text-body dark:text-bodydark">
-              Consumo y registros históricos agregados
+              {t('Detailed history of all playbacks and recordings')}
             </p>
           </div>
 
@@ -205,9 +205,9 @@ const Home: React.FC = () => {
               aria-label={t('Days ago')}
               className="rounded-lg border border-stroke bg-white px-3 py-1.5 text-xs font-medium text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-boxdark dark:text-white"
             >
-              <option value={7}>Últimos 7 días</option>
-              <option value={30}>Últimos 30 días</option>
-              <option value={90}>Últimos 90 días</option>
+              <option value={7}>{t('Last 7 days')}</option>
+              <option value={30}>{t('Last 30 days')}</option>
+              <option value={90}>{t('Last 90 days')}</option>
             </select>
           </div>
         </div>
@@ -215,9 +215,9 @@ const Home: React.FC = () => {
         {/* Paneles de Estadísticas */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {/* Top Canales */}
-          <Card title={t('Top channels')} subtitle={`Top según ${statsType === 'time' ? 'duración' : 'reproducciones'}`}>
+          <Card title={t('Top channels')} subtitle={`${t('Top channels')} - ${statsType === 'time' ? t('Time') : t('reproductions')}`}>
             {statsLoading ? (
-              <div className="py-8 text-center text-xs text-body">Cargando...</div>
+              <div className="py-8 text-center text-xs text-body">{t('Loading...')}</div>
             ) : statistics?.topChannels && statistics.topChannels.length > 0 ? (
               <ul className="divide-y divide-stroke dark:divide-strokedark">
                 {statistics.topChannels.map((item, idx) => (
@@ -244,9 +244,9 @@ const Home: React.FC = () => {
           </Card>
 
           {/* Top Clientes */}
-          <Card title={t('Top clients')} subtitle="Reproductores más utilizados">
+          <Card title={t('Top clients')} subtitle={t('Most used players')}>
             {statsLoading ? (
-              <div className="py-8 text-center text-xs text-body">Cargando...</div>
+              <div className="py-8 text-center text-xs text-body">{t('Loading...')}</div>
             ) : statistics?.topClients && statistics.topClients.length > 0 ? (
               <ul className="divide-y divide-stroke dark:divide-strokedark">
                 {statistics.topClients.map((item, idx) => (
@@ -273,9 +273,9 @@ const Home: React.FC = () => {
           </Card>
 
           {/* Top Usuarios */}
-          <Card title={t('Top users')} subtitle="Usuarios con mayor actividad">
+          <Card title={t('Top users')} subtitle={t('Users with highest activity')}>
             {statsLoading ? (
-              <div className="py-8 text-center text-xs text-body">Cargando...</div>
+              <div className="py-8 text-center text-xs text-body">{t('Loading...')}</div>
             ) : statistics?.topUsers && statistics.topUsers.length > 0 ? (
               <ul className="divide-y divide-stroke dark:divide-strokedark">
                 {statistics.topUsers.map((item, idx) => (

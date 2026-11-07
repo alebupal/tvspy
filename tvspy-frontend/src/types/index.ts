@@ -89,3 +89,16 @@ export interface ConfigEntry {
   value: string;
 }
 
+export interface UpdateCheckResult {
+  currentVersion: string;
+  latestVersion: string;
+  hasUpdate: boolean;
+  updateType: 'major' | 'minor' | 'patch' | null;
+  releaseUrl: string;
+  releaseName?: string;
+  releaseNotes?: string;
+  publishedAt?: string | null;
+  checkedAt: string;
+  cached?: boolean;
+}
+

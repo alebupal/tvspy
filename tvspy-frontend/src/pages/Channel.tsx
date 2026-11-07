@@ -76,7 +76,7 @@ const Channel: React.FC = () => {
             {t('Channels')}
           </h2>
           <p className="text-xs text-body dark:text-bodydark mt-0.5">
-            Canales configurados en su servidor TVHeadend
+            {t('Channels configured in your TVHeadend server')}
           </p>
         </div>
 
@@ -85,7 +85,7 @@ const Channel: React.FC = () => {
           <div className="inline-flex rounded-lg border border-stroke bg-gray-100 p-1 dark:border-strokedark dark:bg-meta-4">
             <button
               onClick={() => handleViewChange('grid')}
-              title="Vista en Cuadrícula"
+              title={t('Grid view')}
               className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'grid'
                   ? 'bg-white text-primary shadow-sm dark:bg-boxdark dark:text-secondary'
@@ -93,11 +93,11 @@ const Channel: React.FC = () => {
               }`}
             >
               <FiGrid className="text-sm" />
-              <span className="hidden sm:inline">Cuadrícula</span>
+              <span className="hidden sm:inline">{t('Grid')}</span>
             </button>
             <button
               onClick={() => handleViewChange('list')}
-              title="Vista en Lista / Tabla"
+              title={t('List view')}
               className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition ${
                 viewMode === 'list'
                   ? 'bg-white text-primary shadow-sm dark:bg-boxdark dark:text-secondary'
@@ -105,7 +105,7 @@ const Channel: React.FC = () => {
               }`}
             >
               <FiList className="text-sm" />
-              <span className="hidden sm:inline">Lista</span>
+              <span className="hidden sm:inline">{t('List')}</span>
             </button>
           </div>
 
@@ -126,7 +126,7 @@ const Channel: React.FC = () => {
             <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-body dark:text-bodydark" />
             <input
               type="text"
-              placeholder={`${t('Search')} canal por nombre...`}
+              placeholder={t('Filter channels...')}
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -137,7 +137,7 @@ const Channel: React.FC = () => {
           </div>
 
           <div className="text-xs text-body dark:text-bodydark font-medium">
-            Total: <b>{filteredChannels.length}</b> canales
+            {t('Total')}: <b>{filteredChannels.length}</b> {t('Channels').toLowerCase()}
           </div>
         </div>
 

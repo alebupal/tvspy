@@ -38,6 +38,10 @@ const Settings: React.FC = () => {
   const [purgeDays, setPurgeDays] = useState<number>(180);
   const [purging, setPurging] = useState<boolean>(false);
 
+  // Actualizaciones
+  const [updateInfo, setUpdateInfo] = useState<import('../types').UpdateCheckResult | null>(null);
+  const [checkingUpdate, setCheckingUpdate] = useState<boolean>(false);
+
   // Estado del formulario
   const [config, setConfig] = useState<Record<string, string>>({
     protocol: 'http',
@@ -78,6 +82,23 @@ const Settings: React.FC = () => {
     } catch {}
   };
 
+  const handleCheckUpdate = async (force = true) => {
+    setCheckingUpdate(true);
+    try {
+      const res = await systemApi.checkUpdate(force);
+      setUpdateInfo(res);
+      if (res.hasUpdate) {
+        toast.success(`${t('New version available')}: v${res.latestVersion}`);
+      } else {
+        toast.success(t('You are using the latest version'));
+      }
+    } catch (err: any) {
+      toast.error(err.message || 'Error al comprobar actualizaciones');
+    } finally {
+      setCheckingUpdate(false);
+    }
+  };
+
   useEffect(() => {
     const loadConfig = async () => {
       setLoading(true);
@@ -85,6 +106,7 @@ const Settings: React.FC = () => {
         const map = await configApi.getAsMap();
         setConfig((prev) => ({ ...prev, ...map }));
         loadDbInfo();
+        systemApi.checkUpdate(false).then((u) => setUpdateInfo(u)).catch(() => {});
       } catch (err) {
         toast.error('Error al cargar la configuración');
       } finally {
@@ -201,11 +223,11 @@ const Settings: React.FC = () => {
   };
 
   const tabs: TabItem[] = [
-    { id: 'tvheadend', label: 'TVHeadend', icon: <FiTv /> },
-    { id: 'telegram', label: 'Telegram', icon: <FiSend /> },
-    { id: 'webhooks', label: 'Discord / Webhooks', icon: <FiShare2 /> },
-    { id: 'security', label: 'Filtros & Seguridad', icon: <FiShield /> },
-    { id: 'system', label: 'Sistema & Base de Datos', icon: <FiCpu /> },
+    { id: 'tvheadend', label: t('TVHeadend'), icon: <FiTv /> },
+    { id: 'telegram', label: t('Telegram'), icon: <FiSend /> },
+    { id: 'webhooks', label: t('Discord / Webhooks'), icon: <FiShare2 /> },
+    { id: 'security', label: t('Security & Filters'), icon: <FiShield /> },
+    { id: 'system', label: t('System & Database'), icon: <FiCpu /> },
   ];
 
   if (loading) {
@@ -622,19 +644,78 @@ const Settings: React.FC = () => {
           </div>
         )}
 
-        {/* PESTAÑA 5: SISTEMA & MANTENIMIENTO BD */}
+        {/* PESTAÑA 5: SISTEMA & MANTENIMIENTO BD & ACTUALIZACIONES */}
         {activeTab === 'system' && (
           <div className="space-y-6">
             <div>
               <h3 className="text-sm font-semibold text-black dark:text-white mb-1">
-                Ajustes de Sistema & Diagnóstico
+                {t('System & Database')}
               </h3>
               <p className="text-xs text-body dark:text-bodydark">
-                Idioma de la interfaz, modo debug y mantenimiento de base de datos.
+                {t('Language')}, modo debug, comprobación de versiones y mantenimiento de la base de datos.
               </p>
             </div>
 
-            <div className="space-y-4">
+            {/* SECCIÓN ACTUALIZACIONES & VERSIÓN */}
+            <div className="rounded-xl border border-stroke dark:border-strokedark p-4 bg-gray-50/60 dark:bg-meta-4/20 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FiAlertCircle className="text-primary text-base" />
+                  <h4 className="text-sm font-bold text-black dark:text-white">
+                    {t('Updates & Version')}
+                  </h4>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleCheckUpdate(true)}
+                  disabled={checkingUpdate}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-semibold text-black hover:bg-gray-100 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 transition shadow-sm disabled:opacity-50"
+                >
+                  <FiRefreshCw className={`text-xs ${checkingUpdate ? 'animate-spin' : ''}`} />
+                  {checkingUpdate ? t('Checking for updates...') : t('Check now')}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
+                  <span className="text-body dark:text-bodydark block">{t('Current version')}:</span>
+                  <p className="font-bold font-mono text-black dark:text-white mt-0.5">
+                    v{updateInfo?.currentVersion || '3.1.0'}
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
+                  <span className="text-body dark:text-bodydark block">{t('Latest version')}:</span>
+                  <p className="font-bold font-mono text-black dark:text-white mt-0.5">
+                    v{updateInfo?.latestVersion || '3.1.0'}
+                  </p>
+                </div>
+              </div>
+
+              {updateInfo?.hasUpdate ? (
+                <div className="flex items-center justify-between p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs">
+                  <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold">
+                    <FiAlertCircle className="text-base flex-shrink-0" />
+                    <span>{t('New version available')}: <b>v{updateInfo.latestVersion}</b></span>
+                  </div>
+                  <a
+                    href={updateInfo.releaseUrl || 'https://github.com/alebupal/tvspy/releases'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1 rounded bg-amber-500 text-white font-semibold hover:bg-amber-600 transition"
+                  >
+                    {t('View release notes')}
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                  <FiCheckCircle className="text-base flex-shrink-0" />
+                  <span>{t('You are using the latest version')}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4 pt-2">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
                   {t('Language')}
@@ -652,7 +733,7 @@ const Settings: React.FC = () => {
               <div className="pt-3 border-t border-stroke dark:border-strokedark">
                 <ToggleSwitch
                   label={t('Enable debug mode')}
-                  description="Imprime trazas y registros detallados en la consola del servidor"
+                  description={t('Debug mode description')}
                   enabled={isEnabled('debug_mode')}
                   onChange={(v) => handleToggle('debug_mode', v)}
                 />
@@ -664,22 +745,22 @@ const Settings: React.FC = () => {
               <div className="flex items-center gap-2">
                 <FiDatabase className="text-primary text-base" />
                 <h4 className="text-sm font-bold text-black dark:text-white">
-                  Copia de Seguridad y Mantenimiento de Base de Datos
+                  {t('Database Backup and Maintenance')}
                 </h4>
               </div>
 
               {dbInfo && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-xl bg-gray-50/70 border border-stroke dark:border-strokedark dark:bg-meta-4/20 text-xs">
                   <div>
-                    <span className="text-body dark:text-bodydark">Tamaño del archivo SQLite:</span>
+                    <span className="text-body dark:text-bodydark">{t('SQLite file size')}:</span>
                     <p className="font-bold font-mono text-black dark:text-white mt-0.5">
                       {formatBytes(dbInfo.sizeBytes)}
                     </p>
                   </div>
                   <div>
-                    <span className="text-body dark:text-bodydark">Registros históricos acumulados:</span>
+                    <span className="text-body dark:text-bodydark">{t('Accumulated historical records')}:</span>
                     <p className="font-bold font-mono text-black dark:text-white mt-0.5">
-                      {dbInfo.totalRegistries} registros
+                      {dbInfo.totalRegistries} {t('reproductions')}
                     </p>
                   </div>
                 </div>
@@ -688,10 +769,10 @@ const Settings: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
                 <div>
                   <span className="text-xs font-semibold text-black dark:text-white block">
-                    Descargar Copia de Seguridad
+                    {t('Download Backup')}
                   </span>
                   <span className="text-xs text-body dark:text-bodydark">
-                    Obtén una copia exacta de tu archivo database.db
+                    {t('Download Backup description')}
                   </span>
                 </div>
 
@@ -701,17 +782,17 @@ const Settings: React.FC = () => {
                   className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition shadow-sm w-fit"
                 >
                   <FiDownload className="text-xs" />
-                  Descargar Backup (.db)
+                  {t('Download Backup (.db)')}
                 </a>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-stroke/70 dark:border-strokedark/70">
                 <div>
                   <span className="text-xs font-semibold text-black dark:text-white block">
-                    Purgar registros antiguos y Compactar (VACUUM)
+                    {t('Purge old registries and VACUUM')}
                   </span>
                   <span className="text-xs text-body dark:text-bodydark">
-                    Elimina historial antiguo para liberar espacio y optimizar el rendimiento.
+                    {t('Purge description')}
                   </span>
                 </div>
 
@@ -721,10 +802,10 @@ const Settings: React.FC = () => {
                     onChange={(e) => setPurgeDays(Number(e.target.value))}
                     className="rounded-lg border border-stroke bg-white px-3 py-2 text-xs font-medium text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-boxdark dark:text-white"
                   >
-                    <option value={30}>Mayores a 30 días</option>
-                    <option value={90}>Mayores a 90 días</option>
-                    <option value={180}>Mayores a 180 días</option>
-                    <option value={365}>Mayores a 1 año</option>
+                    <option value={30}>{t('Older than 30 days')}</option>
+                    <option value={90}>{t('Older than 90 days')}</option>
+                    <option value={180}>{t('Older than 180 days')}</option>
+                    <option value={365}>{t('Older than 1 year')}</option>
                   </select>
 
                   <button
@@ -734,7 +815,7 @@ const Settings: React.FC = () => {
                     className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-rose-500 text-white text-xs font-semibold hover:bg-rose-600 transition disabled:opacity-50"
                   >
                     {purging ? <FiRefreshCw className="animate-spin text-xs" /> : <FiTrash2 className="text-xs" />}
-                    Purgar BD
+                    {t('Purge DB')}
                   </button>
                 </div>
               </div>

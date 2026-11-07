@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { runSql, getSql } = require('../database/database');
 const geoIpService = require('../services/geoIpService');
+const versionService = require('../services/versionService');
 
 const dbPath = path.join(__dirname, '../database/file/database.db');
 
@@ -85,6 +86,24 @@ router.get('/system/geoip/:ip', async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
+});
+
+// Comprobar actualizaciones de TVSPY desde GitHub
+router.get('/system/check-update', async (req, res) => {
+    try {
+        const force = req.query.force === 'true' || req.query.force === '1';
+        const updateInfo = await versionService.checkUpdate(force);
+        res.json(updateInfo);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// Obtener versión local
+router.get('/system/version', (req, res) => {
+    res.json({
+        version: versionService.getLocalVersion()
+    });
 });
 
 module.exports = router;
