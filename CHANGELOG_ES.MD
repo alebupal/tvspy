@@ -1,5 +1,16 @@
 # Changelog TVSPY
 
+## [3.2.1] - 2026-11-07
+
+- **Actualizaciones de Seguridad (Dependabot)**:
+  - Resueltas todas las alertas y vulnerabilidades reportadas por Dependabot en backend y frontend (alcanzando 0 vulnerabilidades en `npm audit`).
+  - Aplicadas reglas seguras de `overrides` en backend para `tar` (^7.5.21), `minimatch` (^11.0.5) y `@tootallnate/once` (^2.0.1).
+  - Actualizado `react-router-dom` a v7.18.5, `vite` a v7.3.7, `@babel/core` y `postcss-selector-parser` en frontend, solucionando avisos de inyección y redirección abierta.
+- **Corrección en Métricas de Espacio de Disco de TVHeadend**:
+  - Optimización de consulta a TVHeadend utilizando peticiones no bloqueantes `/comet/poll?immediate=1` evitando timeouts de conexión.
+  - Persistencia inteligente de métricas en memoria para que la capacidad y espacio libre se mantengan siempre visibles en el dashboard sin mostrar estados vacíos incorrectos.
+  - Consulta preventiva de almacenamiento automática de forma instantánea al establecerse la conexión WebSocket.
+
 ## [3.2.0] - 2026-11-07
 
 - **Guía EPG en Vivo en Emisiones**:

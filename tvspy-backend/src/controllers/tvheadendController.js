@@ -65,66 +65,20 @@ class TvheadendController {
 
     async getDiskSpace(req, res) {
         try {
-            let diskData = null;
+            let diskData = tvheadendService.latestDiskSpace;
 
-            // 1. Usar métrica en memoria de tvheadendService si es reciente (menos de 60s)
-            if (tvheadendService.latestDiskSpace && tvheadendService.latestDiskSpace.total > 0) {
-                const age = Date.now() - (tvheadendService.latestDiskSpace.updatedAt || 0);
-                if (age < 60000) {
-                    diskData = tvheadendService.latestDiskSpace;
+            // Si no tenemos datos o tienen más de 30 segundos, intentar refrescar usando /comet/poll?immediate=1
+            const isStale = !diskData || !diskData.total || (Date.now() - (diskData.updatedAt || 0) > 30000);
+            if (isStale) {
+                const fresh = await tvheadendService.fetchDiskSpace();
+                if (fresh && fresh.total > 0) {
+                    diskData = fresh;
                 }
             }
 
-            // 2. Consultar /comet/poll (el endpoint nativo de TVHeadend que provee freediskspace y totaldiskspace)
-            if (!diskData || diskData.total === 0) {
-                try {
-                    const pollRes = await tvheadendService.queryApi('/comet/poll');
-                    if (pollRes?.messages && Array.isArray(pollRes.messages)) {
-                        for (const m of pollRes.messages) {
-                            if (m.totaldiskspace !== undefined || m.freediskspace !== undefined) {
-                                const total = Number(m.totaldiskspace) || 0;
-                                const free = Number(m.freediskspace) || 0;
-                                const usedTvh = Number(m.useddiskspace) || 0;
-                                const used = total > free ? (total - free) : usedTvh;
-                                diskData = {
-                                    total,
-                                    free,
-                                    used,
-                                    usedByTvh: usedTvh,
-                                    updatedAt: Date.now()
-                                };
-                                tvheadendService.latestDiskSpace = diskData;
-                                break;
-                            }
-                        }
-                    }
-                } catch (pollErr) {
-                    // Continuar al fallback
-                }
-            }
-
-            // 3. Fallbacks secundarios: /api/dvr/config/grid o /api/status/diskspace
-            if (!diskData || diskData.total === 0) {
-                try {
-                    const data = await tvheadendService.queryApi('/api/status/diskspace');
-                    const entries = Array.isArray(data?.entries) ? data.entries : (Array.isArray(data) ? data : []);
-                    if (entries.length > 0) {
-                        let total = 0;
-                        let free = 0;
-                        let used = 0;
-                        for (const e of entries) {
-                            const eTotal = Number(e.total ?? e.totaldiskspace ?? e.total_space ?? 0) || 0;
-                            const eFree = Number(e.free ?? e.freediskspace ?? e.free_space ?? 0) || 0;
-                            const eUsed = Number(e.used ?? e.useddiskspace ?? (eTotal > eFree ? eTotal - eFree : 0)) || 0;
-                            total += eTotal;
-                            free += eFree;
-                            used += eUsed;
-                        }
-                        if (total > 0) {
-                            diskData = { total, free, used, usedByTvh: 0, updatedAt: Date.now() };
-                        }
-                    }
-                } catch {}
+            // Fallback: si aún no hay datos y existe un valor previo en memoria con total > 0, mantenerlo siempre
+            if ((!diskData || diskData.total === 0) && tvheadendService.latestDiskSpace && tvheadendService.latestDiskSpace.total > 0) {
+                diskData = tvheadendService.latestDiskSpace;
             }
 
             const total = diskData?.total || 0;

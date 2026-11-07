@@ -26,6 +26,7 @@ class TvheadendService extends EventEmitter {
         this.downNotified = false;
         this.autoPurgeTimer = null;
         this.latestDiskSpace = null;
+        this.latestBoxId = null;
     }
 
     async init() {
@@ -210,6 +211,8 @@ class TvheadendService extends EventEmitter {
             console.log(`TvheadendService: Conectado a TVHeadend en ${hostname}:${port}`);
             this.setStatus('connected');
             this.reconnectInterval = 5000; // Resetear intervalo tras éxito
+            // Consultar espacio en disco inmediatamente al conectar
+            this.fetchDiskSpace().catch(() => {});
         });
 
         this.ws.on('message', async (data) => {
@@ -377,10 +380,18 @@ class TvheadendService extends EventEmitter {
     }
 
     async handleWsMessage(rawMessage) {
-        if (!rawMessage || !Array.isArray(rawMessage.messages)) return;
+        if (!rawMessage) return;
+
+        if (rawMessage.boxid) {
+            this.latestBoxId = rawMessage.boxid;
+        }
+
+        const msgs = Array.isArray(rawMessage.messages)
+            ? rawMessage.messages
+            : (rawMessage.notificationClass ? [rawMessage] : []);
 
         // Capturar métricas de espacio en disco de TVHeadend si están presentes en cualquier mensaje (ej. accessUpdate)
-        for (const m of rawMessage.messages) {
+        for (const m of msgs) {
             if (m.totaldiskspace !== undefined || m.freediskspace !== undefined) {
                 const total = Number(m.totaldiskspace) || 0;
                 const free = Number(m.freediskspace) || 0;
@@ -400,7 +411,7 @@ class TvheadendService extends EventEmitter {
         }
 
         // Filtrar suscripciones y descartar escaneos internos de muxes/EPG/listas m3u
-        const rawSubscriptionMsgs = rawMessage.messages.filter(m => m.notificationClass === 'subscriptions');
+        const rawSubscriptionMsgs = msgs.filter(m => m.notificationClass === 'subscriptions');
         const subscriptionMsgs = rawSubscriptionMsgs.filter(m => !this.isScanOrInternalSubscription(m));
 
         this.activeSubscriptions = subscriptionMsgs;
@@ -690,6 +701,41 @@ class TvheadendService extends EventEmitter {
             }
             throw err;
         }
+    }
+
+    async fetchDiskSpace() {
+        try {
+            const queryParams = this.latestBoxId
+                ? `?boxid=${encodeURIComponent(this.latestBoxId)}&immediate=1`
+                : '?immediate=1';
+            const pollRes = await this.queryApi(`/comet/poll${queryParams}`);
+            if (pollRes?.boxid) {
+                this.latestBoxId = pollRes.boxid;
+            }
+            if (pollRes?.messages && Array.isArray(pollRes.messages)) {
+                for (const m of pollRes.messages) {
+                    if (m.totaldiskspace !== undefined || m.freediskspace !== undefined) {
+                        const total = Number(m.totaldiskspace) || 0;
+                        const free = Number(m.freediskspace) || 0;
+                        const usedTvh = Number(m.useddiskspace) || 0;
+                        const used = total > free ? (total - free) : usedTvh;
+                        if (total > 0 || free > 0) {
+                            this.latestDiskSpace = {
+                                total,
+                                free,
+                                used,
+                                usedByTvh: usedTvh,
+                                updatedAt: Date.now()
+                            };
+                            return this.latestDiskSpace;
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            this.debugLog(`TvheadendService: Error consultando /comet/poll: ${e.message}`);
+        }
+        return this.latestDiskSpace;
     }
 
     async testConnection(credentials) {

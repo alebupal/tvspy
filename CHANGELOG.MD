@@ -1,5 +1,16 @@
 # Changelog TVSPY
 
+## [3.2.1] - 2026-11-07
+
+- **Security Updates (Dependabot Remediation)**:
+  - Resolved all Dependabot vulnerabilities across backend and frontend dependencies (achieving 0 vulnerabilities in `npm audit`).
+  - Enforced secure package overrides in backend for `tar` (^7.5.21), `minimatch` (^11.0.5), and `@tootallnate/once` (^2.0.1).
+  - Upgraded frontend `react-router-dom` to v7.18.5, `vite` to v7.3.7, `@babel/core`, and `postcss-selector-parser` resolving open redirect and injection advisories.
+- **TVHeadend Storage & Disk Metrics Fix**:
+  - Enhanced storage polling to use non-blocking `/comet/poll?immediate=1` requests preventing connection timeouts.
+  - Persistent disk space cache ensuring TVHeadend storage capacity and free space are reliably displayed on the dashboard without false empty states.
+  - Proactive storage metric retrieval immediately upon WebSocket connection establishment.
+
 ## [3.2.0] - 2026-11-07
 
 - **Live EPG in Active Stream Cards**:
