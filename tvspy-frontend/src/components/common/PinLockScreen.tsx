@@ -88,7 +88,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
   }, [pin]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-whiten/90 dark:bg-boxdark-2/95 backdrop-blur-md p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-whiten dark:bg-boxdark-2 p-4">
       <div className="w-full max-w-sm rounded-2xl border border-stroke bg-white p-8 shadow-2xl dark:border-strokedark dark:bg-boxdark text-center">
         {/* Logo e Icono */}
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary dark:bg-primary/20">

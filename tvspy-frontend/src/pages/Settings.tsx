@@ -111,6 +111,15 @@ const Settings: React.FC = () => {
       try {
         const map = await configApi.getAsMap();
         setConfig((prev) => ({ ...prev, ...map }));
+        if (map.pin_enabled === '1') {
+          localStorage.setItem('tvspy_pin_enabled', '1');
+          if (map.pin_code) {
+            localStorage.setItem('tvspy_pin_length', String(map.pin_code.length));
+          }
+        } else if (map.pin_enabled === '0') {
+          localStorage.removeItem('tvspy_pin_enabled');
+          localStorage.removeItem('tvspy_pin_length');
+        }
         loadDbInfo();
         systemApi.checkUpdate(false).then((u) => setUpdateInfo(u)).catch(() => {});
       } catch (err) {
@@ -141,6 +150,15 @@ const Settings: React.FC = () => {
     setSaving(true);
     try {
       await configApi.updateBulk(config);
+      if (config.pin_enabled === '1') {
+        localStorage.setItem('tvspy_pin_enabled', '1');
+        if (config.pin_code) {
+          localStorage.setItem('tvspy_pin_length', String(config.pin_code.length));
+        }
+      } else if (config.pin_enabled === '0') {
+        localStorage.removeItem('tvspy_pin_enabled');
+        localStorage.removeItem('tvspy_pin_length');
+      }
       toast.success(t('Successfully updated') || 'Configuración guardada correctamente');
       if (config.language && config.language !== i18n.language) {
         i18n.changeLanguage(config.language);

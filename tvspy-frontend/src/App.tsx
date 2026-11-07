@@ -18,9 +18,14 @@ import PinLockScreen from './components/common/PinLockScreen';
 import { configApi } from './api';
 
 function App() {
+  const isUnlockedSession = typeof window !== 'undefined' && sessionStorage.getItem('tvspy_unlocked') === '1';
+  const cachedPinEnabled = typeof window !== 'undefined' && localStorage.getItem('tvspy_pin_enabled') === '1';
+  const cachedPinLength = typeof window !== 'undefined' ? (Number(localStorage.getItem('tvspy_pin_length')) || 4) : 4;
+
   const [loading, setLoading] = useState<boolean>(false);
-  const [isLocked, setIsLocked] = useState<boolean>(false);
-  const [pinLength, setPinLength] = useState<number>(4);
+  const [checkingAuth, setCheckingAuth] = useState<boolean>(!isUnlockedSession);
+  const [isLocked, setIsLocked] = useState<boolean>(!isUnlockedSession && cachedPinEnabled);
+  const [pinLength, setPinLength] = useState<number>(cachedPinLength);
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
 
@@ -33,14 +38,31 @@ function App() {
     configApi
       .getPinStatus()
       .then((res) => {
-        if (res && res.enabled && sessionStorage.getItem('tvspy_unlocked') !== '1') {
-          setIsLocked(true);
+        if (res && res.enabled) {
+          localStorage.setItem('tvspy_pin_enabled', '1');
           if (res.length) {
+            localStorage.setItem('tvspy_pin_length', String(res.length));
             setPinLength(res.length);
           }
+          if (sessionStorage.getItem('tvspy_unlocked') !== '1') {
+            setIsLocked(true);
+          } else {
+            setIsLocked(false);
+          }
+        } else {
+          localStorage.removeItem('tvspy_pin_enabled');
+          localStorage.removeItem('tvspy_pin_length');
+          setIsLocked(false);
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (!cachedPinEnabled) {
+          setIsLocked(false);
+        }
+      })
+      .finally(() => {
+        setCheckingAuth(false);
+      });
 
     // Sincronizar idioma guardado en la base de datos si difiere
     configApi
@@ -57,7 +79,19 @@ function App() {
   }, []);
 
   if (isLocked) {
-    return <PinLockScreen expectedLength={pinLength} onUnlock={() => setIsLocked(false)} />;
+    return (
+      <PinLockScreen
+        expectedLength={pinLength}
+        onUnlock={() => {
+          setIsLocked(false);
+          setCheckingAuth(false);
+        }}
+      />
+    );
+  }
+
+  if (checkingAuth) {
+    return <Loader />;
   }
 
   return loading ? (
