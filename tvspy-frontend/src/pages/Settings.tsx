@@ -22,6 +22,8 @@ import {
   FiTrash2,
   FiDatabase,
   FiLock,
+  FiPlus,
+  FiX,
 } from 'react-icons/fi';
 
 const Settings: React.FC = () => {
@@ -79,7 +81,39 @@ const Settings: React.FC = () => {
     webhook_type: 'discord',
     language: 'es',
     debug_mode: '0',
+    allow_lan_ips: '1',
   });
+
+  const [newIpInput, setNewIpInput] = useState<string>('');
+
+  const allowedIpsList = (config.ip_allowed || '')
+    .split(',')
+    .map((ip) => ip.trim())
+    .filter(Boolean);
+
+  const handleAddIp = () => {
+    if (!newIpInput.trim()) return;
+    const incoming = newIpInput
+      .split(/[,\n;]/)
+      .map((ip) => ip.trim())
+      .filter(Boolean);
+
+    const merged = Array.from(new Set([...allowedIpsList, ...incoming]));
+    handleChange('ip_allowed', merged.join(', '));
+    setNewIpInput('');
+  };
+
+  const handleRemoveIp = (ipToRemove: string) => {
+    const updated = allowedIpsList.filter((ip) => ip !== ipToRemove);
+    handleChange('ip_allowed', updated.join(', '));
+  };
+
+  const handleAddPreset = (preset: string) => {
+    if (!allowedIpsList.includes(preset)) {
+      const merged = [...allowedIpsList, preset];
+      handleChange('ip_allowed', merged.join(', '));
+    }
+  };
 
   const loadDbInfo = async () => {
     try {
@@ -657,15 +691,142 @@ const Settings: React.FC = () => {
               </p>
             </div>
 
-            <div className="space-y-4">
-              <Input
-                label={t('IP Allowed')}
-                helperText={t('IP´s separated by commas') || 'Separar múltiples IPs mediante comas (ej. 192.168.1.10, 192.168.1.11)'}
-                placeholder="192.168.1.10, 192.168.1.50"
-                value={config.ip_allowed || ''}
-                onChange={(e) => handleChange('ip_allowed', e.target.value)}
-              />
+            {/* GESTIÓN DE IPS AUTORIZADAS Y FILTROS */}
+            <div className="rounded-xl border border-stroke bg-gray-50/50 p-5 dark:border-strokedark dark:bg-meta-4/20 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <FiShield className="text-primary text-base" />
+                  <h4 className="text-sm font-bold text-black dark:text-white">
+                    {t('Allowed IP Whitelist')}
+                  </h4>
+                </div>
+                <span className="text-[11px] text-body dark:text-bodydark font-mono">
+                  {allowedIpsList.length} {t('registered IPs')}
+                </span>
+              </div>
 
+              <p className="text-xs text-body dark:text-bodydark leading-relaxed">
+                {t('Configure allowed IPs description')}
+              </p>
+
+              {/* Toggles de IPs locales y LAN */}
+              <div className="space-y-3 pt-2 pb-1 border-y border-stroke/60 dark:border-strokedark/60">
+                <div className="flex items-center justify-between text-xs">
+                  <div>
+                    <span className="font-semibold text-black dark:text-white flex items-center gap-1.5">
+                      <FiCheckCircle className="text-emerald-500 text-sm" />
+                      {t('Local server IPs (127.0.0.1 / localhost)')}
+                    </span>
+                    <p className="text-[11px] text-body dark:text-bodydark mt-0.5">
+                      {t('Always authorized by default for internal server health checks and local playbacks')}
+                    </p>
+                  </div>
+                  <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    {t('Always allowed')}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between text-xs pt-2 border-t border-stroke/40 dark:border-strokedark/40">
+                  <div>
+                    <span className="font-semibold text-black dark:text-white">
+                      {t('Allow all private local network IPs (LAN)')}
+                    </span>
+                    <p className="text-[11px] text-body dark:text-bodydark mt-0.5">
+                      {t('Automatically authorize 192.168.x.x, 10.x.x.x, and 172.16-31.x.x without manual entry')}
+                    </p>
+                  </div>
+                  <ToggleSwitch
+                    label=""
+                    enabled={isEnabled('allow_lan_ips')}
+                    onChange={(v) => handleToggle('allow_lan_ips', v)}
+                  />
+                </div>
+              </div>
+
+              {/* Chips de IPs actuales */}
+              <div>
+                <label className="block text-xs font-semibold text-black dark:text-white mb-2">
+                  {t('Whitelisted IPs / Ranges / Subnets')}:
+                </label>
+                {allowedIpsList.length > 0 ? (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {allowedIpsList.map((ip, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-mono font-medium text-primary dark:text-secondary shadow-sm"
+                      >
+                        <span>{ip}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveIp(ip)}
+                          title={`${t('Remove')} ${ip}`}
+                          className="hover:text-rose-500 transition ml-0.5"
+                        >
+                          <FiX className="text-xs" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-body dark:text-bodydark italic mb-3">
+                    {t('No specific IPs defined. Any external connection is allowed unless a list is added.')}
+                  </p>
+                )}
+              </div>
+
+              {/* Input para añadir nueva IP + Botón */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="ej. 192.168.1.100, 192.168.1.* o 10.0.0.0/24"
+                  value={newIpInput}
+                  onChange={(e) => setNewIpInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddIp();
+                    }
+                  }}
+                  className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={handleAddIp}
+                  className="flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-white hover:bg-primary/90 transition flex-shrink-0"
+                >
+                  <FiPlus className="text-sm" />
+                  {t('Add')}
+                </button>
+              </div>
+
+              {/* Botones de sugerencias rápidas */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-1 text-[11px] text-body dark:text-bodydark">
+                <span className="font-medium mr-1">{t('Quick add')}:</span>
+                <button
+                  type="button"
+                  onClick={() => handleAddPreset('192.168.1.*')}
+                  className="rounded px-2 py-0.5 bg-gray-200 text-black dark:bg-meta-4 dark:text-bodydark hover:bg-primary/10 hover:text-primary transition font-mono"
+                >
+                  + 192.168.1.*
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddPreset('10.0.0.*')}
+                  className="rounded px-2 py-0.5 bg-gray-200 text-black dark:bg-meta-4 dark:text-bodydark hover:bg-primary/10 hover:text-primary transition font-mono"
+                >
+                  + 10.0.0.*
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleAddPreset('172.16.0.*')}
+                  className="rounded px-2 py-0.5 bg-gray-200 text-black dark:bg-meta-4 dark:text-bodydark hover:bg-primary/10 hover:text-primary transition font-mono"
+                >
+                  + 172.16.0.*
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
               <Input
                 label={`${t('Minimum time')} (segundos)`}
                 helperText={t('Minimum time considered to record viewing of a channel')}

@@ -292,6 +292,89 @@ class TvheadendService extends EventEmitter {
         return false;
     }
 
+    isLocalOrServerIp(ip) {
+        if (!ip) return true;
+        const clean = ip.trim().replace(/^::ffff:/, '');
+        return (
+            clean === '127.0.0.1' ||
+            clean === '::1' ||
+            clean.toLowerCase() === 'localhost' ||
+            clean.startsWith('127.') ||
+            clean === '0.0.0.0' ||
+            clean.toLowerCase() === 'server' ||
+            clean.toLowerCase() === 'n/a'
+        );
+    }
+
+    isPrivateLanIp(ip) {
+        if (!ip) return false;
+        const clean = ip.trim().replace(/^::ffff:/, '');
+        if (this.isLocalOrServerIp(clean)) return true;
+
+        const parts = clean.split('.').map(Number);
+        if (parts.length === 4 && !parts.some(isNaN)) {
+            if (parts[0] === 10) return true;
+            if (parts[0] === 192 && parts[1] === 168) return true;
+            if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
+            if (parts[0] === 100 && parts[1] >= 64 && parts[1] <= 127) return true;
+            if (parts[0] === 169 && parts[1] === 254) return true;
+        }
+        return false;
+    }
+
+    matchIpPattern(ip, pattern) {
+        if (!ip || !pattern) return false;
+        const cleanIp = ip.trim().replace(/^::ffff:/, '');
+        const cleanPattern = pattern.trim().replace(/^::ffff:/, '');
+
+        if (cleanIp === cleanPattern) return true;
+
+        if (cleanPattern.includes('*')) {
+            const escaped = cleanPattern
+                .split('.')
+                .map(part => part === '*' ? '\\d+' : part)
+                .join('\\.');
+            try {
+                return new RegExp(`^${escaped}$`).test(cleanIp);
+            } catch {
+                return false;
+            }
+        }
+
+        if (cleanPattern.includes('/')) {
+            const [subIp, maskBitsStr] = cleanPattern.split('/');
+            const maskBits = parseInt(maskBitsStr, 10);
+            if (!isNaN(maskBits) && maskBits >= 0 && maskBits <= 32) {
+                const ipToNum = s => s.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
+                try {
+                    const ipNum = ipToNum(cleanIp);
+                    const subNum = ipToNum(subIp);
+                    const mask = maskBits === 0 ? 0 : (~0 << (32 - maskBits)) >>> 0;
+                    return (ipNum & mask) === (subNum & mask);
+                } catch {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    checkIpAuthorized(ip, allowedConfigString, allowLan = false) {
+        if (!ip) return true;
+        if (this.isLocalOrServerIp(ip)) return true;
+        if (allowLan && this.isPrivateLanIp(ip)) return true;
+        if (!allowedConfigString || !allowedConfigString.trim()) return true;
+
+        const patterns = allowedConfigString
+            .split(/[,\n;]/)
+            .map(p => p.trim())
+            .filter(Boolean);
+
+        if (patterns.length === 0) return true;
+        return patterns.some(pattern => this.matchIpPattern(ip, pattern));
+    }
+
     async handleWsMessage(rawMessage) {
         if (!rawMessage || !Array.isArray(rawMessage.messages)) return;
 
@@ -434,16 +517,16 @@ class TvheadendService extends EventEmitter {
                 }
 
                 // Notificación por IP no permitida
-                const allowedIps = (this.cachedConfig.ip_allowed || '')
-                    .split(',')
-                    .map(ip => ip.trim())
-                    .filter(Boolean);
+                const isAuthorized = this.checkIpAuthorized(
+                    existing.hostname,
+                    this.cachedConfig.ip_allowed,
+                    this.cachedConfig.allow_lan_ips === '1' || this.cachedConfig.allow_lan_ips === 'true'
+                );
 
                 if (
                     (this.cachedConfig.telegram_notification === '1' || this.cachedConfig.telegram_notification === 'true') &&
                     (this.cachedConfig.telegram_notification_ip_not_allowed === '1' || this.cachedConfig.telegram_notification_ip_not_allowed === 'true') &&
-                    allowedIps.length > 0 &&
-                    !allowedIps.includes(existing.hostname) &&
+                    !isAuthorized &&
                     !existing.notification_ip
                 ) {
                     const template = this.cachedConfig.telegram_notification_ip_not_allowed_text || 'Alerta: Reproducción desde IP no permitida %%hostname%% por %%username%%';

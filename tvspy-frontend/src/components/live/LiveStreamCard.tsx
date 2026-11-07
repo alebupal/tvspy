@@ -4,6 +4,7 @@ import Badge from '../common/Badge';
 import { formatBandwidth, formatBytes } from '../../utils/formatters';
 import { useTranslation } from 'react-i18next';
 import { systemApi, tvheadendApi } from '../../api';
+import { checkIpAuthorized } from '../../utils/ipUtils';
 import toast from 'react-hot-toast';
 import {
   FiTv,
@@ -34,12 +35,7 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
   const [imgError, setImgError] = useState(false);
 
   const isDvr = subscription.title && subscription.title.includes('DVR:');
-  const allowedList = allowedIps
-    ? allowedIps.split(',').map((ip) => ip.trim()).filter(Boolean)
-    : [];
-
-  const isIpAllowed =
-    allowedList.length === 0 || allowedList.includes(subscription.hostname);
+  const isIpAllowed = checkIpAuthorized(subscription.hostname, allowedIps);
 
   // Resolver logo del canal desde prop, suscripción o caché de sesión
   const resolvedLogo = useMemo(() => {

@@ -166,7 +166,7 @@ const Registry: React.FC = () => {
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-meta-4/30">
-                <th className="py-3 px-3 font-semibold text-black dark:text-white">Estado</th>
+                <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Status')}</th>
                 <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Username')}</th>
                 <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Channel')}</th>
                 <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Client')}</th>
@@ -203,10 +203,10 @@ const Registry: React.FC = () => {
                       <td className="py-3 px-3 whitespace-nowrap">
                         {isActive ? (
                           <Badge variant="success" pulse>
-                            {isDvr ? 'DVR Activo' : 'En Vivo'}
+                            {isDvr ? 'DVR' : t('Live')}
                           </Badge>
                         ) : (
-                          <Badge variant="default">Finalizado</Badge>
+                          <Badge variant="default">{t('Finished') || 'Finalizado'}</Badge>
                         )}
                       </td>
 
