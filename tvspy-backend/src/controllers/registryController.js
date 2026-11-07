@@ -136,6 +136,16 @@ class RegistryController {
             res.status(500).json({ error: err.message });
         }
     }
+
+    async getChannelSummary(req, res) {
+        try {
+            const { channel } = req.params;
+            const data = await registryRepository.getChannelSummary(channel);
+            res.json(data);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
 }
 
 module.exports = new RegistryController();

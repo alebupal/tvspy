@@ -2,22 +2,30 @@
 
 ## [3.1.0] - 2026-11-07
 
-- **Backend Architecture**:
-  - Full modular redesign into layers (Database, Repositories, Services, Controllers, Routes).
-  - Unified TVHeadend connection: backend is now the single point of contact, eliminating issues with private networks, NAT, and browser credential restrictions.
-  - Native WebSocket gateway at `/ws` broadcasting metrics, live streams, and connection state to connected clients.
-  - Automatic reconnection engine with exponential backoff without requiring container restarts.
-  - Live hot-reconnection when credentials are changed in Settings.
-  - Interactive test endpoints for TVHeadend and Telegram connections.
-  - Secure parameterized SQL queries with performance database indexes.
-- **Frontend Redesign**:
-  - Modern, responsive, and accessible UI crafted with pure Tailwind CSS.
-  - Interactive dashboard with real-time bandwidth pulse, active streams, unique viewers, and total consumption.
-  - Visual stream cards featuring Live vs DVR indicators, unauthorized IP alerts, and instant bitrate metrics.
-  - Native high-performance table for Registries with instant search, pagination, and one-click CSV export.
-  - Clean modular tab-based Settings panel (TVHeadend, Telegram with dynamic templates, Security/IPs, System).
-  - Vite dev proxy and Nginx `/ws` WebSocket reverse proxy support.
-
+- **Channel & User Analytics & Dual Views**:
+  - Added interactive detailed statistics modal for Channels (`ChannelProfileModal`) and Users (`UserProfileModal`) with KPIs (total views, accumulated duration, bandwidth consumed, active viewers/channels, and recent logs).
+  - Dual view switcher (Grid vs Compact Detailed Table) for both Channels and Users with `localStorage` preference persistence.
+- **Live Stream Monitoring & Control**:
+  - Remote stream termination button ("Kill Stream") directly stopping streams via TVHeadend API.
+  - Real-time sparkline graph displaying bandwidth fluctuations per stream.
+  - GeoIP country flags and private local area network (LAN) detection.
+  - Stream quality warning badge displaying signal degradation and error packet counts.
+- **Server Health & Maintenance**:
+  - TVHeadend heartbeat failure detector: sends alerts on server drop (>2 minutes) and automatic recovery notices.
+  - Background auto-purge scheduler with configurable retention days and automatic SQLite database `VACUUM`.
+  - One-click SQLite database backup (`.db`) download directly from Settings.
+- **Security & Access Control**:
+  - Adaptive PIN code lock screen with dynamic pin length dots, physical keyboard numeric support, and auto-submit.
+  - Whitelist IP address filtering with visual status badges in registries.
+- **Multi-Platform Notifications**:
+  - Added support for Discord Rich Embeds, Gotify push notifications, and generic HTTP POST Webhooks alongside Telegram.
+  - Configurable server-down notification alerts.
+- **UI / UX & System**:
+  - Fullscreen / Kiosk mode toggle button in Header.
+  - GitHub releases version checker displaying update notices in Header, Sidebar, and Settings.
+  - Integrated in-app Changelog and README documentation viewer.
+  - Complete Spanish and English localization coverage.
+  - High-performance layered backend architecture (Controllers, Services, Repositories) and native WebSocket gateway.
 
 ## [3.0.5] - 2026-01-02
 
@@ -99,20 +107,8 @@
 
 ## [1.2.1] - 2018-06-01
 
-- Fixed issue where the date was not displayed in Telegram messages.
+- Fixed issue where date was missing in Telegram messages.
 
 ## [1.2.0] - 2018-06-01
 
-- The time in the database is now stored in seconds.
-- Added the ability to select the time unit to be used on the web.
-- Added the option to set a minimum time for an entry to be recorded.
-
-## [1.1.0] - 2018-05-31
-
-- Added date filter in graphs.
-- Prevent entries from being added to the database when TvHeadend is scanning.
-- Fixed issue with starting MySQL and Apache services.
-
-## [1.0.0] - 2018-05-25
-
-- Initial release.
+- Added total duration to user notifications.

@@ -81,6 +81,11 @@ export const registriesApi = {
     return res.data;
   },
 
+  getChannelSummary: async (channel: string): Promise<any> => {
+    const res = await apiClient.get(`/registries/channel/${encodeURIComponent(channel)}/summary`);
+    return res.data;
+  },
+
   getAllRaw: async (): Promise<RegistryItem[]> => {
     const res = await apiClient.get<RegistryItem[]>('/registries', { params: { raw: 'true' } });
     return res.data;

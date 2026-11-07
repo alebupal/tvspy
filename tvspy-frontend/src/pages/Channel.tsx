@@ -4,6 +4,7 @@ import { tvheadendApi } from '../api';
 import { ChannelItem } from '../types';
 import Card from '../components/common/Card';
 import Badge from '../components/common/Badge';
+import ChannelProfileModal from '../components/common/ChannelProfileModal';
 import imgNotFound from '../images/notfound.png';
 import {
   FiSearch,
@@ -23,6 +24,7 @@ const Channel: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>('');
+  const [selectedChannel, setSelectedChannel] = useState<ChannelItem | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
     return (localStorage.getItem('tvspy_channel_view') as 'grid' | 'list') || 'grid';
   });
@@ -160,9 +162,10 @@ const Channel: React.FC = () => {
             {paginatedChannels.map((channel, idx) => (
               <div
                 key={channel.uuid || idx}
-                className="group flex flex-col items-center text-center p-4 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md transition-all duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark"
+                onClick={() => setSelectedChannel(channel)}
+                className="group flex flex-col items-center text-center p-4 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition-all duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer"
               >
-                <div className="h-16 w-16 mb-3 flex items-center justify-center p-1 bg-white rounded-lg shadow-sm border border-stroke/60 dark:border-strokedark/60 dark:bg-meta-4">
+                <div className="h-16 w-16 mb-3 flex items-center justify-center p-1 bg-white rounded-lg shadow-sm border border-stroke/60 dark:border-strokedark/60 dark:bg-meta-4 group-hover:scale-105 transition-transform">
                   <img
                     src={channel.icon_public_url || channel.icon || imgNotFound}
                     alt={channel.name}
@@ -172,7 +175,7 @@ const Channel: React.FC = () => {
                     }}
                   />
                 </div>
-                <h4 className="text-xs font-semibold text-black dark:text-white line-clamp-2">
+                <h4 className="text-xs font-semibold text-black dark:text-white line-clamp-2 group-hover:text-primary transition">
                   {channel.name}
                 </h4>
                 {channel.number !== undefined && channel.number > 0 && (
@@ -194,19 +197,21 @@ const Channel: React.FC = () => {
                   <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Name')}</th>
                   <th className="py-3 px-3 font-semibold text-black dark:text-white">Estado</th>
                   <th className="py-3 px-3 font-semibold text-black dark:text-white">Servicios</th>
+                  <th className="py-3 px-3 w-10"></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-stroke dark:divide-strokedark">
                 {paginatedChannels.map((channel, idx) => (
                   <tr
                     key={channel.uuid || idx}
-                    className="hover:bg-gray-50/50 dark:hover:bg-meta-4/20 transition-colors"
+                    onClick={() => setSelectedChannel(channel)}
+                    className="hover:bg-gray-50/70 dark:hover:bg-meta-4/40 transition-colors cursor-pointer group"
                   >
                     <td className="py-2.5 px-3 font-mono font-bold text-primary dark:text-secondary">
                       {channel.number !== undefined && channel.number > 0 ? channel.number : '-'}
                     </td>
                     <td className="py-2.5 px-3">
-                      <div className="h-9 w-12 flex items-center justify-center p-0.5 bg-white rounded border border-stroke dark:border-strokedark dark:bg-meta-4">
+                      <div className="h-9 w-12 flex items-center justify-center p-0.5 bg-white rounded border border-stroke dark:border-strokedark dark:bg-meta-4 group-hover:scale-105 transition-transform">
                         <img
                           src={channel.icon_public_url || channel.icon || imgNotFound}
                           alt={channel.name}
@@ -217,7 +222,7 @@ const Channel: React.FC = () => {
                         />
                       </div>
                     </td>
-                    <td className="py-2.5 px-3 font-semibold text-black dark:text-white">
+                    <td className="py-2.5 px-3 font-semibold text-black dark:text-white group-hover:text-primary transition">
                       {channel.name}
                     </td>
                     <td className="py-2.5 px-3">
@@ -233,6 +238,9 @@ const Channel: React.FC = () => {
                       {channel.services && channel.services.length > 0
                         ? `${channel.services.length} servicio(s)`
                         : 'Default'}
+                    </td>
+                    <td className="py-2.5 px-3 text-right">
+                      <FiChevronRight className="text-body dark:text-bodydark group-hover:text-primary group-hover:translate-x-0.5 transition" />
                     </td>
                   </tr>
                 ))}
@@ -266,6 +274,14 @@ const Channel: React.FC = () => {
           </div>
         )}
       </Card>
+
+      {/* Modal de Estadísticas del Canal */}
+      {selectedChannel && (
+        <ChannelProfileModal
+          channel={selectedChannel}
+          onClose={() => setSelectedChannel(null)}
+        />
+      )}
     </div>
   );
 };

@@ -317,6 +317,53 @@ class RegistryRepository {
             lastKnown: lastKnown || null
         };
     }
+
+    async getChannelSummary(channelName) {
+        if (!channelName) return null;
+
+        const summaryQuery = `
+            SELECT 
+                COUNT(*) as total_plays,
+                ROUND(COALESCE(SUM((julianday(COALESCE(end, datetime('now'))) - julianday(start)) * 86400), 0)) as total_duration_seconds,
+                COALESCE(SUM(total_in), 0) as total_consumed_bytes,
+                COUNT(DISTINCT username) as unique_users,
+                MAX(start) as last_seen
+            FROM registries
+            WHERE channel = ?
+        `;
+
+        const topUsersQuery = `
+            SELECT 
+                username,
+                COUNT(*) as count,
+                ROUND(COALESCE(SUM((julianday(COALESCE(end, datetime('now'))) - julianday(start)) * 86400), 0)) as total_seconds
+            FROM registries
+            WHERE channel = ? AND username IS NOT NULL AND username != ''
+            GROUP BY username
+            ORDER BY count DESC
+            LIMIT 5
+        `;
+
+        const recentPlaysQuery = `
+            SELECT * FROM registries
+            WHERE channel = ?
+            ORDER BY id DESC
+            LIMIT 5
+        `;
+
+        const [summary, topUsers, recentPlays] = await Promise.all([
+            getSql(summaryQuery, [channelName]),
+            allSql(topUsersQuery, [channelName]),
+            allSql(recentPlaysQuery, [channelName])
+        ]);
+
+        return {
+            channel: channelName,
+            summary: summary || { total_plays: 0, total_duration_seconds: 0, total_consumed_bytes: 0, unique_users: 0 },
+            topUsers: topUsers || [],
+            recentPlays: recentPlays || []
+        };
+    }
 }
 
 module.exports = new RegistryRepository();

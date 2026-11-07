@@ -5,7 +5,17 @@ import { UserItem } from '../types';
 import Card from '../components/common/Card';
 import Badge from '../components/common/Badge';
 import UserProfileModal from '../components/common/UserProfileModal';
-import { FiUsers, FiSearch, FiRefreshCw, FiUserCheck, FiUserX, FiShield, FiChevronRight } from 'react-icons/fi';
+import {
+  FiUsers,
+  FiSearch,
+  FiRefreshCw,
+  FiUserCheck,
+  FiUserX,
+  FiChevronRight,
+  FiChevronLeft,
+  FiGrid,
+  FiList,
+} from 'react-icons/fi';
 
 const User: React.FC = () => {
   const { t } = useTranslation();
@@ -15,6 +25,18 @@ const User: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    return (localStorage.getItem('tvspy_user_view') as 'grid' | 'list') || 'grid';
+  });
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(viewMode === 'grid' ? 24 : 20);
+
+  const handleViewChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode);
+    setLimit(mode === 'grid' ? 24 : 20);
+    setPage(1);
+    localStorage.setItem('tvspy_user_view', mode);
+  };
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -43,6 +65,12 @@ const User: React.FC = () => {
     );
   }, [users, search]);
 
+  const totalPages = Math.ceil(filteredUsers.length / limit) || 1;
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * limit;
+    return filteredUsers.slice(start, start + limit);
+  }, [filteredUsers, page, limit]);
+
   return (
     <div className="space-y-6">
       {/* Cabecera */}
@@ -57,13 +85,43 @@ const User: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={fetchUsers}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 transition shadow-sm w-fit"
-        >
-          <FiRefreshCw className={`text-xs ${loading ? 'animate-spin' : ''}`} />
-          {t('Refresh')}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Selector de tipo de vista: Grid vs List */}
+          <div className="inline-flex rounded-lg border border-stroke bg-gray-100 p-1 dark:border-strokedark dark:bg-meta-4">
+            <button
+              onClick={() => handleViewChange('grid')}
+              title={t('Grid view')}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                viewMode === 'grid'
+                  ? 'bg-white text-primary shadow-sm dark:bg-boxdark dark:text-secondary'
+                  : 'text-body hover:text-black dark:text-bodydark dark:hover:text-white'
+              }`}
+            >
+              <FiGrid className="text-sm" />
+              <span className="hidden sm:inline">{t('Grid')}</span>
+            </button>
+            <button
+              onClick={() => handleViewChange('list')}
+              title={t('List view')}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                viewMode === 'list'
+                  ? 'bg-white text-primary shadow-sm dark:bg-boxdark dark:text-secondary'
+                  : 'text-body hover:text-black dark:text-bodydark dark:hover:text-white'
+              }`}
+            >
+              <FiList className="text-sm" />
+              <span className="hidden sm:inline">{t('List')}</span>
+            </button>
+          </div>
+
+          <button
+            onClick={fetchUsers}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 transition shadow-sm w-fit"
+          >
+            <FiRefreshCw className={`text-xs ${loading ? 'animate-spin' : ''}`} />
+            {t('Refresh')}
+          </button>
+        </div>
       </div>
 
       <Card>
@@ -74,7 +132,10 @@ const User: React.FC = () => {
               type="text"
               placeholder={t('Filter users...')}
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               className="w-full rounded-lg border border-stroke bg-transparent pl-9 pr-4 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white"
             />
           </div>
@@ -93,13 +154,14 @@ const User: React.FC = () => {
           <div className="py-12 text-center text-danger text-sm">
             {t('Error')}: {error}
           </div>
-        ) : filteredUsers.length === 0 ? (
+        ) : paginatedUsers.length === 0 ? (
           <div className="py-16 text-center text-body dark:text-bodydark text-sm">
             {t('No data available')}
           </div>
-        ) : (
+        ) : viewMode === 'grid' ? (
+          /* VISTA 1: CUADRÍCULA (GRID) */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredUsers.map((user, idx) => {
+            {paginatedUsers.map((user, idx) => {
               const isEnabled = user.enabled !== false;
               return (
                 <div
@@ -109,7 +171,7 @@ const User: React.FC = () => {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white shadow-sm ${
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white shadow-sm group-hover:scale-105 transition-transform ${
                         isEnabled
                           ? 'bg-gradient-to-tr from-primary to-blue-500'
                           : 'bg-gray-400'
@@ -144,6 +206,90 @@ const User: React.FC = () => {
                 </div>
               );
             })}
+          </div>
+        ) : (
+          /* VISTA 2: LISTA / TABLA COMPACTA DETALLADA */
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-meta-4/30">
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white w-14">Avatar</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Username') || 'Usuario'}</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Comment') || 'Comentario'}</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Status') || 'Estado'}</th>
+                  <th className="py-3 px-3 w-10"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-stroke dark:divide-strokedark">
+                {paginatedUsers.map((user, idx) => {
+                  const isEnabled = user.enabled !== false;
+                  return (
+                    <tr
+                      key={user.uuid || idx}
+                      onClick={() => setSelectedUser(user)}
+                      className="hover:bg-gray-50/70 dark:hover:bg-meta-4/40 transition-colors cursor-pointer group"
+                    >
+                      <td className="py-2.5 px-3">
+                        <div
+                          className={`flex h-8 w-8 items-center justify-center rounded-lg font-bold text-xs text-white shadow-sm group-hover:scale-105 transition-transform ${
+                            isEnabled
+                              ? 'bg-gradient-to-tr from-primary to-blue-500'
+                              : 'bg-gray-400'
+                          }`}
+                        >
+                          {user.username ? user.username.charAt(0).toUpperCase() : '?'}
+                        </div>
+                      </td>
+                      <td className="py-2.5 px-3 font-semibold text-black dark:text-white group-hover:text-primary transition">
+                        {user.username || 'Sin nombre'}
+                      </td>
+                      <td className="py-2.5 px-3 text-body dark:text-bodydark">
+                        {user.comment || '-'}
+                      </td>
+                      <td className="py-2.5 px-3">
+                        {isEnabled ? (
+                          <Badge variant="success">
+                            <FiUserCheck className="text-xs" /> {t('Active') || 'Activo'}
+                          </Badge>
+                        ) : (
+                          <Badge variant="default">
+                            <FiUserX className="text-xs" /> {t('Disabled') || 'Deshabilitado'}
+                          </Badge>
+                        )}
+                      </td>
+                      <td className="py-2.5 px-3 text-right">
+                        <FiChevronRight className="text-body dark:text-bodydark group-hover:text-primary group-hover:translate-x-0.5 transition" />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Paginación */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between gap-3 mt-6 pt-4 border-t border-stroke dark:border-strokedark text-xs text-body dark:text-bodydark">
+            <div>
+              Página <b>{page}</b> de <b>{totalPages}</b>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="flex items-center gap-1 rounded-lg border border-stroke px-2.5 py-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed dark:border-strokedark dark:hover:bg-meta-4 transition"
+              >
+                <FiChevronLeft /> Anterior
+              </button>
+              <button
+                disabled={page >= totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className="flex items-center gap-1 rounded-lg border border-stroke px-2.5 py-1.5 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed dark:border-strokedark dark:hover:bg-meta-4 transition"
+              >
+                Siguiente <FiChevronRight />
+              </button>
+            </div>
           </div>
         )}
       </Card>

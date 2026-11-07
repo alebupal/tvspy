@@ -2,22 +2,30 @@
 
 ## [3.1.0] - 2026-11-07
 
-- **Arquitectura Backend**:
-  - Reestructuración modular completa en capas (Database, Repositories, Services, Controllers, Routes).
-  - Unificación de la conexión con TVHeadend: el backend es ahora el único punto de contacto, resolviendo problemas de NAT, subredes privadas y bloqueos de credenciales en navegadores.
-  - Pasarela WebSocket nativa en `/ws` para retransmitir streams y métricas al frontend en tiempo real.
-  - Sistema de auto-reconexión automática con backoff exponencial sin necesidad de reiniciar el contenedor.
-  - Reconexión en caliente inmediata cuando se modifican credenciales en Ajustes.
-  - Endpoints de prueba interactiva para TVHeadend y Telegram.
-  - Consultas SQL seguras y parametrizadas con índices de rendimiento.
-- **Frontend Renovado**:
-  - Interfaz moderna, reactiva, accesible y responsive basada en Tailwind CSS.
-  - Dashboard interactivo con tarjetas de ancho de banda en vivo, usuarios únicos, streams activos y consumo acumulado.
-  - Tarjetas de transmisión en vivo con badges distintivos para Directo / Grabación DVR y detección de IP no permitida.
-  - Tabla de registros nativa ultrarrápida con búsqueda en vivo, paginación y exportación instantánea a CSV.
-  - Ajustes modulares organizados por pestañas (TVHeadend, Telegram con plantillas interactivas, Seguridad/IPs y Sistema).
-  - Proxy local en Vite y soporte de WebSocket en Nginx.
-
+- **Estadísticas y Vistas Duales para Canales y Usuarios**:
+  - Nuevo modal interactivo de estadísticas para Canales (`ChannelProfileModal`) y Usuarios (`UserProfileModal`) con KPIs en tiempo real (reproducciones totales, tiempo acumulado, ancho de banda descargado, usuarios/canales más frecuentes e historial reciente).
+  - Selector de vista dual (Cuadrícula vs Tabla Detallada Compacta) tanto en Canales como en Usuarios con persistencia en `localStorage`.
+- **Monitoreo y Control de Reproducciones en Vivo**:
+  - Botón de detención forzada ("Kill Stream") para cancelar reproducciones activas directamente a través de la API de TVHeadend.
+  - Gráfica sparkline dinámica en tiempo real que refleja las oscilaciones de bitrate de cada emisión activa.
+  - Geolocalización con banderas de países y detección automática de conexiones en red local (LAN).
+  - Insignia de alerta de degradación de señal y paquetes con errores (`errors > 0`).
+- **Mantenimiento y Resiliencia del Servidor**:
+  - Detector Heartbeat de TVHeadend: envía notificaciones automáticas ante pérdidas de conexión (>2 minutos) y avisos de recuperación.
+  - Programador en segundo plano para auto-purgado configurable de registros antiguos y ejecución automática de `VACUUM` en SQLite para liberar espacio.
+  - Descarga directa de copias de seguridad de la base de datos (`.db`) con un solo clic desde Ajustes.
+- **Seguridad y Control de Acceso**:
+  - Pantalla de bloqueo por código PIN adaptativa a la longitud configurada, con soporte para teclado físico (numérico y retroceso) y teclado en pantalla.
+  - Filtro de lista blanca de direcciones IP con distintivos visuales en los registros.
+- **Notificaciones Multiplataforma**:
+  - Integración completa con Discord (Rich Embeds), Gotify y Webhooks HTTP genéricos junto a Telegram.
+  - Alertas configurables de desconexión del servidor TVHeadend.
+- **UI / UX y Sistema**:
+  - Botón de modo pantalla completa / Kiosk en la cabecera.
+  - Verificador de nuevas versiones de GitHub con avisos en la barra superior, barra lateral y sección de ajustes.
+  - Visor integrado de Changelog y documentación README en la aplicación.
+  - Cobertura completa de traducción al español e inglés.
+  - Arquitectura backend modular optimizada en capas (Controladores, Servicios, Repositorios) con pasarela WebSocket nativa.
 
 ## [3.0.5] - 2026-01-02
 
@@ -99,16 +107,4 @@
 
 ## [1.2.0] - 2018-06-01
 
-- El tiempo en la base de datos ahora se guarda en segundos
-- Posibilidad de seleccionar unidad de tiempo a utilizar en la web
-- Añadida la posibilidad de poner un tiempo mínimo para que se añada como registro
-
-## [1.1.0] - 2018-05-31
-
-- Añadir filtro de fechas en las gráficas
-- Evitar que se meta en la base de datos cuando TvHeadend esté escaneando
-- Corrección para levantar el servicio MySQL y apache
-
-## [1.0.0] - 2018-05-25
-
-- Estable
+- Duración total en notificaciones al usuario
