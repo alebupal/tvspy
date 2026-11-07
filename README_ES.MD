@@ -6,31 +6,44 @@
 [![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-orange.svg)](https://www.paypal.me/alebupal)
 [![Telegram](https://img.shields.io/badge/Telegram-tvspy__news-2CA5E0.svg)](https://t.me/tvspy_news)
 
-**TVSPY** es una suite moderna, rápida e intuitiva para monitorizar servidores **TVHeadend** en tiempo real. Permite supervisar transmisiones en vivo, grabaciones DVR, tráfico de red, usuarios conectados, histórico de sesiones y métricas analíticas avanzadas.
+**TVSPY** es una suite moderna, rápida, accesible y responsive diseñada para monitorizar servidores **TVHeadend** en tiempo real. Permite supervisar transmisiones en directo, grabaciones programadas DVR, ancho de banda instantáneo, usuarios conectados, histórico de sesiones y análisis estadístico en profundidad.
 
 ---
 
 ## ✨ Características Principales
 
-- 📡 **Monitoreo en Tiempo Real**: Visualiza qué usuarios están conectados, qué canal ven, el reproductor que usan y el bitrate consumido al instante gracias a WebSockets nativos.
-- 🔴 **Detección Automática de Grabaciones (DVR)**: Diferenciación clara entre streaming en directo y grabaciones programadas con badges dinámicos.
-- 🔄 **Reconexión Automática y en Caliente (¡Novedad v3.1!)**: Se reconecta automáticamente con backoff exponencial. Si cambias credenciales o IPs en Ajustes, se reconecta en caliente **sin reiniciar el contenedor**.
-- 📺 **Vistas Múltiples de Canales**: Alterna con un solo clic entre vista en **Cuadrícula con logotipos** y vista en **Lista / Tabla detallada**.
+- 📡 **Monitoreo en Tiempo Real de Emisiones en Directo**:
+  - Logotipos oficiales de canales con renderizado proporcional y fallback automático.
+  - Usuarios conectados, canal sintonizado, cliente/reproductor utilizado (VLC, Kodi, TiviMate, etc.) y tasa de bits instantánea mediante WebSockets nativos.
+  - **Kill Stream**: Botón de detención remota para cancelar cualquier emisión activa directamente a través de la API de TVHeadend.
+  - **Salud de Señal**: Contador de paquetes con error y aviso de degradación de transporte de flujo.
+  - **Sparklines de Ancho de Banda**: Gráficas dinámicas de consumo por sesión en tiempo real.
+  - **Geolocalización e IPs Locales**: Detección de país con banderas e identificación automática de red local (LAN).
+  - **Filtro Inteligente de Escaneos**: Descarta automáticamente tareas internas de TVHeadend como escaneos de listas M3U/IPTV, muxes y grabadores EPG.
+- 🔴 **Detección Automática de Grabaciones DVR**: Diferenciación visual clara entre streaming en directo y grabaciones activas con insignias distintivas.
+- 📺 **Vistas Duales y Estadísticas para Canales y Usuarios**:
+  - Selector de vista en **Cuadrícula** y **Tabla Detallada Compacta** tanto en Canales como en Usuarios con preferencia persistente.
+  - **Modal de Perfil de Canal**: Estadísticas agregadas completas (reproducciones totales, tiempo acumulado, tráfico descargado, espectadores únicos, top usuarios y registros recientes).
+  - **Modal de Perfil de Usuario**: Horas de visualización, canales preferidos y registro individual de actividad.
 - 📊 **Panel Analítico y Estadísticas Avanzadas**:
   - Gráfico de **Evolución Temporal** (consumo diario de horas/reproducciones).
   - Ranking de **Top Canales más vistos**.
-  - Distribución de **Clientes y Reproductores** (VLC, Kodi, TiviMate, etc.).
-  - Análisis de **Horas Pico** (actividad de 00:00 a 23:00).
-  - Filtros flexibles por rango de fechas (7, 14, 30, 90 días o 1 año) y métrica (tiempo vs usos).
-- 📜 **Histórico de Registros**: Tabla de alto rendimiento con búsqueda instantánea, paginación server-side y **exportación a CSV**.
-- 🔔 **Notificaciones Inteligentes de Telegram**:
-  - Inicio y fin de reproducción.
-  - Inicio y fin de grabación DVR.
-  - Alerta por reproducción prolongada (límite de minutos excedido).
-  - Alerta por acceso desde IP no autorizada.
-  - Plantillas de mensajes dinámicas (`%%username%%`, `%%channel%%`, `%%date%%`, `%%client%%`, `%%hostname%%`).
-  - Botón de envío de prueba con un solo clic.
-- 🌓 **Modo Oscuro / Claro** y soporte multi-idioma (**Español** e **Inglés**).
+  - Distribución de **Clientes y Reproductores**.
+  - Análisis de **Horas Pico** (distribución de uso de 00:00 a 23:00).
+  - Filtros interactivos por rango de fechas (7, 14, 30, 90 días o 1 año) y métrica (tiempo vs usos).
+- 🔒 **Seguridad y Control de Acceso**:
+  - **Bloqueo por Código PIN**: Protege el acceso al panel con un PIN numérico personalizable, soporte de teclado físico y arranque protegido sin fugas visuales.
+  - **Gestor Interactivo de IPs Autorizadas**: Lista blanca mediante etiquetas/chips con presets rápidos y compatibilidad completa con comodines (`192.168.1.*`) y subredes CIDR (`10.0.0.0/24`).
+  - **Protección de IPs Locales y del Servidor**: Conexiones locales del servidor (`127.0.0.1`, `localhost`, `::1`) permitidas siempre por defecto, con opción para autorizar toda la LAN privada con un solo clic.
+- 🔔 **Notificaciones Multiplataforma**:
+  - Integración nativa con **Telegram**, **Discord** (Rich Embeds), **Gotify** y **Webhooks HTTP POST**.
+  - Alertas automáticas por inicio/fin de reproducción, grabación, límites de tiempo, accesos no autorizados y desconexión/recuperación del servidor.
+- 🔄 **Resiliencia, Salud y Mantenimiento del Servidor**:
+  - **Detector Heartbeat**: Supervisa la conexión con TVHeadend (> 2 min) y emite notificaciones de caída y recuperación.
+  - **Auto-Purgado Periódico**: Limpieza automática en segundo plano de registros antiguos según los días configurados con compactación `VACUUM` en SQLite.
+  - **Copia de Seguridad Directa**: Descarga con un solo clic del archivo `.db` de la base de datos desde Ajustes.
+  - **Reconexión en Caliente**: Los cambios de credenciales en Ajustes reconectan al instante **sin necesidad de reiniciar el contenedor Docker**.
+- 🌓 **Modo Kiosco / Pantalla Completa**, Modo Oscuro/Claro, Comprobador de Actualizaciones desde GitHub y soporte multilingüe completo (**Español** e **Inglés**).
 
 ---
 
@@ -104,19 +117,19 @@ npm run dev
 
 ## ⚙️ Variables de Entorno
 
-| Variable | Descripción | Valor por Defecto |
+| Variable | Descripción | Valor por defecto |
 | :--- | :--- | :--- |
 | `TZ` | Zona horaria del contenedor | `Europe/Madrid` |
-| `LOCALE` | Configuración regional para fechas y horas | `es-ES` |
-| `PORT` | Puerto interno del backend Node.js | `3001` |
+| `LOCALE` | Configuración regional para fechas y números | `es-ES` |
+| `PORT` | Puerto interno del backend de Node.js | `3001` |
 
 ---
 
 ## 🤝 Soporte y Donaciones
 
-Si TVSPY te resulta útil y quieres apoyar su mantenimiento y desarrollo continuo:
+Si TVSPY te resulta útil y deseas apoyar su desarrollo continuo:
 
-- ☕ **Donación en PayPal**: [paypal.me/alebupal](https://www.paypal.me/alebupal)
+- ☕ **Donar en PayPal**: [paypal.me/alebupal](https://www.paypal.me/alebupal)
 - 📢 **Canal de Noticias en Telegram**: [@tvspy_news](https://t.me/tvspy_news)
 - 🐛 **Reportar problemas**: [GitHub Issues](https://github.com/alebupal/tvspy/issues)
 
@@ -124,4 +137,4 @@ Si TVSPY te resulta útil y quieres apoyar su mantenimiento y desarrollo continu
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia **ISC**. Consulta el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia **ISC**. Consulta el archivo `LICENSE` para más información.

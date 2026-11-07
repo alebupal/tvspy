@@ -3,20 +3,26 @@
 ## [3.1.0] - 2026-11-07
 
 - **Channel & User Analytics & Dual Views**:
-  - Added interactive detailed statistics modal for Channels (`ChannelProfileModal`) and Users (`UserProfileModal`) with KPIs (total views, accumulated duration, bandwidth consumed, active viewers/channels, and recent logs).
+  - Interactive statistics modal for Channels (`ChannelProfileModal`) and Users (`UserProfileModal`) with KPIs (total views, accumulated duration, bandwidth consumed, active viewers/channels, and recent logs).
   - Dual view switcher (Grid vs Compact Detailed Table) for both Channels and Users with `localStorage` preference persistence.
+  - Channel logos displayed on live stream cards with automatic caching and fallback to stylized icons.
 - **Live Stream Monitoring & Control**:
   - Remote stream termination button ("Kill Stream") directly stopping streams via TVHeadend API.
-  - Real-time sparkline graph displaying bandwidth fluctuations per stream.
+  - Automatic filtering of internal TVHeadend IPTV/M3U mux scans, service mappers, and EPG grabber tasks.
+  - Real-time sparkline graph displaying bandwidth fluctuations per active stream.
   - GeoIP country flags and private local area network (LAN) detection.
   - Stream quality warning badge displaying signal degradation and error packet counts.
+  - Single-line horizontal formatting for status badges and live indicators.
+- **Security & Access Control**:
+  - Adaptive PIN code lock screen with dynamic pin length dots, physical keyboard support, and zero-flicker protected boot.
+  - Local server connections (`127.0.0.1`, `localhost`, `::1`) always authorized by default.
+  - Interactive IP whitelist manager with chips, quick presets, wildcard matching (`192.168.1.*`), and CIDR subnet support (`10.0.0.0/24`).
+  - Optional toggle to automatically authorize all private local network IPs (LAN).
 - **Server Health & Maintenance**:
   - TVHeadend heartbeat failure detector: sends alerts on server drop (>2 minutes) and automatic recovery notices.
   - Background auto-purge scheduler with configurable retention days and automatic SQLite database `VACUUM`.
   - One-click SQLite database backup (`.db`) download directly from Settings.
-- **Security & Access Control**:
-  - Adaptive PIN code lock screen with dynamic pin length dots, physical keyboard numeric support, and auto-submit.
-  - Whitelist IP address filtering with visual status badges in registries.
+  - Hot reconnection engine on settings change without requiring container restarts.
 - **Multi-Platform Notifications**:
   - Added support for Discord Rich Embeds, Gotify push notifications, and generic HTTP POST Webhooks alongside Telegram.
   - Configurable server-down notification alerts.
@@ -24,7 +30,7 @@
   - Fullscreen / Kiosk mode toggle button in Header.
   - GitHub releases version checker displaying update notices in Header, Sidebar, and Settings.
   - Integrated in-app Changelog and README documentation viewer.
-  - Complete Spanish and English localization coverage.
+  - Complete Spanish and English localization coverage across all views, tables, and settings.
   - High-performance layered backend architecture (Controllers, Services, Repositories) and native WebSocket gateway.
 
 ## [3.0.5] - 2026-01-02

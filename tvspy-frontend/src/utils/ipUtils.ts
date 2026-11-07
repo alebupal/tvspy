@@ -105,3 +105,4 @@ export function checkIpAuthorized(
 
   return patterns.some((pattern) => matchIpPattern(ip, pattern));
 }
+

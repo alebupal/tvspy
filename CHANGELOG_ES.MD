@@ -5,26 +5,32 @@
 - **Estadísticas y Vistas Duales para Canales y Usuarios**:
   - Nuevo modal interactivo de estadísticas para Canales (`ChannelProfileModal`) y Usuarios (`UserProfileModal`) con KPIs en tiempo real (reproducciones totales, tiempo acumulado, ancho de banda descargado, usuarios/canales más frecuentes e historial reciente).
   - Selector de vista dual (Cuadrícula vs Tabla Detallada Compacta) tanto en Canales como en Usuarios con persistencia en `localStorage`.
+  - Logotipos oficiales de canales integrados en las tarjetas de emisión en directo con caché en sesión y fallback automático.
 - **Monitoreo y Control de Reproducciones en Vivo**:
   - Botón de detención forzada ("Kill Stream") para cancelar reproducciones activas directamente a través de la API de TVHeadend.
+  - Filtro inteligente de suscripciones internas de TVHeadend: descarta automáticamente tareas de escaneo de listas IPTV/M3U, mapeo de servicios y grabadores EPG.
   - Gráfica sparkline dinámica en tiempo real que refleja las oscilaciones de bitrate de cada emisión activa.
   - Geolocalización con banderas de países y detección automática de conexiones en red local (LAN).
   - Insignia de alerta de degradación de señal y paquetes con errores (`errors > 0`).
+  - Formato horizontal unificado y sin saltos de línea para insignias de estado (Directo, Habilitado, Activo).
+- **Seguridad y Control de Acceso**:
+  - Pantalla de bloqueo por código PIN adaptativa a la longitud configurada, con soporte para teclado físico (numérico y retroceso) y arranque seguro en frame 0 sin parpadeo del panel.
+  - Conexiones locales del servidor (`127.0.0.1`, `localhost`, `::1`) marcadas siempre como autorizadas por defecto.
+  - Gestor visual de lista blanca de IPs mediante chips/etiquetas con presets rápidos, comodines (`192.168.1.*`) y subredes CIDR (`10.0.0.0/24`).
+  - Interruptor para autorizar automáticamente todas las IPs de la red local privada (LAN).
 - **Mantenimiento y Resiliencia del Servidor**:
   - Detector Heartbeat de TVHeadend: envía notificaciones automáticas ante pérdidas de conexión (>2 minutos) y avisos de recuperación.
   - Programador en segundo plano para auto-purgado configurable de registros antiguos y ejecución automática de `VACUUM` en SQLite para liberar espacio.
   - Descarga directa de copias de seguridad de la base de datos (`.db`) con un solo clic desde Ajustes.
-- **Seguridad y Control de Acceso**:
-  - Pantalla de bloqueo por código PIN adaptativa a la longitud configurada, con soporte para teclado físico (numérico y retroceso) y teclado en pantalla.
-  - Filtro de lista blanca de direcciones IP con distintivos visuales en los registros.
+  - Motor de reconexión en caliente inmediata al modificar credenciales sin reiniciar contenedores.
 - **Notificaciones Multiplataforma**:
   - Integración completa con Discord (Rich Embeds), Gotify y Webhooks HTTP genéricos junto a Telegram.
   - Alertas configurables de desconexión del servidor TVHeadend.
 - **UI / UX y Sistema**:
   - Botón de modo pantalla completa / Kiosk en la cabecera.
   - Verificador de nuevas versiones de GitHub con avisos en la barra superior, barra lateral y sección de ajustes.
-  - Visor integrado de Changelog y documentación README en la aplicación.
-  - Cobertura completa de traducción al español e inglés.
+  - Visor integrado de Changelog y documentación README en la propia aplicación.
+  - Cobertura completa de traducción al español e inglés en todas las secciones, tablas y ajustes.
   - Arquitectura backend modular optimizada en capas (Controladores, Servicios, Repositorios) con pasarela WebSocket nativa.
 
 ## [3.0.5] - 2026-01-02
