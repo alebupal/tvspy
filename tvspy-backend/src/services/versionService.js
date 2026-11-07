@@ -10,13 +10,13 @@ class VersionService {
 
     getLocalVersion() {
         try {
-            const versionFilePath = path.resolve(__dirname, '../../../version.json');
-            if (fs.existsSync(versionFilePath)) {
-                const data = JSON.parse(fs.readFileSync(versionFilePath, 'utf8'));
+            const pkgPath = path.resolve(__dirname, '../../package.json');
+            if (fs.existsSync(pkgPath)) {
+                const data = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
                 if (data && data.version) return data.version.trim();
             }
         } catch (e) {
-            console.warn('[VersionService] Error leyendo version.json local:', e.message);
+            console.warn('[VersionService] Error leyendo versión local:', e.message);
         }
         return '3.1.0';
     }
@@ -74,8 +74,8 @@ class VersionService {
                     publishedAt = data.published_at || null;
                 }
             } else {
-                // Fallback: raw version.json de master o main
-                const rawRes = await fetch('https://raw.githubusercontent.com/alebupal/tvspy/master/version.json', {
+                // Fallback: raw package.json del repositorio oficial
+                const rawRes = await fetch('https://raw.githubusercontent.com/alebupal/tvspy/main/package.json', {
                     signal: AbortSignal.timeout(5000)
                 });
                 if (rawRes.ok) {
