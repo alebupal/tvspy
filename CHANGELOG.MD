@@ -1,22 +1,22 @@
 # Changelog TVSPY
 
-## [3.1.0] - 2026-11-07
+## [3.2.0] - 2026-11-07
 
-- **Live EPG & Advanced Stream Monitoring**:
+- **Live EPG in Active Stream Cards**:
   - Real-time EPG integration directly in active stream cards: displays current programme title, remaining duration, and progress bar with tooltip descriptions.
-  - Remote stream termination button ("Kill Stream") directly stopping streams via TVHeadend API.
-  - Automatic filtering of internal TVHeadend IPTV/M3U mux scans, service mappers, and EPG grabber tasks.
-  - Real-time sparkline graph displaying bandwidth fluctuations per active stream.
-  - GeoIP country flags and private local area network (LAN) detection.
-  - Stream quality warning badge displaying signal degradation and error packet counts.
-  - Single-line horizontal formatting for status badges and live indicators.
-- **DVR Storage Monitor & Upcoming Recordings**:
-  - Live TVHeadend disk space monitor widget displaying used, total, available space and percentage bar, with automatic warning when free space is below 10%.
+- **TVHeadend Storage Monitor**:
+  - Live TVHeadend disk space monitor widget on the dashboard displaying used, total, available space and percentage bar, with automatic warning when free space is below 10%.
+- **Upcoming DVR Recordings Panel**:
   - Dedicated "Upcoming DVR Recordings" slide-over modal displaying scheduled recordings, channels, time ranges, and active recording badges.
-- **Native Desktop Notifications & Acoustic Chimes**:
+- **Native Browser Desktop Notifications & Web Audio Chimes**:
   - Web Notification API integration for native OS/browser banner alerts when new playbacks or recordings begin.
   - High-priority security desktop notification when a playback is detected from an unauthorized IP.
   - Zero-dependency Web Audio API acoustic chimes (subtle two-tone chime for new streams and warning chime for unauthorized IPs) with test triggers in Settings.
+- **UI & UX Refinements**:
+  - Muted, discreet redesign for the PayPal donation button across the sidebar and documentation views.
+
+## [3.1.0] - 2026-11-07
+
 - **Channel & User Analytics & Dual Views**:
   - Interactive statistics modal for Channels (`ChannelProfileModal`) and Users (`UserProfileModal`) with KPIs (total views, accumulated duration, bandwidth consumed, active viewers/channels, and recent logs).
   - Dual view switcher (Grid vs Compact Detailed Table) for both Channels and Users with `localStorage` preference persistence.

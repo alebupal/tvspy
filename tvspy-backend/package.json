@@ -1,6 +1,6 @@
 {
   "name": "tvspy-backend",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "TVSPY Backend Service",
   "main": "src/app.js",
   "scripts": {

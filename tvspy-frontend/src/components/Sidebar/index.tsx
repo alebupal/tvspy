@@ -23,7 +23,7 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const CURRENT_VERSION = '3.1.0';
+const CURRENT_VERSION = '3.2.0';
 const PAYPAL_URL = 'https://www.paypal.me/alebupal';
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {

@@ -52,7 +52,7 @@ tvheadendService.init();
 // Iniciar servidor
 server.listen(port, () => {
     console.log(`=================================`);
-    console.log(` TVSPY Backend v3.1.0 Activo`);
+    console.log(` TVSPY Backend v3.2.0 Activo`);
     console.log(` HTTP API: http://localhost:${port}/api`);
     console.log(` WebSocket: ws://localhost:${port}/ws`);
     console.log(`=================================`);

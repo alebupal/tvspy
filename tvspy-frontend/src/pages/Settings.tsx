@@ -1022,13 +1022,13 @@ const Settings: React.FC = () => {
                 <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
                   <span className="text-body dark:text-bodydark block">{t('Current version')}:</span>
                   <p className="font-bold font-mono text-black dark:text-white mt-0.5">
-                    v{updateInfo?.currentVersion || '3.1.0'}
+                    v{updateInfo?.currentVersion || '3.2.0'}
                   </p>
                 </div>
                 <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
                   <span className="text-body dark:text-bodydark block">{t('Latest version')}:</span>
                   <p className="font-bold font-mono text-black dark:text-white mt-0.5">
-                    v{updateInfo?.latestVersion || '3.1.0'}
+                    v{updateInfo?.latestVersion || '3.2.0'}
                   </p>
                 </div>
               </div>

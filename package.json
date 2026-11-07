@@ -1,6 +1,6 @@
 {
   "name": "tvspy",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "TVSPY - Web Application to Monitor TVHeadend in Real Time",
   "private": true,
   "scripts": {
