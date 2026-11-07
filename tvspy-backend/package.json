@@ -1,7 +1,7 @@
 {
   "name": "tvspy-backend",
-  "version": "3.0.5",
-  "description": "",
+  "version": "3.1.0",
+  "description": "TVSPY Backend Service",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
@@ -11,26 +11,27 @@
     "type": "git",
     "url": "git+https://github.com/alebupal/tvspy.git"
   },
-  "keywords": [],
+  "keywords": [
+    "tvheadend",
+    "monitor",
+    "tvspy",
+    "streaming"
+  ],
   "author": {
     "name": "Alejandro Bueno Palma",
     "email": "alebupal@gmail.com",
     "url": "https://github.com/alebupal/tvspy"
   },
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/alebupal/tvspy/issues"
-  },
-  "homepage": "https://github.com/alebupal/tvspy#readme",
   "dependencies": {
-    "axios": "^1.5.1",
-    "body-parser": "^1.20.3",
-    "cors": "^2.8.5",
-    "express": ">=4.20.0",
-    "sqlite3": "^5.1.6",
-    "ws": "^8.14.2"
+    "axios": "^1.21.0",
+    "body-parser": "^2.4.0",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "sqlite3": "^5.1.7",
+    "ws": "^8.22.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.14"
   }
 }

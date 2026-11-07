@@ -1,0 +1,91 @@
+export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected' | 'error';
+
+export interface SubscriptionMessage {
+  id: number;
+  hostname: string;
+  username: string;
+  client: string;
+  title: string;
+  channel: string;
+  service: string;
+  pids?: number[];
+  profile?: string;
+  in: number;
+  out?: number;
+  total_in: number;
+  start: number;
+  errors?: number;
+  notificationClass: 'subscriptions';
+}
+
+export interface Metrics {
+  totalBandwidth: number;
+  totalConsumed: number;
+  count: number;
+}
+
+export interface RegistryItem {
+  id: number;
+  username: string;
+  channel: string;
+  hostname: string;
+  client: string;
+  service: string;
+  title: string;
+  errors: number;
+  total_in: number;
+  start: string;
+  end: string | null;
+  formattedStart?: string;
+  formattedEnd?: string;
+}
+
+export interface PaginatedResult<T> {
+  items: T[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    pages: number;
+  };
+}
+
+export interface ChannelItem {
+  uuid: string;
+  enabled: boolean;
+  name: string;
+  number: number;
+  icon?: string;
+  icon_public_url?: string;
+  services?: string[];
+}
+
+export interface UserItem {
+  uuid: string;
+  enabled: boolean;
+  username: string;
+  comment?: string;
+  prefix?: string;
+}
+
+export interface StatisticsData {
+  topChannels: { channel: string; total_time_seconds: number; count: number }[];
+  topClients: { client: string | null; total_time_seconds: number; count: number }[];
+  topUsers: { username: string; total_time_seconds: number; count: number }[];
+  lastReproductions: RegistryItem[];
+  activityByDay?: { date: string; reproductions: number; total_seconds: number; total_bandwidth: number }[];
+  activityByHour?: { hour: string; count: number }[];
+  summary?: {
+    total_reproductions: number;
+    total_duration_seconds: number;
+    total_consumed_bytes: number;
+    unique_channels: number;
+    unique_users: number;
+  };
+}
+
+export interface ConfigEntry {
+  name: string;
+  value: string;
+}
+

@@ -1,0 +1,25 @@
+{
+  "name": "TVSPY - Monitor TVHeadend",
+  "short_name": "TVSPY",
+  "description": "Panel de control y monitorización en tiempo real para servidores TVHeadend",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1A222C",
+  "theme_color": "#3C50E0",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

@@ -1,57 +1,51 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
-import { API_ENDPOINTS } from '../config/apiConfig';
+import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
+import apiClient from '../api/client';
 
 interface DebugContextType {
-    debugMode: boolean;
-    setDebugMode: React.Dispatch<React.SetStateAction<boolean>>;
+  debugMode: boolean;
+  setDebugMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const DebugContext = createContext<DebugContextType | undefined>(undefined);
 
 interface DebugProviderProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
-const DebugProvider: React.FC<DebugProviderProps> = ({ children }) => {
-    const [debugMode, setDebugMode] = useState<boolean>(false);
+export const DebugProvider: React.FC<DebugProviderProps> = ({ children }) => {
+  const [debugMode, setDebugMode] = useState<boolean>(() => {
+    return localStorage.getItem('debug_mode') === 'true';
+  });
 
-    useEffect(() => {
-        // Verificar si el estado de debugMode ya está almacenado en localStorage
-        const storedDebugMode = localStorage.getItem('debug_mode');
-        if (storedDebugMode) {
-            // Convertir 'true' o 'false' almacenados como cadena a booleano
-            setDebugMode(storedDebugMode === 'true');
-        } else {
-            // Si no existe, realizar la petición a la API para obtener el valor
-            const fetchDebugConfig = async () => {
-                try {
-                    const response = await axios.get(API_ENDPOINTS.DEBUG_MODE); // Endpoint para obtener la configuración
-                    const config = response.data.value === '1'; // Convertir 1 a true y 0 a false
-                    setDebugMode(config);
-                    localStorage.setItem('debug_mode', config.toString());
-                } catch (error) {
-                    console.error('Error fetching debug configuration:', error);
-                }
-            };
+  useEffect(() => {
+    const fetchDebugConfig = async () => {
+      try {
+        const response = await apiClient.get('/config/debug_mode');
+        const isDebug = response.data?.value === '1' || response.data?.value === 'true';
+        setDebugMode(isDebug);
+        localStorage.setItem('debug_mode', isDebug.toString());
+      } catch (error) {
+        // silenciar si falla al inicio
+      }
+    };
 
-            fetchDebugConfig();
-        }
-    }, []);
+    fetchDebugConfig();
+  }, []);
 
-    return (
-        <DebugContext.Provider value={{ debugMode, setDebugMode }}>
-            {children}
-        </DebugContext.Provider>
-    );
+  return (
+    <DebugContext.Provider value={{ debugMode, setDebugMode }}>
+      {children}
+    </DebugContext.Provider>
+  );
 };
 
-const useDebug = (): DebugContextType => {
-    const context = React.useContext(DebugContext);
-    if (!context) {
-        throw new Error('useDebug must be used within a DebugProvider');
-    }
-    return context;
+export const useDebug = (): DebugContextType => {
+  const context = useContext(DebugContext);
+  if (!context) {
+    return {
+      debugMode: false,
+      setDebugMode: () => {},
+    };
+  }
+  return context;
 };
-
-export { DebugProvider, useDebug };

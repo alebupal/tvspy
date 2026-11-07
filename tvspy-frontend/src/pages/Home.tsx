@@ -1,394 +1,306 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import CardDataLive from '../components/CardDataLive';
-import Loader from '../common/Loader/index';
-import { API_ENDPOINTS } from '../config/apiConfig';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useFormatter } from '../utils/formatters';
-import { useDebug } from '../context/DebugContext';
-
-interface SubscriptionMessage {
-  id: number;
-  hostname: string;
-  username: string;
-  client: string;
-  title: string;
-  channel: string;
-  service: string;
-  pids: number[];
-  profile: string;
-  in: number;
-  out: number;
-  total_in: number;
-  notificationClass: 'subscriptions';
-}
-
-interface Registry {
-  id: number;
-  username: string;
-  channel: string;
-  start: string;
-  client: string;
-}
-
-type MessageType = {
-  messages: SubscriptionMessage[];
-};
-
-type Statistics = {
-  topChannels: { channel: string, total_time_seconds: number, count: number }[];
-  topClients: { client: string | null, total_time_seconds: number, count: number }[];
-  topUsers: { username: string, total_time_seconds: number, count: number }[];
-  lastReproductions: Registry[];
-};
+import { useWebSocket } from '../context/WebSocketContext';
+import { configApi, statisticsApi } from '../api';
+import { StatisticsData } from '../types';
+import StatCard from '../components/common/StatCard';
+import LiveSparkline from '../components/common/LiveSparkline';
+import LiveStreamCard from '../components/live/LiveStreamCard';
+import Card from '../components/common/Card';
+import { formatBandwidth, formatBytes, formatSeconds } from '../utils/formatters';
+import {
+  FiActivity,
+  FiHardDrive,
+  FiTv,
+  FiUsers,
+  FiCalendar,
+  FiBarChart2,
+  FiClock,
+  FiRefreshCw,
+  FiWifiOff,
+} from 'react-icons/fi';
 
 const Home: React.FC = () => {
   const { t } = useTranslation();
-  const { debugMode } = useDebug();
-  const { formatBytes, formatDate, formatTime } = useFormatter();
-  const [messages, setMessages] = useState<SubscriptionMessage[]>([]);
-  const [statistics, setStatistics] = useState<Statistics | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [wsServerUrl, setWsServerUrl] = useState<string>('');
-  const [totalBandwidth, setTotalBandwidth] = useState<number>(0);
-  const [totalConsumed, setTotalConsumed] = useState<number>(0);
-  const [ipAllowed, setIpAllowed] = useState<string>('');
-  const [type, setType] = useState<'time' | 'uses'>('time');
+  const { status, error: wsError, subscriptions, metrics, reconnect } = useWebSocket();
+
+  const [statistics, setStatistics] = useState<StatisticsData | null>(null);
+  const [statsLoading, setStatsLoading] = useState<boolean>(true);
+  const [statsType, setStatsType] = useState<'time' | 'uses'>('time');
   const [daysAgo, setDaysAgo] = useState<number>(30);
+  const [allowedIps, setAllowedIps] = useState<string>('');
 
-  const determineType = (title: string | undefined): 'recording' | 'playing' => {
-    if (title && title.includes('DVR:')) {
-      return 'recording';
-    }
-    return 'playing';
-  };
-
+  // Cargar IPs autorizadas de la configuración
   useEffect(() => {
-    const fetchWsServerUrl = async () => {
-      try {
-        const names = ['port', 'username', 'hostname', 'password'];
-        const response = await axios.post(`${API_ENDPOINTS.CONFIG}/multiple`, { names });
-
-        if (debugMode) {
-          console.log('Home - fetchWsServerUrl - names', names);
-          console.log('Home - fetchWsServerUrl', response);
-        }
-
-        const config = response.data.reduce((acc, item) => {
-          acc[item.name] = item.value;
-          return acc;
-        }, {} as Record<string, string | undefined>);
-
-        const { port, username, hostname, password } = config;
-
-        if (port && username && hostname && password) {
-          const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-          const url = `${protocol}://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostname}:${port}/comet/ws`;
-          setWsServerUrl(url);
-        } else {
-          throw new Error(t('Missing one or more values required to connect with TVHeadend'));
-        }
-      } catch (err) {
-        setError(err as Error);
-        setLoading(false);
-      }
-    };
-
-    const fetchIpAllowed = async () => {
-      try {
-        const response = await axios.get(`${API_ENDPOINTS.CONFIG}/ip_allowed`);
-
-        if (debugMode) {
-          console.log('Home - fetchIpAllowed', response);
-        }
-
-        setIpAllowed(response.data.value);
-      } catch (err) {
-        setError(err as Error);
-      }
-    };
-
-    fetchWsServerUrl();
-    fetchIpAllowed();
+    configApi.getAll().then((configs) => {
+      const ipConfig = configs.find((c) => c.name === 'ip_allowed');
+      if (ipConfig) setAllowedIps(ipConfig.value);
+    }).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    const fetchStatistics = async () => {
-      try {
-        const response = await axios.get(`${API_ENDPOINTS.STATISTICS}/general`, {
-          params: { type, daysAgo }
-        });
-
-        if (debugMode) {
-          console.log('Home - fetchStatistics - type', type);
-          console.log('Home - fetchStatistics - daysAgo', daysAgo);
-          console.log('Home - fetchStatistics', response);
-        }
-
-        setStatistics(response.data);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStatistics();
-  }, [type, daysAgo]);
-
-  useEffect(() => {
-    if (!wsServerUrl) return;
-
-    const socket = new WebSocket(wsServerUrl, ['tvheadend-comet']);
-
-    socket.onopen = () => {
-      if (debugMode) {
-        console.log('WebSocket', 'Conectado al servidor');
-      }
-    };
-
-    socket.onmessage = (event) => {
-      try {
-        const data: MessageType = JSON.parse(event.data);
-
-        if (debugMode) {
-          console.log('WebSocket - event', event);
-          console.log('WebSocket - data', data);
-        }
-
-        let subscriptionMessages: SubscriptionMessage[] = [];
-        subscriptionMessages = data.messages.filter(
-          (msg): msg is SubscriptionMessage => msg.notificationClass === 'subscriptions'
-        );
-
-        if (debugMode) {
-          console.log('WebSocket - subscriptionMessages', subscriptionMessages);
-        }
-
-        setMessages(subscriptionMessages.length > 0 ? subscriptionMessages : []);
-
-        // Calcular la suma de los bandwidths
-        const totalIn = subscriptionMessages.reduce((sum, msg) => sum + (msg.in || 0), 0);
-        const totalTotalIn = subscriptionMessages.reduce((sum, msg) => sum + (msg.total_in || 0), 0);
-
-        setTotalBandwidth(totalIn);
-        setTotalConsumed(totalTotalIn);
-
-        setLoading(false);
-      } catch (error) {
-        console.error('WebSocket - Error al analizar el mensaje:', error);
-        setError(error as Error);
-        setLoading(false);
-      }
-    };
-
-    socket.onerror = (event) => {
-      console.error('WebSocket - Error:', event);
-      setError(new Error('Error en la conexión WebSocket'));
-      setLoading(false);
-    };
-
-    socket.onclose = () => {
-      console.log('WebSocket - Conexión cerrada');
-      setLoading(false);
-    };
-
-    return () => {
-      if (socket) {
-        socket.close();
-      }
-    };
-  }, [wsServerUrl]);
-
-  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(event.target.value as 'time' | 'uses');
+  // Cargar estadísticas según filtros
+  const fetchStats = async () => {
+    setStatsLoading(true);
+    try {
+      const data = await statisticsApi.getGeneral({
+        type: statsType,
+        daysAgo,
+        limit: 8,
+      });
+      setStatistics(data);
+    } catch (err) {
+      console.error('Error cargando estadísticas:', err);
+    } finally {
+      setStatsLoading(false);
+    }
   };
 
-  const handleDaysAgoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDaysAgo(parseInt(event.target.value, 10) || 30);
-  };
+  useEffect(() => {
+    fetchStats();
+  }, [statsType, daysAgo]);
 
-  // Verifica si todas las secciones están vacías
-  const isEmptyStatistics = !statistics?.topChannels.length && !statistics?.topClients.length && !statistics?.topUsers.length && !statistics?.lastReproductions.length;
+  // Contar usuarios únicos en vivo
+  const uniqueUsersCount = useMemo(() => {
+    const users = new Set(subscriptions.map((s) => s.username).filter(Boolean));
+    return users.size;
+  }, [subscriptions]);
 
   return (
-    <div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5 mb-4">
-        <div className="col-span-full text-center mb-1">
-          {loading ? (
-            <Loader />
-          ) : error ? (
-            <div className="text-red-500">
-              {t('Error')} {error.message}
-            </div>
-          ) : (
-            <>
-              {totalBandwidth > 0 && totalConsumed > 0 && (
-                <div>
-                  <div className="text-lg"><b>{t('Total bandwidth')}:</b> {formatBytes(totalBandwidth)}/S</div>
-                  <div className="text-lg"><b>{t('Total consumed')}:</b> {formatBytes(totalConsumed)}</div>
-                </div>
-              )}
-            </>
-          )}
+    <div className="space-y-6">
+      {/* Aviso si la conexión a TVHeadend falló */}
+      {status === 'error' && (
+        <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-4 text-sm text-rose-600 dark:text-rose-400 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FiWifiOff className="text-lg flex-shrink-0" />
+            <span>
+              <b>{t('Error')}:</b> {wsError || t('Missing one or more values required to connect with TVHeadend')}
+            </span>
+          </div>
+          <button
+            onClick={reconnect}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-500 text-white text-xs font-semibold hover:bg-rose-600 transition"
+          >
+            <FiRefreshCw className="text-xs" />
+            {t('Retry')}
+          </button>
         </div>
-        {messages.length > 0 ? (
-          messages.map((msg) => (
-            <CardDataLive
-              key={msg.id}
-              user={msg.username}
-              channel={msg.channel}
-              client={msg.client}
-              hostname={msg.hostname}
-              service={msg.service}
-              bandwidth={msg.in ? formatBytes(msg.in) : 'N/A'}
-              total_bandwidth={msg.total_in ? formatBytes(msg.total_in) : 'N/A'}
-              type={determineType(msg.title)}
-              ip_allowed={ipAllowed}
-            />
-          ))
+      )}
+
+      {/* Grid de Métricas Principales */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          title={t('Bandwidth')}
+          value={formatBandwidth(metrics.totalBandwidth)}
+          subtitle={t('Total bandwidth')}
+          color="primary"
+          sparkline={<LiveSparkline currentValue={metrics.totalBandwidth} />}
+          icon={<FiActivity className="text-2xl" />}
+        />
+
+        <StatCard
+          title={t('Total consumed')}
+          value={formatBytes(metrics.totalConsumed)}
+          subtitle={t('Consumed across active sessions')}
+          color="success"
+          icon={<FiHardDrive className="text-2xl" />}
+        />
+
+        <StatCard
+          title={t('Active streams')}
+          value={subscriptions.length}
+          subtitle={`${subscriptions.filter((s) => s.title?.includes('DVR:')).length} grabaciones DVR`}
+          color="warning"
+          icon={<FiTv className="text-2xl" />}
+        />
+
+        <StatCard
+          title={t('Users')}
+          value={uniqueUsersCount}
+          subtitle={t('Connected clients right now')}
+          color="info"
+          icon={<FiUsers className="text-2xl" />}
+        />
+      </div>
+
+      {/* Sección Transmisiones en Vivo */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-bold text-black dark:text-white">
+              {t('Live Transmissions')}
+            </h2>
+            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary dark:text-secondary">
+              {subscriptions.length}
+            </span>
+          </div>
+        </div>
+
+        {subscriptions.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {subscriptions.map((sub) => (
+              <LiveStreamCard
+                key={sub.id || sub.start}
+                subscription={sub}
+                allowedIps={allowedIps}
+              />
+            ))}
+          </div>
         ) : (
-          <div className="col-span-full text-center text-gray-500">
-            {t('No active plays')}
+          <div className="rounded-xl border border-stroke bg-white p-12 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-meta-4 text-body dark:text-bodydark mb-3">
+              <FiTv className="text-3xl" />
+            </div>
+            <h3 className="text-base font-semibold text-black dark:text-white">
+              {t('No active plays')}
+            </h3>
+            <p className="text-xs text-body dark:text-bodydark mt-1 max-w-sm mx-auto">
+              Cuando un cliente inicie una reproducción o grabación en TVHeadend aparecerá aquí en tiempo real.
+            </p>
           </div>
         )}
       </div>
 
-      <div className="mb-6 flex flex-col col-span-12">
-        <h2 className="text-title-md2 font-semibold text-black dark:text-white mb-4">
-          {t('Statistics')}
-        </h2>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <label htmlFor="type" className="block text-sm font-medium text-black dark:text-white mb-2">
-              {t('Type')}
-            </label>
-            <select
-              name="type"
-              id="type"
-              className="w-full appearance-none rounded border border-stroke bg-transparent py-3 px-4.5 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input"
-              value={type}
-              onChange={handleTypeChange}
-            >
-              <option value="time" className="text-body dark:text-bodydark">
+      {/* Sección Analítica & Estadísticas */}
+      <div className="pt-2">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <div>
+            <h2 className="text-lg font-bold text-black dark:text-white flex items-center gap-2">
+              <FiBarChart2 className="text-primary dark:text-secondary" />
+              {t('Statistics')}
+            </h2>
+            <p className="text-xs text-body dark:text-bodydark">
+              Consumo y registros históricos agregados
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Selector Tipo: Tiempo o Usos */}
+            <div className="inline-flex rounded-lg border border-stroke bg-gray-100 p-1 dark:border-strokedark dark:bg-meta-4">
+              <button
+                onClick={() => setStatsType('time')}
+                className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                  statsType === 'time'
+                    ? 'bg-white text-black shadow-sm dark:bg-boxdark dark:text-white'
+                    : 'text-body hover:text-black dark:text-bodydark dark:hover:text-white'
+                }`}
+              >
                 {t('Time')}
-              </option>
-              <option value="uses" className="text-body dark:text-bodydark">
+              </button>
+              <button
+                onClick={() => setStatsType('uses')}
+                className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                  statsType === 'uses'
+                    ? 'bg-white text-black shadow-sm dark:bg-boxdark dark:text-white'
+                    : 'text-body hover:text-black dark:text-bodydark dark:hover:text-white'
+                }`}
+              >
                 {t('Use')}
-              </option>
+              </button>
+            </div>
+
+            {/* Selector Días */}
+            <select
+              value={daysAgo}
+              onChange={(e) => setDaysAgo(Number(e.target.value))}
+              aria-label={t('Days ago')}
+              className="rounded-lg border border-stroke bg-white px-3 py-1.5 text-xs font-medium text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-boxdark dark:text-white"
+            >
+              <option value={7}>Últimos 7 días</option>
+              <option value={30}>Últimos 30 días</option>
+              <option value={90}>Últimos 90 días</option>
             </select>
           </div>
-          <div className="flex-1">
-            <label htmlFor="daysAgo" className="block text-sm font-medium text-black dark:text-white mb-2">
-              {t('Days ago')}
-            </label>
-            <input
-              className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
-              type="number"
-              name="daysAgo"
-              id="daysAgo"
-              value={daysAgo}
-              onChange={handleDaysAgoChange}
-            />
-          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3 2xl:gap-7.5">
-        {statistics && !isEmptyStatistics ? (
-          <>
-            {statistics?.topChannels.length > 0 && (
-              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                  <h3 className="font-medium text-black dark:text-white">
-                    {t('Top channels')}
-                  </h3>
-                </div>
-                <div className="p-7">
-                  <ul className="space-y-2">
-                    {statistics.topChannels.map((item) => (
-                      <li key={item.channel} className="text-sm text-gray-300">
-                        {item.channel} - {type === 'time' ? formatTime(item.total_time_seconds) : item.count + ' ' + t('reproductions')}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {statistics?.topClients.length > 0 && (
-              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                  <h3 className="font-medium text-black dark:text-white">
-                    {t('Top clients')}
-                  </h3>
-                </div>
-                <div className="p-7">
-                  <ul className="space-y-2">
-                    {statistics.topClients.map((item) => (
-                      <li key={item.client} className="text-sm text-gray-300">
-                        {item.client} - {type === 'time' ? formatTime(item.total_time_seconds) : item.count + ' ' + t('reproductions')}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {statistics?.topUsers.length > 0 && (
-              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                  <h3 className="font-medium text-black dark:text-white">
-                    {t('Top users')}
-                  </h3>
-                </div>
-                <div className="p-7">
-                  <div className="mb-5.5">
-                    <div className="h-40 overflow-y-auto">
-                      <ul className="space-y-2">
-                        {statistics.topUsers.map((item) => (
-                          <li key={item.username} className="text-sm text-gray-300">
-                            {item.username} - {type === 'time' ? formatTime(item.total_time_seconds) : item.count + ' ' + t('reproductions')}
-                          </li>
-                        ))}
-                      </ul>
+        {/* Paneles de Estadísticas */}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {/* Top Canales */}
+          <Card title={t('Top channels')} subtitle={`Top según ${statsType === 'time' ? 'duración' : 'reproducciones'}`}>
+            {statsLoading ? (
+              <div className="py-8 text-center text-xs text-body">Cargando...</div>
+            ) : statistics?.topChannels && statistics.topChannels.length > 0 ? (
+              <ul className="divide-y divide-stroke dark:divide-strokedark">
+                {statistics.topChannels.map((item, idx) => (
+                  <li key={item.channel + idx} className="py-2.5 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 truncate max-w-[180px]">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary text-[10px] font-bold">
+                        {idx + 1}
+                      </span>
+                      <span className="font-medium text-black dark:text-white truncate">
+                        {item.channel}
+                      </span>
                     </div>
-                  </div>
-                </div>
-              </div>
+                    <span className="font-mono text-body dark:text-bodydark">
+                      {statsType === 'time' ? formatSeconds(item.total_time_seconds) : `${item.count} ${t('reproductions')}`}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="py-6 text-center text-xs text-body dark:text-bodydark">
+                {t('No statistics available')}
+              </p>
             )}
+          </Card>
 
-            {statistics?.lastReproductions.length > 0 && (
-              <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                <div className="border-b border-stroke py-4 px-7 dark:border-strokedark">
-                  <h3 className="font-medium text-black dark:text-white">
-                    {t('Last reproductions')}
-                  </h3>
-                </div>
-                <div className="p-7">
-                  <div className="mb-5.5">
-                    <div className="h-40 overflow-y-auto">
-                      <ul className="space-y-2">
-                        {statistics.lastReproductions.map((item) => (
-                          <li key={item.id} className="text-sm text-gray-300">
-                            <p><b>{item.username}</b> - {item.channel}</p>
-                            <p className='text-xs'>{item.client}</p>
-                            <p className='text-xs'><i>{formatDate(item.start)}</i></p>
-                          </li>
-                        ))}
-                      </ul>
+          {/* Top Clientes */}
+          <Card title={t('Top clients')} subtitle="Reproductores más utilizados">
+            {statsLoading ? (
+              <div className="py-8 text-center text-xs text-body">Cargando...</div>
+            ) : statistics?.topClients && statistics.topClients.length > 0 ? (
+              <ul className="divide-y divide-stroke dark:divide-strokedark">
+                {statistics.topClients.map((item, idx) => (
+                  <li key={(item.client || 'na') + idx} className="py-2.5 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 truncate max-w-[180px]">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold">
+                        {idx + 1}
+                      </span>
+                      <span className="font-medium text-black dark:text-white truncate">
+                        {item.client || 'N/A'}
+                      </span>
                     </div>
-                  </div>
-                </div>
-              </div>
+                    <span className="font-mono text-body dark:text-bodydark">
+                      {statsType === 'time' ? formatSeconds(item.total_time_seconds) : `${item.count} ${t('reproductions')}`}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="py-6 text-center text-xs text-body dark:text-bodydark">
+                {t('No statistics available')}
+              </p>
             )}
-          </>
-        ) : (
-          <div className="col-span-full text-center text-gray-500">
-            {t('No statistics available')}
-          </div>
-        )}
+          </Card>
+
+          {/* Top Usuarios */}
+          <Card title={t('Top users')} subtitle="Usuarios con mayor actividad">
+            {statsLoading ? (
+              <div className="py-8 text-center text-xs text-body">Cargando...</div>
+            ) : statistics?.topUsers && statistics.topUsers.length > 0 ? (
+              <ul className="divide-y divide-stroke dark:divide-strokedark">
+                {statistics.topUsers.map((item, idx) => (
+                  <li key={(item.username || 'na') + idx} className="py-2.5 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 truncate max-w-[180px]">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/10 text-amber-500 text-[10px] font-bold">
+                        {idx + 1}
+                      </span>
+                      <span className="font-medium text-black dark:text-white truncate">
+                        {item.username}
+                      </span>
+                    </div>
+                    <span className="font-mono text-body dark:text-bodydark">
+                      {statsType === 'time' ? formatSeconds(item.total_time_seconds) : `${item.count} ${t('reproductions')}`}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="py-6 text-center text-xs text-body dark:text-bodydark">
+                {t('No statistics available')}
+              </p>
+            )}
+          </Card>
+        </div>
       </div>
     </div>
   );

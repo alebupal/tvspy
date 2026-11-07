@@ -1,5 +1,24 @@
 # Changelog TVSPY
 
+## [3.1.0] - 2026-11-07
+
+- **Backend Architecture**:
+  - Full modular redesign into layers (Database, Repositories, Services, Controllers, Routes).
+  - Unified TVHeadend connection: backend is now the single point of contact, eliminating issues with private networks, NAT, and browser credential restrictions.
+  - Native WebSocket gateway at `/ws` broadcasting metrics, live streams, and connection state to connected clients.
+  - Automatic reconnection engine with exponential backoff without requiring container restarts.
+  - Live hot-reconnection when credentials are changed in Settings.
+  - Interactive test endpoints for TVHeadend and Telegram connections.
+  - Secure parameterized SQL queries with performance database indexes.
+- **Frontend Redesign**:
+  - Modern, responsive, and accessible UI crafted with pure Tailwind CSS.
+  - Interactive dashboard with real-time bandwidth pulse, active streams, unique viewers, and total consumption.
+  - Visual stream cards featuring Live vs DVR indicators, unauthorized IP alerts, and instant bitrate metrics.
+  - Native high-performance table for Registries with instant search, pagination, and one-click CSV export.
+  - Clean modular tab-based Settings panel (TVHeadend, Telegram with dynamic templates, Security/IPs, System).
+  - Vite dev proxy and Nginx `/ws` WebSocket reverse proxy support.
+
+
 ## [3.0.5] - 2026-01-02
 
 - Updated dependencies to the latest versions for improved security and stability.

@@ -1,32 +1,49 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
+const fs = require('fs');
 const defaultConfigData = require('./defaultConfigData');
 
-// Crear una nueva instancia de la base de datos
-const dbPath = path.join(__dirname, 'file/database.db');
+// Directorio del archivo de base de datos
+const dbDir = path.join(__dirname, 'file');
+if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+
+const dbPath = path.join(dbDir, 'database.db');
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error opening database:', err.message);
     } else {
-        console.log('Connected to the SQLite database.');
+        console.log('Connected to SQLite database at:', dbPath);
     }
 });
 
-// Función para ejecutar comandos SQL con Promesas
+// Envolturas con Promesas para consultas asíncronas limpias
 const runSql = (sql, params = []) => {
     return new Promise((resolve, reject) => {
-        db.run(sql, params, (err) => {
+        db.run(sql, params, function (err) {
             if (err) {
                 reject(err);
             } else {
-                resolve();
+                resolve({ id: this.lastID, changes: this.changes });
             }
         });
     });
 };
 
-// Función para consultar datos con Promesas
 const getSql = (sql, params = []) => {
+    return new Promise((resolve, reject) => {
+        db.get(sql, params, (err, row) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+};
+
+const allSql = (sql, params = []) => {
     return new Promise((resolve, reject) => {
         db.all(sql, params, (err, rows) => {
             if (err) {
@@ -38,9 +55,10 @@ const getSql = (sql, params = []) => {
     });
 };
 
-// Crear las tablas
+// Inicialización de la base de datos
 const initializeDatabase = async () => {
     try {
+        // Tabla de configuración
         await runSql(`
             CREATE TABLE IF NOT EXISTS config (
                 name TEXT PRIMARY KEY,
@@ -48,25 +66,31 @@ const initializeDatabase = async () => {
             )
         `);
 
+        // Tabla de registros de reproducciones
         await runSql(`
             CREATE TABLE IF NOT EXISTS registries (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 username TEXT,
                 channel TEXT,
                 hostname TEXT,
                 client TEXT,
                 service TEXT,
                 title TEXT,
-                errors INTEGER,
-                total_in INTEGER,
+                errors INTEGER DEFAULT 0,
+                total_in INTEGER DEFAULT 0,
                 start DATETIME,
                 end DATETIME,
-                notification_time BOOLEAN,
-                notification_ip BOOLEAN
+                notification_time BOOLEAN DEFAULT 0,
+                notification_ip BOOLEAN DEFAULT 0
             )
         `);
 
-        //await updateRegistriesTable();
+        // Índices para optimizar rendimiento en consultas y estadísticas
+        await runSql(`CREATE INDEX IF NOT EXISTS idx_registries_start ON registries(start)`);
+        await runSql(`CREATE INDEX IF NOT EXISTS idx_registries_end ON registries(end)`);
+        await runSql(`CREATE INDEX IF NOT EXISTS idx_registries_channel ON registries(channel)`);
+        await runSql(`CREATE INDEX IF NOT EXISTS idx_registries_username ON registries(username)`);
+
         await insertDefaultConfigData();
     } catch (err) {
         console.error('Error initializing database:', err.message);
@@ -75,78 +99,22 @@ const initializeDatabase = async () => {
 
 const insertDefaultConfigData = async () => {
     try {
-        // Primero, obtenemos todos los registros actuales en la tabla "config"
-        const currentConfigs = await getSql('SELECT name FROM config');
-        const currentConfigNames = currentConfigs.map(config => config.name);
-
-        // Obtener los nombres de las configuraciones por defecto
-        const defaultConfigNames = defaultConfigData.map(data => data.name);
-
-        // Eliminar los registros que no están en defaultConfigData
-        const namesToDelete = currentConfigNames.filter(name => !defaultConfigNames.includes(name));
-        if (namesToDelete.length > 0) {
-            const deleteStmt = db.prepare('DELETE FROM config WHERE name = ?');
-            namesToDelete.forEach((name) => {
-                deleteStmt.run(name, (err) => {
-                    if (err) {
-                        console.error(`Error deleting record with name ${name}:`, err.message);
-                    }
-                });
-            });
-            deleteStmt.finalize();
-            console.log(`Deleted ${namesToDelete.length} records from "config" table.`);
-        }
-
-        // Insertar los datos por defecto si no existen
         const stmt = db.prepare('INSERT OR IGNORE INTO config (name, value) VALUES (?, ?)');
-        defaultConfigData.forEach((data, index) => {
-            stmt.run(data.name, data.value, (err) => {
-                if (err) {
-                    console.error(`Error inserting record with name ${data.name}:`, err.message);
-                }
-            });
-
-            // Asegurarse de que todos los datos se insertaron antes de finalizar
-            if (index === defaultConfigData.length - 1) {
-                stmt.finalize((err) => {
-                    if (err) {
-                        console.error('Error finalizing insert statement:', err.message);
-                    }
-                });
-            }
+        defaultConfigData.forEach((item) => {
+            stmt.run(item.name, item.value !== undefined ? String(item.value) : '');
         });
+        stmt.finalize();
     } catch (err) {
         console.error('Error inserting default config data:', err.message);
     }
 };
 
-
-const updateRegistriesTable = async () => {
-    try {
-        // Verificar si las columnas ya existen
-        const existingColumns = await getSql(`PRAGMA table_info(registries)`);
-        const columnNames = existingColumns.map(col => col.name);
-
-        const newColumns = [
-            { name: 'new_column_1', type: 'TEXT' },
-            { name: 'new_column_2', type: 'INTEGER' },
-            // Añade más columnas según sea necesario
-        ];
-
-        // Agregar las nuevas columnas si no existen
-        for (const column of newColumns) {
-            if (!columnNames.includes(column.name)) {
-                await runSql(`ALTER TABLE registries ADD COLUMN ${column.name} ${column.type}`);
-                console.log(`Column "${column.name}" added to "registries" table.`);
-            }
-        }
-
-    } catch (err) {
-        console.error('Error updating "registries" table:', err.message);
-    }
-};
-
-// Ejecutar la inicialización de la base de datos
+// Iniciar inicialización
 initializeDatabase();
 
-module.exports = db;
+module.exports = {
+    db,
+    runSql,
+    getSql,
+    allSql
+};
