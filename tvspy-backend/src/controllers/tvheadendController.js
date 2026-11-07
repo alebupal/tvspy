@@ -62,6 +62,118 @@ class TvheadendController {
             timestamp: new Date().toISOString()
         });
     }
+
+    async getDiskSpace(req, res) {
+        try {
+            const data = await tvheadendService.queryApi('/api/status/diskspace');
+            let total = 0;
+            let free = 0;
+            let used = 0;
+
+            const entries = Array.isArray(data?.entries)
+                ? data.entries
+                : Array.isArray(data)
+                ? data
+                : [];
+
+            if (entries.length > 0) {
+                total = entries.reduce((acc, e) => acc + (Number(e.total) || 0), 0);
+                free = entries.reduce((acc, e) => acc + (Number(e.free) || 0), 0);
+                used = entries.reduce((acc, e) => acc + (Number(e.used) || (e.total - e.free) || 0), 0);
+            } else if (data?.freediskspace !== undefined || data?.totaldiskspace !== undefined) {
+                free = Number(data.freediskspace) || 0;
+                total = Number(data.totaldiskspace) || 0;
+                used = Math.max(0, total - free);
+            }
+
+            const usedPercentage = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0;
+            const freePercentage = total > 0 ? Math.max(0, 100 - usedPercentage) : 100;
+            const isLowSpace = total > 0 && freePercentage < 10;
+
+            res.json({
+                total,
+                free,
+                used,
+                usedPercentage,
+                freePercentage,
+                isLowSpace,
+                raw: data
+            });
+        } catch (err) {
+            res.status(502).json({ error: 'Error al consultar espacio en disco de TVHeadend', details: err.message });
+        }
+    }
+
+    async getCurrentEpg(req, res) {
+        try {
+            const now = Math.floor(Date.now() / 1000);
+            const data = await tvheadendService.queryApi('/api/epg/events/grid?limit=2000');
+            const entries = Array.isArray(data?.entries) ? data.entries : [];
+
+            const currentEventsByChannel = {};
+
+            for (const ev of entries) {
+                const start = Number(ev.start) || 0;
+                const stop = Number(ev.stop) || 0;
+                const chanName = (ev.channelName || ev.channelNumber || '').trim();
+
+                if (!chanName) continue;
+
+                if (start <= now && stop >= now) {
+                    const durationSeconds = Math.max(1, stop - start);
+                    const elapsedSeconds = Math.max(0, now - start);
+                    const progress = Math.min(100, Math.max(0, Math.round((elapsedSeconds / durationSeconds) * 100)));
+                    const remainingMinutes = Math.max(0, Math.round((stop - now) / 60));
+
+                    currentEventsByChannel[chanName.toLowerCase()] = {
+                        eventId: ev.eventId,
+                        title: ev.title || 'Sin información',
+                        subtitle: ev.subtitle || '',
+                        summary: ev.summary || ev.description || '',
+                        start,
+                        stop,
+                        progress,
+                        durationMinutes: Math.round(durationSeconds / 60),
+                        remainingMinutes,
+                        channelName: chanName
+                    };
+                }
+            }
+
+            res.json({
+                timestamp: now,
+                count: Object.keys(currentEventsByChannel).length,
+                events: currentEventsByChannel
+            });
+        } catch (err) {
+            res.status(502).json({ error: 'Error al consultar EPG de TVHeadend', details: err.message });
+        }
+    }
+
+    async getDvrUpcoming(req, res) {
+        try {
+            let data = null;
+            try {
+                data = await tvheadendService.queryApi('/api/dvr/entry/grid_upcoming?limit=200');
+            } catch {
+                data = await tvheadendService.queryApi('/api/dvr/entry/grid?limit=200');
+            }
+
+            const entries = Array.isArray(data?.entries) ? data.entries : [];
+            const now = Math.floor(Date.now() / 1000);
+
+            const upcoming = entries
+                .filter(e => (Number(e.stop) || 0) >= now || (e.sched_status === 'scheduled' || e.sched_status === 'recording'))
+                .sort((a, b) => (Number(a.start) || 0) - (Number(b.start) || 0));
+
+            res.json({
+                total: upcoming.length,
+                entries: upcoming
+            });
+        } catch (err) {
+            res.status(502).json({ error: 'Error al consultar grabaciones de TVHeadend', details: err.message });
+        }
+    }
 }
 
 module.exports = new TvheadendController();

@@ -102,3 +102,42 @@ export interface UpdateCheckResult {
   cached?: boolean;
 }
 
+export interface DiskSpaceInfo {
+  total: number;
+  free: number;
+  used: number;
+  usedPercentage: number;
+  freePercentage: number;
+  isLowSpace: boolean;
+}
+
+export interface CurrentEpgEvent {
+  eventId?: number;
+  title: string;
+  subtitle?: string;
+  summary?: string;
+  start: number;
+  stop: number;
+  progress: number;
+  durationMinutes: number;
+  remainingMinutes: number;
+  channelName: string;
+}
+
+export interface DvrEntry {
+  uuid: string;
+  title?: string | Record<string, string>;
+  disp_title?: string;
+  channelname?: string;
+  start: number;
+  stop: number;
+  duration?: number;
+  status?: string;
+  sched_status?: string;
+  comment?: string;
+  filesize?: number;
+  enabled?: boolean;
+  description?: string | Record<string, string>;
+  disp_description?: string;
+}
+

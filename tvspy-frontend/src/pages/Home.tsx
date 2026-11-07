@@ -1,13 +1,22 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useWebSocket } from '../context/WebSocketContext';
 import { configApi, statisticsApi, tvheadendApi } from '../api';
-import { StatisticsData } from '../types';
+import { StatisticsData, CurrentEpgEvent } from '../types';
 import StatCard from '../components/common/StatCard';
 import LiveSparkline from '../components/common/LiveSparkline';
 import LiveStreamCard from '../components/live/LiveStreamCard';
+import DiskSpaceWidget from '../components/common/DiskSpaceWidget';
+import UpcomingDvrModal from '../components/dvr/UpcomingDvrModal';
 import Card from '../components/common/Card';
 import { formatBandwidth, formatBytes, formatSeconds } from '../utils/formatters';
+import { checkIpAuthorized } from '../utils/ipUtils';
+import {
+  playNotificationChime,
+  playAlertChime,
+  sendBrowserNotification,
+  getNotificationSettings,
+} from '../utils/notifications';
 import {
   FiActivity,
   FiHardDrive,
@@ -29,6 +38,11 @@ const Home: React.FC = () => {
   const [statsType, setStatsType] = useState<'time' | 'uses'>('time');
   const [daysAgo, setDaysAgo] = useState<number>(30);
   const [allowedIps, setAllowedIps] = useState<string>('');
+  const [currentEpg, setCurrentEpg] = useState<Record<string, CurrentEpgEvent>>({});
+  const [isDvrModalOpen, setIsDvrModalOpen] = useState<boolean>(false);
+  const [upcomingDvrCount, setUpcomingDvrCount] = useState<number>(0);
+  const previousSubIdsRef = useRef<Set<string | number>>(new Set());
+  const initialLoadRef = useRef<boolean>(true);
   const [channelLogos, setChannelLogos] = useState<Record<string, string>>(() => {
     try {
       const cached = sessionStorage.getItem('tvspy_channel_logos');
@@ -90,6 +104,76 @@ const Home: React.FC = () => {
   useEffect(() => {
     fetchStats();
   }, [statsType, daysAgo]);
+
+  // Cargar contador de próximas grabaciones DVR programadas
+  useEffect(() => {
+    tvheadendApi
+      .getDvrUpcoming()
+      .then((data) => {
+        if (data && typeof data.total === 'number') {
+          setUpcomingDvrCount(data.total);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Cargar EPG en vivo para los canales que se estén reproduciendo
+  useEffect(() => {
+    if (subs.length === 0) return;
+    const fetchEpg = () => {
+      tvheadendApi
+        .getCurrentEpg()
+        .then((data) => {
+          if (data?.events) {
+            setCurrentEpg(data.events);
+          }
+        })
+        .catch(() => {});
+    };
+    fetchEpg();
+    const timer = setInterval(fetchEpg, 30000);
+    return () => clearInterval(timer);
+  }, [subs.length]);
+
+  // Detección de nuevas emisiones y alertas de escritorio / sonido
+  useEffect(() => {
+    const currentIds = new Set(subs.map((s) => s.id || s.start));
+
+    if (initialLoadRef.current) {
+      initialLoadRef.current = false;
+      previousSubIdsRef.current = currentIds;
+      return;
+    }
+
+    const newStreams = subs.filter((s) => !previousSubIdsRef.current.has(s.id || s.start));
+    if (newStreams.length > 0) {
+      const settings = getNotificationSettings();
+
+      newStreams.forEach((stream) => {
+        const isUnauthorized = !checkIpAuthorized(stream.hostname, allowedIps);
+        const channelLabel = stream.channel || t('Unknown channel');
+        const userLabel = stream.username || t('No user');
+
+        if (isUnauthorized && settings.unauthorizedIpAlerts) {
+          playAlertChime();
+          sendBrowserNotification(`⚠️ ${t('Unauthorized IP Alert') || 'Alerta: IP no autorizada'}`, {
+            body: `${stream.hostname} (${userLabel} - ${channelLabel})`,
+          });
+        } else {
+          if (settings.soundAlerts) {
+            playNotificationChime();
+          }
+          if (settings.desktopNotifications) {
+            sendBrowserNotification(t('Stream started') || 'Nueva emisión iniciada', {
+              body: `${userLabel} - ${channelLabel} (${stream.client || 'TV'})`,
+            });
+          }
+        }
+      });
+    }
+
+    previousSubIdsRef.current = currentIds;
+  }, [subs, allowedIps, t]);
 
   // Filtrar escaneos internos de muxes/EPG/listas m3u que no son reproducciones de usuarios
   const subs = useMemo(() => {
@@ -192,6 +276,12 @@ const Home: React.FC = () => {
         />
       </div>
 
+      {/* Widget de Espacio en Disco TVHeadend */}
+      <DiskSpaceWidget
+        onOpenDvrModal={() => setIsDvrModalOpen(true)}
+        upcomingCount={upcomingDvrCount}
+      />
+
       {/* Sección Transmisiones en Vivo */}
       <div>
         <div className="flex items-center justify-between mb-4">
@@ -203,6 +293,21 @@ const Home: React.FC = () => {
               {subs.length}
             </span>
           </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsDvrModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400 text-xs font-semibold hover:bg-purple-500/20 transition shadow-sm"
+            >
+              <FiHardDrive className="text-xs" />
+              <span>{t('Upcoming DVR') || 'Próximas grabaciones DVR'}</span>
+              {upcomingDvrCount > 0 && (
+                <span className="rounded-full bg-purple-600 text-white px-1.5 py-0.2 text-[10px] font-bold">
+                  {upcomingDvrCount}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
 
         {subs.length > 0 ? (
@@ -213,6 +318,7 @@ const Home: React.FC = () => {
                 subscription={sub}
                 allowedIps={allowedIps}
                 channelLogo={channelLogos[sub.channel]}
+                epgEvent={currentEpg[sub.channel?.toLowerCase()?.trim()]}
               />
             ))}
           </div>
@@ -373,6 +479,12 @@ const Home: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      {/* Modal de Próximas Grabaciones DVR */}
+      <UpcomingDvrModal
+        isOpen={isDvrModalOpen}
+        onClose={() => setIsDvrModalOpen(false)}
+      />
     </div>
   );
 };

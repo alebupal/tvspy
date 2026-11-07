@@ -2,6 +2,21 @@
 
 ## [3.1.0] - 2026-11-07
 
+- **Guía EPG en Vivo y Monitoreo Avanzado de Emisiones**:
+  - Integración de guía EPG en tiempo real en las tarjetas de emisión activa: muestra el título del programa en emisión, minutos restantes y barra de progreso temporal.
+  - Botón de detención forzada ("Kill Stream") para cancelar reproducciones activas directamente a través de la API de TVHeadend.
+  - Filtro inteligente de suscripciones internas de TVHeadend: descarta automáticamente tareas de escaneo de listas IPTV/M3U, mapeo de servicios y grabadores EPG.
+  - Gráfica sparkline dinámica en tiempo real que refleja las oscilaciones de bitrate de cada emisión activa.
+  - Geolocalización con banderas de países y detección automática de conexiones en red local (LAN).
+  - Insignia de alerta de degradación de señal y paquetes con errores (`errors > 0`).
+  - Formato horizontal unificado y sin saltos de línea para insignias de estado (Directo, Habilitado, Activo).
+- **Monitor de Almacenamiento y Próximas Grabaciones DVR**:
+  - Widget en panel principal para monitoreo de disco en TVHeadend con espacio total, usado, libre, barra de progreso y alerta de espacio bajo (<10%).
+  - Modal dedicado de "Próximas Grabaciones DVR" con lista cronológica de temporizadores programados, canales, horarios y estado en tiempo real.
+- **Notificaciones Nativas de Escritorio y Timbre Acústico**:
+  - Alertas visuales nativas del sistema operativo / navegador mediante Web Notification API al iniciarse nuevas emisiones.
+  - Notificación de seguridad prioritaria ante detecciones de reproducciones desde IPs no autorizadas.
+  - Timbres sonoros sintetizados nativos con Web Audio API (sin dependencias ni descargas de archivos externos) con botones de prueba en Ajustes.
 - **Estadísticas y Vistas Duales para Canales y Usuarios**:
   - Nuevo modal interactivo de estadísticas para Canales (`ChannelProfileModal`) y Usuarios (`UserProfileModal`) con KPIs en tiempo real (reproducciones totales, tiempo acumulado, ancho de banda descargado, usuarios/canales más frecuentes e historial reciente).
   - Selector de vista dual (Cuadrícula vs Tabla Detallada Compacta) tanto en Canales como en Usuarios con persistencia en `localStorage`.

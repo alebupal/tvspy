@@ -7,5 +7,8 @@ router.get('/subscriptions', (req, res) => tvheadendController.getSubscriptions(
 router.get('/users', (req, res) => tvheadendController.getUsers(req, res));
 router.post('/subscriptions/cancel', (req, res) => tvheadendController.cancelSubscription(req, res));
 router.get('/tvheadend/status', (req, res) => tvheadendController.getStatus(req, res));
+router.get('/tvheadend/diskspace', (req, res) => tvheadendController.getDiskSpace(req, res));
+router.get('/tvheadend/epg/current', (req, res) => tvheadendController.getCurrentEpg(req, res));
+router.get('/tvheadend/dvr/upcoming', (req, res) => tvheadendController.getDvrUpcoming(req, res));
 
 module.exports = router;

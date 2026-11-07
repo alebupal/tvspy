@@ -24,7 +24,19 @@ import {
   FiLock,
   FiPlus,
   FiX,
+  FiBell,
+  FiVolume2,
 } from 'react-icons/fi';
+import {
+  isNotificationSupported,
+  getNotificationPermission,
+  requestNotificationPermission,
+  sendBrowserNotification,
+  playNotificationChime,
+  playAlertChime,
+  getNotificationSettings,
+  saveNotificationSettings,
+} from '../utils/notifications';
 
 const Settings: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -44,6 +56,37 @@ const Settings: React.FC = () => {
   // Actualizaciones
   const [updateInfo, setUpdateInfo] = useState<import('../types').UpdateCheckResult | null>(null);
   const [checkingUpdate, setCheckingUpdate] = useState<boolean>(false);
+
+  // Notificaciones de escritorio y sonido
+  const [notificationSettings, setNotificationSettingsState] = useState(getNotificationSettings());
+  const [browserPermission, setBrowserPermission] = useState<NotificationPermission>(getNotificationPermission());
+
+  const handleToggleDesktopNotif = async (enabled: boolean) => {
+    if (enabled) {
+      const perm = await requestNotificationPermission();
+      setBrowserPermission(perm);
+      if (perm !== 'granted') {
+        toast.error('El navegador no tiene permisos concedidos para notificaciones de escritorio');
+        setNotificationSettingsState((prev) => ({ ...prev, desktopNotifications: false }));
+        saveNotificationSettings({ desktopNotifications: false });
+        return;
+      }
+    }
+    setNotificationSettingsState((prev) => ({ ...prev, desktopNotifications: enabled }));
+    saveNotificationSettings({ desktopNotifications: enabled });
+  };
+
+  const handleToggleSound = (enabled: boolean) => {
+    if (enabled) playNotificationChime();
+    setNotificationSettingsState((prev) => ({ ...prev, soundAlerts: enabled }));
+    saveNotificationSettings({ soundAlerts: enabled });
+  };
+
+  const handleToggleUnauthAlert = (enabled: boolean) => {
+    if (enabled) playAlertChime();
+    setNotificationSettingsState((prev) => ({ ...prev, unauthorizedIpAlerts: enabled }));
+    saveNotificationSettings({ unauthorizedIpAlerts: enabled });
+  };
 
   // Estado del formulario
   const [config, setConfig] = useState<Record<string, string>>({
@@ -864,6 +907,80 @@ const Settings: React.FC = () => {
                   />
                 </div>
               )}
+            </div>
+
+            {/* SECCIÓN NOTIFICACIONES DE ESCRITORIO Y SONIDO */}
+            <div className="pt-6 border-t border-stroke dark:border-strokedark space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <FiBell className="text-primary text-base" />
+                  <h4 className="text-sm font-bold text-black dark:text-white">
+                    {t('Desktop Notifications & Sound Alerts') || 'Notificaciones de Escritorio y Sonido'}
+                  </h4>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (notificationSettings.desktopNotifications) {
+                        sendBrowserNotification(t('TVSPY Test Notification') || 'Notificación de prueba TVSPY', {
+                          body: t('Desktop notifications are active and working!') || '¡Las notificaciones de escritorio están funcionando correctamente!',
+                        });
+                        toast.success(t('Test notification sent') || 'Notificación de prueba enviada');
+                      } else {
+                        toast(t('Enable desktop notifications first') || 'Activa primero las notificaciones de escritorio');
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white transition"
+                  >
+                    <FiBell className="text-xs" />
+                    {t('Test notification') || 'Probar aviso'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => playNotificationChime()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white transition"
+                  >
+                    <FiVolume2 className="text-xs" />
+                    {t('Test sound') || 'Probar sonido'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
+                  <ToggleSwitch
+                    label={t('Browser Desktop Notifications') || 'Notificaciones de escritorio del navegador'}
+                    description={
+                      browserPermission === 'denied'
+                        ? t('Notifications blocked in browser permissions') || 'Bloqueadas en los permisos del navegador. Desbloquéalas en la barra de direcciones.'
+                        : t('Show native OS/browser notification banner when a new stream starts') || 'Muestra un aviso nativo del sistema operativo al iniciarse una emisión'
+                    }
+                    enabled={notificationSettings.desktopNotifications}
+                    onChange={handleToggleDesktopNotif}
+                  />
+                </div>
+
+                <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
+                  <ToggleSwitch
+                    label={t('Stream Start Sound Chime') || 'Sonido de aviso al iniciar emisión'}
+                    description={t('Play a subtle chime using Web Audio when a playback or recording begins') || 'Reproduce un tono sonoro sutil al detectar una nueva reproducción o grabación'}
+                    enabled={notificationSettings.soundAlerts}
+                    onChange={handleToggleSound}
+                  />
+                </div>
+
+                <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
+                  <ToggleSwitch
+                    label={t('Alert on Unauthorized IP') || 'Alerta sonora y visual en IPs no autorizadas'}
+                    description={t('Play warning sound and send high-priority alert if connection is not in allowed list') || 'Aviso destacado inmediato cuando un cliente se conecte desde una IP fuera de la lista permitida'}
+                    enabled={notificationSettings.unauthorizedIpAlerts}
+                    onChange={handleToggleUnauthAlert}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         )}

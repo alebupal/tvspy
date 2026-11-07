@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { SubscriptionMessage } from '../../types';
+import { SubscriptionMessage, CurrentEpgEvent } from '../../types';
 import Badge from '../common/Badge';
 import { formatBandwidth, formatBytes } from '../../utils/formatters';
 import { useTranslation } from 'react-i18next';
@@ -16,18 +16,21 @@ import {
   FiAlertTriangle,
   FiPower,
   FiRefreshCw,
+  FiFilm,
 } from 'react-icons/fi';
 
 interface LiveStreamCardProps {
   subscription: SubscriptionMessage;
   allowedIps?: string;
   channelLogo?: string;
+  epgEvent?: CurrentEpgEvent;
 }
 
 export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
   subscription,
   allowedIps = '',
   channelLogo,
+  epgEvent,
 }) => {
   const { t } = useTranslation();
   const [cancelling, setCancelling] = useState(false);
@@ -168,6 +171,34 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
           </button>
         </div>
       </div>
+
+      {/* Programa actual en EPG */}
+      {epgEvent && !isDvr && (
+        <div
+          className="mb-3 p-2.5 rounded-lg bg-gray-50/90 dark:bg-meta-4/30 border border-stroke/70 dark:border-strokedark/70 cursor-help"
+          title={epgEvent.summary ? `${epgEvent.title}\n\n${epgEvent.summary}` : epgEvent.title}
+        >
+          <div className="flex items-center justify-between text-xs mb-1.5 gap-2">
+            <div className="flex items-center gap-1.5 min-w-0 flex-1">
+              <FiFilm className="text-primary dark:text-secondary flex-shrink-0 text-xs" />
+              <span className="font-semibold text-black dark:text-white truncate">
+                {epgEvent.title}
+              </span>
+            </div>
+            <span className="text-[11px] text-body dark:text-bodydark flex-shrink-0 font-medium">
+              {epgEvent.remainingMinutes > 0
+                ? `${epgEvent.remainingMinutes}m ${t('remaining') || 'rest.'}`
+                : t('Live')}
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 dark:bg-meta-4 rounded-full h-1.5 overflow-hidden">
+            <div
+              className="bg-primary h-1.5 rounded-full transition-all duration-500"
+              style={{ width: `${Math.min(100, Math.max(3, epgEvent.progress))}%` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Detalles del stream */}
       <div className="space-y-2.5 pt-2 border-t border-stroke/70 dark:border-strokedark/70 text-xs">

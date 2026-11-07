@@ -6,6 +6,9 @@ import {
   ChannelItem,
   UserItem,
   StatisticsData,
+  DiskSpaceInfo,
+  CurrentEpgEvent,
+  DvrEntry,
 } from '../types';
 
 export const configApi = {
@@ -132,6 +135,21 @@ export const tvheadendApi = {
 
   cancelSubscription: async (id: number): Promise<{ success: boolean; message: string }> => {
     const res = await apiClient.post('/subscriptions/cancel', { id });
+    return res.data;
+  },
+
+  getDiskSpace: async (): Promise<DiskSpaceInfo> => {
+    const res = await apiClient.get<DiskSpaceInfo>('/tvheadend/diskspace');
+    return res.data;
+  },
+
+  getCurrentEpg: async (): Promise<{ timestamp: number; count: number; events: Record<string, CurrentEpgEvent> }> => {
+    const res = await apiClient.get<{ timestamp: number; count: number; events: Record<string, CurrentEpgEvent> }>('/tvheadend/epg/current');
+    return res.data;
+  },
+
+  getDvrUpcoming: async (): Promise<{ total: number; entries: DvrEntry[] }> => {
+    const res = await apiClient.get<{ total: number; entries: DvrEntry[] }>('/tvheadend/dvr/upcoming');
     return res.data;
   },
 };
