@@ -105,6 +105,50 @@ const Home: React.FC = () => {
     fetchStats();
   }, [statsType, daysAgo]);
 
+  // Filtrar escaneos internos de muxes/EPG/listas m3u que no son reproducciones de usuarios
+  const subs = useMemo(() => {
+    const raw = Array.isArray(subscriptions) ? subscriptions : [];
+    return raw.filter((s: any) => {
+      if (s.title && s.title.includes('DVR:')) return true;
+      const title = (s.title || '').toLowerCase().trim();
+      const client = (s.client || '').toLowerCase().trim();
+      const channel = (s.channel || '').trim();
+      const hostname = (s.hostname || '').trim();
+      const username = (s.username || '').toLowerCase().trim();
+
+      const scanKeywords = ['scan', 'epggrab', 'epg', 'service mapper', 'probe', 'mux scan'];
+      if (scanKeywords.some((kw) => title.includes(kw) || client.includes(kw))) {
+        return false;
+      }
+
+      const hasChannel = channel.length > 0;
+      const hasUser = username.length > 0 && username !== 'no user' && username !== 'sin usuario';
+      const hasClient = client.length > 0 && client !== 'n/a';
+      const hasHostname = hostname.length > 0 && hostname !== 'n/a' && hostname !== '127.0.0.1' && hostname !== '::1';
+
+      if (!hasChannel && !hasUser && !hasClient && !hasHostname) return false;
+      if (!hasChannel && (!hasClient || !hasHostname)) return false;
+
+      return true;
+    });
+  }, [subscriptions]);
+
+  const bw = useMemo(() => {
+    return subs.reduce((sum, s) => sum + (s.in || 0), 0);
+  }, [subs]);
+
+  const consumed = useMemo(() => {
+    return subs.reduce((sum, s) => sum + (s.total_in || 0), 0);
+  }, [subs]);
+
+  const dvrCount = subs.filter((s) => s.title && s.title.includes('DVR:')).length;
+
+  // Contar usuarios únicos en vivo
+  const uniqueUsersCount = useMemo(() => {
+    const users = new Set(subs.map((s) => s.username).filter(Boolean));
+    return users.size;
+  }, [subs]);
+
   // Cargar contador de próximas grabaciones DVR programadas
   useEffect(() => {
     tvheadendApi
@@ -174,50 +218,6 @@ const Home: React.FC = () => {
 
     previousSubIdsRef.current = currentIds;
   }, [subs, allowedIps, t]);
-
-  // Filtrar escaneos internos de muxes/EPG/listas m3u que no son reproducciones de usuarios
-  const subs = useMemo(() => {
-    const raw = Array.isArray(subscriptions) ? subscriptions : [];
-    return raw.filter((s: any) => {
-      if (s.title && s.title.includes('DVR:')) return true;
-      const title = (s.title || '').toLowerCase().trim();
-      const client = (s.client || '').toLowerCase().trim();
-      const channel = (s.channel || '').trim();
-      const hostname = (s.hostname || '').trim();
-      const username = (s.username || '').toLowerCase().trim();
-
-      const scanKeywords = ['scan', 'epggrab', 'epg', 'service mapper', 'probe', 'mux scan'];
-      if (scanKeywords.some((kw) => title.includes(kw) || client.includes(kw))) {
-        return false;
-      }
-
-      const hasChannel = channel.length > 0;
-      const hasUser = username.length > 0 && username !== 'no user' && username !== 'sin usuario';
-      const hasClient = client.length > 0 && client !== 'n/a';
-      const hasHostname = hostname.length > 0 && hostname !== 'n/a' && hostname !== '127.0.0.1' && hostname !== '::1';
-
-      if (!hasChannel && !hasUser && !hasClient && !hasHostname) return false;
-      if (!hasChannel && (!hasClient || !hasHostname)) return false;
-
-      return true;
-    });
-  }, [subscriptions]);
-
-  const bw = useMemo(() => {
-    return subs.reduce((sum, s) => sum + (s.in || 0), 0);
-  }, [subs]);
-
-  const consumed = useMemo(() => {
-    return subs.reduce((sum, s) => sum + (s.total_in || 0), 0);
-  }, [subs]);
-
-  const dvrCount = subs.filter((s) => s.title && s.title.includes('DVR:')).length;
-
-  // Contar usuarios únicos en vivo
-  const uniqueUsersCount = useMemo(() => {
-    const users = new Set(subs.map((s) => s.username).filter(Boolean));
-    return users.size;
-  }, [subs]);
 
   return (
     <div className="space-y-6">
