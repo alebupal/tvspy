@@ -24,7 +24,7 @@
     "email": "alebupal@gmail.com",
     "url": "https://github.com/alebupal/tvspy"
   },
-  "license": "ISC",
+  "license": "GPL-3.0-or-later",
   "devDependencies": {
     "concurrently": "^9.1.2"
   }

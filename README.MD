@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-3.2.1-blue.svg)](https://github.com/alebupal/tvspy/releases)
 [![Docker Hub](https://img.shields.io/docker/pulls/alebupal/tvspy.svg)](https://hub.docker.com/r/alebupal/tvspy/)
-[![License: ISC](https://img.shields.io/badge/License-ISC-green.svg)](https://opensource.org/licenses/ISC)
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-orange.svg)](https://www.paypal.me/alebupal)
 [![Telegram](https://img.shields.io/badge/Telegram-tvspy__news-2CA5E0.svg)](https://t.me/tvspy_news)
 
@@ -160,4 +160,4 @@ If TVSPY is useful to you and you wish to support its ongoing development:
 
 ## 📄 License
 
-This project is licensed under the **ISC** License. See the `LICENSE` file for details.
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**. See the `LICENSE` file for details.
