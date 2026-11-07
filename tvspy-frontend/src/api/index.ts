@@ -50,6 +50,16 @@ export const configApi = {
     const res = await apiClient.post('/config/test-webhook', data || {});
     return res.data;
   },
+
+  getPinStatus: async (): Promise<{ enabled: boolean }> => {
+    const res = await apiClient.get('/config/pin-status');
+    return res.data;
+  },
+
+  verifyPin: async (pin: string): Promise<{ success: boolean; token?: string; error?: string }> => {
+    const res = await apiClient.post('/config/verify-pin', { pin });
+    return res.data;
+  },
 };
 
 export const registriesApi = {
@@ -63,6 +73,11 @@ export const registriesApi = {
     endDate?: string;
   }): Promise<PaginatedResult<RegistryItem>> => {
     const res = await apiClient.get<PaginatedResult<RegistryItem>>('/registries', { params });
+    return res.data;
+  },
+
+  getUserSummary: async (username: string): Promise<any> => {
+    const res = await apiClient.get(`/registries/user/${encodeURIComponent(username)}/summary`);
     return res.data;
   },
 

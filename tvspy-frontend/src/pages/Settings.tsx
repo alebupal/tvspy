@@ -21,6 +21,7 @@ import {
   FiDownload,
   FiTrash2,
   FiDatabase,
+  FiLock,
 } from 'react-icons/fi';
 
 const Settings: React.FC = () => {
@@ -68,6 +69,11 @@ const Settings: React.FC = () => {
     telegram_time_limit: '120',
     telegram_notification_ip_not_allowed: '0',
     telegram_notification_ip_not_allowed_text: 'Alerta: Reproducción desde IP no autorizada %%hostname%% por el usuario %%username%% en %%channel%%',
+    notify_server_down: '1',
+    pin_enabled: '0',
+    pin_code: '',
+    auto_purge_enabled: '0',
+    auto_purge_days: '90',
     webhook_enabled: '0',
     webhook_url: '',
     webhook_type: 'discord',
@@ -545,6 +551,16 @@ const Settings: React.FC = () => {
                   />
                 )}
               </div>
+
+              {/* Evento 7: Servidor Caído / Desconectado */}
+              <div className="border border-stroke rounded-lg p-4 dark:border-strokedark space-y-3">
+                <ToggleSwitch
+                  label={t('Notify on Server Down') || 'Notificar si TVHeadend se desconecta o cae (> 2 min)'}
+                  description={t('Sends alert if connection with TVHeadend is lost for more than 2 minutes and another when recovered') || 'Envía una alerta automática si se pierde la conexión con TVHeadend por más de 2 minutos y otra al restablecerse'}
+                  enabled={isEnabled('notify_server_down')}
+                  onChange={(v) => handleToggle('notify_server_down', v)}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -640,6 +656,35 @@ const Settings: React.FC = () => {
                 value={config.minimum_time || '10'}
                 onChange={(e) => handleChange('minimum_time', e.target.value)}
               />
+            </div>
+
+            {/* SECCIÓN PROTECCIÓN CON PIN */}
+            <div className="pt-6 border-t border-stroke dark:border-strokedark space-y-4">
+              <div className="flex items-center gap-2">
+                <FiLock className="text-primary text-base" />
+                <h4 className="text-sm font-bold text-black dark:text-white">
+                  {t('PIN Protection') || 'Protección del Panel con PIN'}
+                </h4>
+              </div>
+
+              <ToggleSwitch
+                label={t('Enable PIN protection') || 'Activar protección con código PIN'}
+                description={t('Require PIN to enter and manage TVSPY') || 'Solicita un código PIN numérico antes de permitir ver emisiones o modificar ajustes'}
+                enabled={isEnabled('pin_enabled')}
+                onChange={(v) => handleToggle('pin_enabled', v)}
+              />
+
+              {isEnabled('pin_enabled') && (
+                <div className="max-w-xs">
+                  <Input
+                    label={t('Access PIN Code (4-8 digits)') || 'Código PIN de acceso (4-8 dígitos)'}
+                    type="password"
+                    placeholder="1234"
+                    value={config.pin_code || ''}
+                    onChange={(e) => handleChange('pin_code', e.target.value.replace(/\D/g, '').slice(0, 8))}
+                  />
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -818,6 +863,35 @@ const Settings: React.FC = () => {
                     {t('Purge DB')}
                   </button>
                 </div>
+              </div>
+
+              {/* AUTO-PURGA PROGRAMADA */}
+              <div className="pt-4 border-t border-stroke/70 dark:border-strokedark/70 space-y-3">
+                <ToggleSwitch
+                  label={t('Enable automatic scheduled purge') || 'Auto-limpieza periódica automática de registros antiguos'}
+                  description={t('Purges old records automatically in background and runs VACUUM') || 'Elimina registros antiguos periódicamente en segundo plano y ejecuta VACUUM sin intervención manual'}
+                  enabled={isEnabled('auto_purge_enabled')}
+                  onChange={(v) => handleToggle('auto_purge_enabled', v)}
+                />
+
+                {isEnabled('auto_purge_enabled') && (
+                  <div className="flex items-center gap-3 pt-1">
+                    <span className="text-xs text-body dark:text-bodydark font-medium">
+                      {t('Keep records from last') || 'Conservar registros de los últimos'}:
+                    </span>
+                    <select
+                      value={config.auto_purge_days || '90'}
+                      onChange={(e) => handleChange('auto_purge_days', e.target.value)}
+                      className="rounded-lg border border-stroke bg-white px-3 py-1.5 text-xs font-medium text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-boxdark dark:text-white"
+                    >
+                      <option value="30">30 {t('days')}</option>
+                      <option value="60">60 {t('days')}</option>
+                      <option value="90">90 {t('days')}</option>
+                      <option value="180">180 {t('days')}</option>
+                      <option value="365">365 {t('days')}</option>
+                    </select>
+                  </div>
+                )}
               </div>
             </div>
           </div>

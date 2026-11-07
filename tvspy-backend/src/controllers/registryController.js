@@ -126,6 +126,16 @@ class RegistryController {
             res.status(500).json({ error: err.message });
         }
     }
+
+    async getUserSummary(req, res) {
+        try {
+            const { username } = req.params;
+            const data = await registryRepository.getUserSummary(username);
+            res.json(data);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
 }
 
 module.exports = new RegistryController();

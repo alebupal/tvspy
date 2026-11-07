@@ -22,11 +22,15 @@ class TvheadendService extends EventEmitter {
         this.cachedConfig = {};
         this.totalBandwidth = 0;
         this.totalConsumed = 0;
+        this.downTimer = null;
+        this.downNotified = false;
+        this.autoPurgeTimer = null;
     }
 
     async init() {
         await this.refreshConfig();
         this.connectWs();
+        this.setupAutoPurge();
     }
 
     async refreshConfig() {
@@ -55,6 +59,106 @@ class TvheadendService extends EventEmitter {
             error: this.lastError,
             timestamp: new Date().toISOString()
         });
+
+        // Manejo de alertas de caída y recuperación
+        if (this.status === 'connected') {
+            if (this.downTimer) {
+                clearTimeout(this.downTimer);
+                this.downTimer = null;
+            }
+            if (this.downNotified) {
+                this.downNotified = false;
+                this.notifyServerRecovery();
+            }
+        } else if (this.status === 'error' || this.status === 'disconnected') {
+            if (!this.downTimer && !this.downNotified) {
+                // Si tras 2 minutos sigue caído, disparar alerta
+                this.downTimer = setTimeout(() => {
+                    this.downTimer = null;
+                    if (this.status !== 'connected') {
+                        this.downNotified = true;
+                        this.notifyServerDown();
+                    }
+                }, 120000);
+            }
+        }
+    }
+
+    async notifyServerDown() {
+        if (this.cachedConfig.notify_server_down === '0') return;
+        const msg = `🚨 *[Alerta TVSPY]*: El servidor TVHeadend no responde desde hace 2 minutos.\nMotivo: \`${this.lastError || 'Desconectado'}\``;
+        console.warn('TvheadendService:', msg);
+
+        try {
+            await telegramService.sendMessage({
+                botToken: this.cachedConfig.telegram_bot_token,
+                chatId: this.cachedConfig.telegram_id,
+                message: msg
+            });
+        } catch (e) {}
+
+        try {
+            await webhookService.sendAlert({
+                webhookUrl: this.cachedConfig.webhook_url,
+                webhookType: this.cachedConfig.webhook_type,
+                title: '⚠️ Servidor TVHeadend Caído',
+                description: `TVSPY ha perdido la conexión con TVHeadend (${this.lastError || 'Desconectado'})`,
+                color: 0xE11D48
+            });
+        } catch (e) {}
+    }
+
+    async notifyServerRecovery() {
+        if (this.cachedConfig.notify_server_down === '0') return;
+        const msg = `✅ *[Alerta TVSPY]*: La conexión con el servidor TVHeadend se ha restablecido correctamente.`;
+        console.log('TvheadendService:', msg);
+
+        try {
+            await telegramService.sendMessage({
+                botToken: this.cachedConfig.telegram_bot_token,
+                chatId: this.cachedConfig.telegram_id,
+                message: msg
+            });
+        } catch (e) {}
+
+        try {
+            await webhookService.sendAlert({
+                webhookUrl: this.cachedConfig.webhook_url,
+                webhookType: this.cachedConfig.webhook_type,
+                title: '✅ Conexión con TVHeadend Restablecida',
+                description: 'TVSPY vuelve a comunicarse con normalidad con TVHeadend',
+                color: 0x10B981
+            });
+        } catch (e) {}
+    }
+
+    setupAutoPurge() {
+        if (this.autoPurgeTimer) clearInterval(this.autoPurgeTimer);
+        // Comprobar cada 12 horas si procede purgar
+        this.autoPurgeTimer = setInterval(() => {
+            this.runAutoPurge();
+        }, 12 * 60 * 60 * 1000);
+        // Primera ejecución en segundo plano a los 10 segundos del arranque
+        setTimeout(() => this.runAutoPurge(), 10000);
+    }
+
+    async runAutoPurge() {
+        try {
+            const configMap = await configRepository.getAllAsObject();
+            if (configMap.auto_purge_enabled === '1' || configMap.auto_purge_enabled === 'true') {
+                const days = Math.max(7, parseInt(configMap.auto_purge_days || '90', 10));
+                const { runSql, getSql } = require('../database/database');
+                const dateParam = `-${days} days`;
+                const toDel = await getSql(`SELECT COUNT(*) as count FROM registries WHERE start < datetime('now', ?)`, [dateParam]);
+                if (toDel && toDel.count > 0) {
+                    await runSql(`DELETE FROM registries WHERE start < datetime('now', ?)`, [dateParam]);
+                    await runSql('VACUUM');
+                    console.log(`[Auto-Purge] Se han purgado automáticamente ${toDel.count} registros antiguos (> ${days} días) y ejecutado VACUUM.`);
+                }
+            }
+        } catch (err) {
+            console.error('[Auto-Purge] Error en la purga automática:', err.message);
+        }
     }
 
     async reconnect() {

@@ -260,6 +260,63 @@ class RegistryRepository {
             summary
         };
     }
+
+    async getUserSummary(username) {
+        if (!username) return null;
+
+        const summaryQuery = `
+            SELECT 
+                COUNT(*) as total_plays,
+                ROUND(COALESCE(SUM((julianday(COALESCE(end, datetime('now'))) - julianday(start)) * 86400), 0)) as total_duration_seconds,
+                COALESCE(SUM(total_in), 0) as total_consumed_bytes,
+                MAX(start) as last_seen,
+                COUNT(DISTINCT channel) as unique_channels
+            FROM registries
+            WHERE username = ?
+        `;
+
+        const topChannelsQuery = `
+            SELECT 
+                channel,
+                COUNT(*) as count,
+                ROUND(COALESCE(SUM((julianday(COALESCE(end, datetime('now'))) - julianday(start)) * 86400), 0)) as total_seconds
+            FROM registries
+            WHERE username = ? AND channel IS NOT NULL AND channel != ''
+            GROUP BY channel
+            ORDER BY count DESC
+            LIMIT 5
+        `;
+
+        const recentPlaysQuery = `
+            SELECT * FROM registries
+            WHERE username = ?
+            ORDER BY id DESC
+            LIMIT 5
+        `;
+
+        const lastKnownClientQuery = `
+            SELECT client, hostname
+            FROM registries
+            WHERE username = ? AND hostname IS NOT NULL AND hostname != ''
+            ORDER BY id DESC
+            LIMIT 1
+        `;
+
+        const [summary, topChannels, recentPlays, lastKnown] = await Promise.all([
+            getSql(summaryQuery, [username]),
+            allSql(topChannelsQuery, [username]),
+            allSql(recentPlaysQuery, [username]),
+            getSql(lastKnownClientQuery, [username])
+        ]);
+
+        return {
+            username,
+            summary: summary || { total_plays: 0, total_duration_seconds: 0, total_consumed_bytes: 0, unique_channels: 0 },
+            topChannels: topChannels || [],
+            recentPlays: recentPlays || [],
+            lastKnown: lastKnown || null
+        };
+    }
 }
 
 module.exports = new RegistryRepository();

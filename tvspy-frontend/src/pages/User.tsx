@@ -4,7 +4,8 @@ import { tvheadendApi } from '../api';
 import { UserItem } from '../types';
 import Card from '../components/common/Card';
 import Badge from '../components/common/Badge';
-import { FiUsers, FiSearch, FiRefreshCw, FiUserCheck, FiUserX, FiShield } from 'react-icons/fi';
+import UserProfileModal from '../components/common/UserProfileModal';
+import { FiUsers, FiSearch, FiRefreshCw, FiUserCheck, FiUserX, FiShield, FiChevronRight } from 'react-icons/fi';
 
 const User: React.FC = () => {
   const { t } = useTranslation();
@@ -13,6 +14,7 @@ const User: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>('');
+  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -102,11 +104,12 @@ const User: React.FC = () => {
               return (
                 <div
                   key={user.uuid || idx}
-                  className="flex items-center justify-between p-4 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-sm transition dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark"
+                  onClick={() => setSelectedUser(user)}
+                  className="flex items-center justify-between p-4 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer group"
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white ${
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white shadow-sm ${
                         isEnabled
                           ? 'bg-gradient-to-tr from-primary to-blue-500'
                           : 'bg-gray-400'
@@ -115,7 +118,7 @@ const User: React.FC = () => {
                       {user.username ? user.username.charAt(0).toUpperCase() : '?'}
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-black dark:text-white">
+                      <h4 className="text-sm font-semibold text-black dark:text-white group-hover:text-primary transition">
                         {user.username || 'Sin nombre'}
                       </h4>
                       {user.comment && (
@@ -126,16 +129,17 @@ const User: React.FC = () => {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="flex items-center gap-2">
                     {isEnabled ? (
                       <Badge variant="success">
-                        <FiUserCheck className="text-xs" /> Activo
+                        <FiUserCheck className="text-xs" /> {t('Active') || 'Activo'}
                       </Badge>
                     ) : (
                       <Badge variant="default">
-                        <FiUserX className="text-xs" /> Deshabilitado
+                        <FiUserX className="text-xs" /> {t('Disabled') || 'Deshabilitado'}
                       </Badge>
                     )}
+                    <FiChevronRight className="text-body dark:text-bodydark group-hover:translate-x-0.5 group-hover:text-primary transition" />
                   </div>
                 </div>
               );
@@ -143,6 +147,14 @@ const User: React.FC = () => {
           </div>
         )}
       </Card>
+
+      {/* Modal de Detalle de Usuario */}
+      {selectedUser && (
+        <UserProfileModal
+          user={selectedUser}
+          onClose={() => setSelectedUser(null)}
+        />
+      )}
     </div>
   );
 };

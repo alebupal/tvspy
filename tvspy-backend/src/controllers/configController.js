@@ -121,6 +121,38 @@ class ConfigController {
             res.status(400).json({ error: err.message || 'Error al probar webhook' });
         }
     }
+
+    async getPinStatus(req, res) {
+        try {
+            const enabledVal = await configRepository.getByName('pin_enabled');
+            const pinVal = await configRepository.getByName('pin_code');
+            const isEnabled = (enabledVal === '1' || enabledVal === 'true') && Boolean(pinVal && pinVal.trim());
+            res.json({ enabled: isEnabled });
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    async verifyPin(req, res) {
+        try {
+            const { pin } = req.body;
+            const enabledVal = await configRepository.getByName('pin_enabled');
+            const pinVal = await configRepository.getByName('pin_code');
+
+            const isEnabled = (enabledVal === '1' || enabledVal === 'true') && Boolean(pinVal && pinVal.trim());
+            if (!isEnabled) {
+                return res.json({ success: true, message: 'Protección con PIN desactivada' });
+            }
+
+            if (String(pin).trim() === String(pinVal).trim()) {
+                res.json({ success: true, token: 'tvspy_auth_' + Date.now() });
+            } else {
+                res.status(401).json({ success: false, error: 'Código PIN incorrecto' });
+            }
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
 }
 
 module.exports = new ConfigController();

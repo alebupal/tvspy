@@ -168,5 +168,22 @@
   "Error connecting to TVHeadend": "Error connecting to TVHeadend",
   "Missing one or more values required to connect with TVHeadend": "Missing one or more values required to connect with TVHeadend",
   "No data available": "No data available",
-  "Logo": "Logo"
+  "Logo": "Logo",
+  "Fullscreen / Kiosk Mode": "Fullscreen / Kiosk Mode",
+  "Exit Fullscreen": "Exit Fullscreen",
+  "Notify on Server Down": "Notify if TVHeadend goes down (> 2 min)",
+  "Sends alert if connection with TVHeadend is lost for more than 2 minutes and another when recovered": "Sends alert if connection with TVHeadend is lost for more than 2 minutes and another when recovered",
+  "PIN Protection": "Panel PIN Protection",
+  "Enable PIN protection": "Enable PIN Protection",
+  "Require PIN to enter and manage TVSPY": "Require numeric PIN before allowing access to streams and settings",
+  "Access PIN Code (4-8 digits)": "Access PIN Code (4-8 digits)",
+  "Enter your PIN to access TVSPY": "Enter your PIN to access TVSPY",
+  "Unlock": "Unlock",
+  "Access granted": "Access granted",
+  "Incorrect PIN": "Incorrect PIN code",
+  "Enable automatic scheduled purge": "Automatic scheduled cleanup of old records",
+  "Purges old records automatically in background and runs VACUUM": "Periodically purges old records in background and runs VACUUM without manual action",
+  "Keep records from last": "Keep records from the last",
+  "Active": "Active",
+  "Disabled": "Disabled"
 }

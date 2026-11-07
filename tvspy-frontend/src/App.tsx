@@ -14,10 +14,12 @@ import Registry from './pages/Registry';
 import Statistics from './pages/Statistics';
 import Changelog from './pages/Changelog';
 import DefaultLayout from './layout/DefaultLayout';
+import PinLockScreen from './components/common/PinLockScreen';
 import { configApi } from './api';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(false);
+  const [isLocked, setIsLocked] = useState<boolean>(false);
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
 
@@ -26,6 +28,16 @@ function App() {
   }, [pathname]);
 
   useEffect(() => {
+    // Comprobar si la protección con PIN está activada
+    configApi
+      .getPinStatus()
+      .then((res) => {
+        if (res && res.enabled && sessionStorage.getItem('tvspy_unlocked') !== '1') {
+          setIsLocked(true);
+        }
+      })
+      .catch(() => {});
+
     // Sincronizar idioma guardado en la base de datos si difiere
     configApi
       .getAll()
@@ -39,6 +51,10 @@ function App() {
       })
       .catch(() => {});
   }, []);
+
+  if (isLocked) {
+    return <PinLockScreen onUnlock={() => setIsLocked(false)} />;
+  }
 
   return loading ? (
     <Loader />

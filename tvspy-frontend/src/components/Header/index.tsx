@@ -4,7 +4,7 @@ import DarkModeSwitcher from './DarkModeSwitcher';
 import LanguageSelector from '../LanguageSelector';
 import Badge from '../common/Badge';
 import { formatBandwidth } from '../../utils/formatters';
-import { FiMenu, FiActivity, FiTv, FiAlertCircle } from 'react-icons/fi';
+import { FiMenu, FiActivity, FiTv, FiAlertCircle, FiMaximize, FiMinimize } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { systemApi } from '../../api';
 import { UpdateCheckResult } from '../../types';
@@ -18,6 +18,27 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const { t } = useTranslation();
   const { status, metrics, error } = useWebSocket();
   const [updateInfo, setUpdateInfo] = useState<UpdateCheckResult | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (e) {
+      console.warn('Fullscreen not supported or blocked:', e);
+    }
+  };
 
   useEffect(() => {
     systemApi
@@ -94,6 +115,18 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
           <LanguageSelector />
           <div className="h-6 w-px bg-stroke dark:bg-strokedark" />
           <DarkModeSwitcher />
+          <div className="h-6 w-px bg-stroke dark:bg-strokedark" />
+
+          {/* Botón Pantalla Completa / Modo Kiosco */}
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            title={isFullscreen ? t('Exit Fullscreen') : t('Fullscreen / Kiosk Mode')}
+            className="flex h-8.5 w-8.5 items-center justify-center rounded-full border border-stroke bg-gray hover:text-primary dark:border-strokedark dark:bg-meta-4 dark:hover:text-primary transition text-sm"
+            aria-label="Pantalla completa"
+          >
+            {isFullscreen ? <FiMinimize /> : <FiMaximize />}
+          </button>
         </div>
       </div>
     </header>
