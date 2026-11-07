@@ -185,5 +185,10 @@
   "Purges old records automatically in background and runs VACUUM": "Elimina registros antiguos periódicamente en segundo plano y ejecuta VACUUM sin intervención manual",
   "Keep records from last": "Conservar registros de los últimos",
   "Active": "Activo",
-  "Disabled": "Deshabilitado"
+  "Disabled": "Deshabilitado",
+  "Enabled": "Habilitado",
+  "Status": "Estado",
+  "Comment": "Comentario",
+  "Username": "Usuario",
+  "Services": "Servicios"
 }

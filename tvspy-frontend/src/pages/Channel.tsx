@@ -15,6 +15,7 @@ import {
   FiGrid,
   FiList,
   FiCheckCircle,
+  FiXCircle,
 } from 'react-icons/fi';
 
 const Channel: React.FC = () => {
@@ -195,8 +196,8 @@ const Channel: React.FC = () => {
                   <th className="py-3 px-3 font-semibold text-black dark:text-white w-16">CH #</th>
                   <th className="py-3 px-3 font-semibold text-black dark:text-white w-20">{t('Logo')}</th>
                   <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Name')}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">Estado</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">Servicios</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Status')}</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Services')}</th>
                   <th className="py-3 px-3 w-10"></th>
                 </tr>
               </thead>
@@ -228,10 +229,14 @@ const Channel: React.FC = () => {
                     <td className="py-2.5 px-3">
                       {channel.enabled !== false ? (
                         <Badge variant="success">
-                          <FiCheckCircle className="text-xs" /> Habilitado
+                          <FiCheckCircle className="text-xs flex-shrink-0" />
+                          <span>{t('Enabled')}</span>
                         </Badge>
                       ) : (
-                        <Badge variant="default">Deshabilitado</Badge>
+                        <Badge variant="default">
+                          <FiXCircle className="text-xs flex-shrink-0" />
+                          <span>{t('Disabled')}</span>
+                        </Badge>
                       )}
                     </td>
                     <td className="py-2.5 px-3 text-body dark:text-bodydark font-mono text-[11px]">

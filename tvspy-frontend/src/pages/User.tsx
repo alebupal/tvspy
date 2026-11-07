@@ -194,11 +194,13 @@ const User: React.FC = () => {
                   <div className="flex items-center gap-2">
                     {isEnabled ? (
                       <Badge variant="success">
-                        <FiUserCheck className="text-xs" /> {t('Active') || 'Activo'}
+                        <FiUserCheck className="text-xs flex-shrink-0" />
+                        <span>{t('Active')}</span>
                       </Badge>
                     ) : (
                       <Badge variant="default">
-                        <FiUserX className="text-xs" /> {t('Disabled') || 'Deshabilitado'}
+                        <FiUserX className="text-xs flex-shrink-0" />
+                        <span>{t('Disabled')}</span>
                       </Badge>
                     )}
                     <FiChevronRight className="text-body dark:text-bodydark group-hover:translate-x-0.5 group-hover:text-primary transition" />
@@ -214,9 +216,9 @@ const User: React.FC = () => {
               <thead>
                 <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-meta-4/30">
                   <th className="py-3 px-3 font-semibold text-black dark:text-white w-14">Avatar</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Username') || 'Usuario'}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Comment') || 'Comentario'}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Status') || 'Estado'}</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Username')}</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Comment')}</th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Status')}</th>
                   <th className="py-3 px-3 w-10"></th>
                 </tr>
               </thead>
@@ -249,11 +251,13 @@ const User: React.FC = () => {
                       <td className="py-2.5 px-3">
                         {isEnabled ? (
                           <Badge variant="success">
-                            <FiUserCheck className="text-xs" /> {t('Active') || 'Activo'}
+                            <FiUserCheck className="text-xs flex-shrink-0" />
+                            <span>{t('Active')}</span>
                           </Badge>
                         ) : (
                           <Badge variant="default">
-                            <FiUserX className="text-xs" /> {t('Disabled') || 'Deshabilitado'}
+                            <FiUserX className="text-xs flex-shrink-0" />
+                            <span>{t('Disabled')}</span>
                           </Badge>
                         )}
                       </td>

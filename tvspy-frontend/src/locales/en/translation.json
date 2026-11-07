@@ -185,5 +185,10 @@
   "Purges old records automatically in background and runs VACUUM": "Periodically purges old records in background and runs VACUUM without manual action",
   "Keep records from last": "Keep records from the last",
   "Active": "Active",
-  "Disabled": "Disabled"
+  "Disabled": "Disabled",
+  "Enabled": "Enabled",
+  "Status": "Status",
+  "Comment": "Comment",
+  "Username": "Username",
+  "Services": "Services"
 }

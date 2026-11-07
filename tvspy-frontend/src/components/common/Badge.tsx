@@ -25,7 +25,7 @@ export const Badge: React.FC<BadgeProps> = ({
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border whitespace-nowrap flex-shrink-0 select-none leading-none ${styles[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border whitespace-nowrap flex-shrink-0 select-none ${styles[variant]} ${className}`}
     >
       {pulse && (
         <span className="relative flex h-2 w-2 flex-shrink-0">
@@ -53,7 +53,9 @@ export const Badge: React.FC<BadgeProps> = ({
           />
         </span>
       )}
-      <span>{children}</span>
+      <span className="inline-flex items-center gap-1.5 whitespace-nowrap leading-none">
+        {children}
+      </span>
     </span>
   );
 };
