@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { SubscriptionMessage } from '../../types';
 import Badge from '../common/Badge';
 import { formatBandwidth, formatBytes } from '../../utils/formatters';
@@ -20,15 +20,18 @@ import {
 interface LiveStreamCardProps {
   subscription: SubscriptionMessage;
   allowedIps?: string;
+  channelLogo?: string;
 }
 
 export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
   subscription,
   allowedIps = '',
+  channelLogo,
 }) => {
   const { t } = useTranslation();
   const [cancelling, setCancelling] = useState(false);
   const [geoInfo, setGeoInfo] = useState<{ flag?: string; country?: string; city?: string } | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   const isDvr = subscription.title && subscription.title.includes('DVR:');
   const allowedList = allowedIps
@@ -37,6 +40,21 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
 
   const isIpAllowed =
     allowedList.length === 0 || allowedList.includes(subscription.hostname);
+
+  // Resolver logo del canal desde prop, suscripción o caché de sesión
+  const resolvedLogo = useMemo(() => {
+    if (channelLogo) return channelLogo;
+    if ((subscription as any).icon_public_url) return (subscription as any).icon_public_url;
+    if ((subscription as any).icon) return (subscription as any).icon;
+    try {
+      const cached = sessionStorage.getItem('tvspy_channel_logos');
+      if (cached && subscription.channel) {
+        const map = JSON.parse(cached);
+        if (map[subscription.channel]) return map[subscription.channel];
+      }
+    } catch {}
+    return null;
+  }, [channelLogo, subscription.channel, (subscription as any).icon_public_url, (subscription as any).icon]);
 
   // Consulta ligera de GeoIP para la IP de la conexión
   useEffect(() => {
@@ -81,14 +99,26 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
       {/* Cabecera: Canal y Badges */}
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3 min-w-0 flex-1">
-          <div
-            className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl font-bold text-white shadow-sm ${
-              isDvr
-                ? 'bg-gradient-to-tr from-purple-600 to-indigo-500'
-                : 'bg-gradient-to-tr from-primary to-blue-500'
-            }`}
-          >
-            {isDvr ? <FiHardDrive className="text-xl" /> : <FiTv className="text-xl" />}
+          {/* Logo del canal con fallback a icono estilizado */}
+          <div className="h-12 w-12 flex-shrink-0 flex items-center justify-center p-1 bg-white rounded-xl shadow-sm border border-stroke/80 dark:border-strokedark/80 dark:bg-meta-4 overflow-hidden">
+            {resolvedLogo && !imgError ? (
+              <img
+                src={resolvedLogo}
+                alt={subscription.channel || 'Canal'}
+                className="max-h-full max-w-full object-contain"
+                onError={() => setImgError(true)}
+              />
+            ) : (
+              <div
+                className={`h-full w-full flex items-center justify-center rounded-lg text-white font-bold shadow-sm ${
+                  isDvr
+                    ? 'bg-gradient-to-tr from-purple-600 to-indigo-500'
+                    : 'bg-gradient-to-tr from-primary to-blue-500'
+                }`}
+              >
+                {isDvr ? <FiHardDrive className="text-lg" /> : <FiTv className="text-lg" />}
+              </div>
+            )}
           </div>
           <div className="min-w-0 flex-1">
             <h4
