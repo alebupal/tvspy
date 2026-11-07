@@ -65,7 +65,17 @@ class TvheadendController {
 
     async getDiskSpace(req, res) {
         try {
-            const data = await tvheadendService.queryApi('/api/status/diskspace');
+            let data = null;
+            try {
+                data = await tvheadendService.queryApi('/api/status/diskspace');
+            } catch {
+                try {
+                    data = await tvheadendService.queryApi('/status/diskspace');
+                } catch {
+                    data = null;
+                }
+            }
+
             let total = 0;
             let free = 0;
             let used = 0;
@@ -77,13 +87,18 @@ class TvheadendController {
                 : [];
 
             if (entries.length > 0) {
-                total = entries.reduce((acc, e) => acc + (Number(e.total) || 0), 0);
-                free = entries.reduce((acc, e) => acc + (Number(e.free) || 0), 0);
-                used = entries.reduce((acc, e) => acc + (Number(e.used) || (e.total - e.free) || 0), 0);
-            } else if (data?.freediskspace !== undefined || data?.totaldiskspace !== undefined) {
-                free = Number(data.freediskspace) || 0;
-                total = Number(data.totaldiskspace) || 0;
-                used = Math.max(0, total - free);
+                for (const e of entries) {
+                    const eTotal = Number(e.total ?? e.totaldiskspace ?? e.total_space ?? 0) || 0;
+                    const eFree = Number(e.free ?? e.freediskspace ?? e.free_space ?? 0) || 0;
+                    const eUsed = Number(e.used ?? e.useddiskspace ?? (eTotal > eFree ? eTotal - eFree : 0)) || 0;
+                    total += eTotal;
+                    free += eFree;
+                    used += eUsed;
+                }
+            } else if (data) {
+                total = Number(data.totaldiskspace ?? data.total ?? data.total_space ?? 0) || 0;
+                free = Number(data.freediskspace ?? data.free ?? data.free_space ?? 0) || 0;
+                used = Number(data.useddiskspace ?? data.used ?? (total > free ? total - free : 0)) || 0;
             }
 
             const usedPercentage = total > 0 ? Math.min(100, Math.round((used / total) * 100)) : 0;

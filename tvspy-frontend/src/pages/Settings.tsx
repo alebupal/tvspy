@@ -325,8 +325,7 @@ const Settings: React.FC = () => {
 
   const tabs: TabItem[] = [
     { id: 'tvheadend', label: t('TVHeadend'), icon: <FiTv /> },
-    { id: 'telegram', label: t('Telegram'), icon: <FiSend /> },
-    { id: 'webhooks', label: t('Discord / Webhooks'), icon: <FiShare2 /> },
+    { id: 'notifications', label: t('Notifications') || 'Notificaciones', icon: <FiBell /> },
     { id: 'security', label: t('Security & Filters'), icon: <FiShield /> },
     { id: 'system', label: t('System & Database'), icon: <FiCpu /> },
   ];
@@ -481,30 +480,127 @@ const Settings: React.FC = () => {
           </div>
         )}
 
-        {/* PESTAÑA 2: TELEGRAM */}
-        {activeTab === 'telegram' && (
+        {/* PESTAÑA 2: NOTIFICACIONES (CENTRO UNIFICADO) */}
+        {activeTab === 'notifications' && (
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h3 className="text-sm font-semibold text-black dark:text-white mb-1">
-                  Notificaciones de Telegram
-                </h3>
-                <p className="text-xs text-body dark:text-bodydark">
-                  Recibe alertas instantáneas en tu canal o chat privado de Telegram.
-                </p>
+            <div>
+              <h3 className="text-sm font-semibold text-black dark:text-white mb-1">
+                {t('Notifications') || 'Centro de Notificaciones'}
+              </h3>
+              <p className="text-xs text-body dark:text-bodydark">
+                Avisos en pantalla y acústicos, alertas automáticas de Telegram, Discord / Webhooks y monitor de TVHeadend.
+              </p>
+            </div>
+
+            {/* SECCIÓN 1: NOTIFICACIONES DE ESCRITORIO Y SONIDO EN VIVO */}
+            <div className="rounded-xl border border-stroke dark:border-strokedark p-4.5 bg-gray-50/60 dark:bg-meta-4/20 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary dark:text-secondary">
+                    <FiBell className="text-lg" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-black dark:text-white">
+                      {t('Desktop Notifications & Sound Alerts') || 'Avisos de Escritorio y Sonido en Vivo'}
+                    </h4>
+                    <p className="text-[11px] text-body dark:text-bodydark">
+                      Alertas visuales nativas en el navegador y timbres acústicos sintetizados con Web Audio API.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 self-start sm:self-center">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (notificationSettings.desktopNotifications) {
+                        sendBrowserNotification(t('TVSPY Test Notification') || 'Notificación de prueba TVSPY', {
+                          body: t('Desktop notifications are active and working!') || '¡Las notificaciones de escritorio están funcionando correctamente!',
+                        });
+                        toast.success(t('Test notification sent') || 'Notificación de prueba enviada');
+                      } else {
+                        toast(t('Enable desktop notifications first') || 'Activa primero las notificaciones de escritorio');
+                      }
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 transition"
+                  >
+                    <FiBell className="text-xs" />
+                    {t('Test notification') || 'Probar aviso'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => playNotificationChime()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 transition"
+                  >
+                    <FiVolume2 className="text-xs" />
+                    {t('Test sound') || 'Probar sonido'}
+                  </button>
+                </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleTestTelegram}
-                disabled={testingTelegram || !config.telegram_bot_token || !config.telegram_id}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white disabled:opacity-40 transition w-fit"
-              >
-                {testingTelegram && <FiRefreshCw className="animate-spin text-xs" />}
-                <FiSend className="text-xs" />
-                {t('Test')}
-              </button>
+              <div className="space-y-3 pt-1">
+                <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
+                  <ToggleSwitch
+                    label={t('Browser Desktop Notifications') || 'Notificaciones de escritorio del navegador'}
+                    description={
+                      browserPermission === 'denied'
+                        ? t('Notifications blocked in browser permissions') || 'Bloqueadas en los permisos del navegador. Desbloquéalas en la barra de direcciones.'
+                        : t('Show native OS/browser notification banner when a new stream starts') || 'Muestra un aviso nativo del sistema operativo al iniciarse una emisión'
+                    }
+                    enabled={notificationSettings.desktopNotifications}
+                    onChange={handleToggleDesktopNotif}
+                  />
+                </div>
+
+                <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
+                  <ToggleSwitch
+                    label={t('Stream Start Sound Chime') || 'Sonido de aviso al iniciar emisión'}
+                    description={t('Play a subtle chime using Web Audio when a playback or recording begins') || 'Reproduce un tono sonoro sutil al detectar una nueva reproducción o grabación'}
+                    enabled={notificationSettings.soundAlerts}
+                    onChange={handleToggleSound}
+                  />
+                </div>
+
+                <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
+                  <ToggleSwitch
+                    label={t('Alert on Unauthorized IP') || 'Alerta sonora y visual en IPs no autorizadas'}
+                    description={t('Play warning sound and send high-priority alert if connection is not in allowed list') || 'Aviso destacado inmediato cuando un cliente se conecte desde una IP fuera de la lista permitida'}
+                    enabled={notificationSettings.unauthorizedIpAlerts}
+                    onChange={handleToggleUnauthAlert}
+                  />
+                </div>
+              </div>
             </div>
+
+            {/* SECCIÓN 2: TELEGRAM */}
+            <div className="rounded-xl border border-stroke dark:border-strokedark p-4.5 bg-gray-50/60 dark:bg-meta-4/20 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-500/10 text-sky-500">
+                    <FiSend className="text-lg" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-black dark:text-white">
+                      Notificaciones de Telegram
+                    </h4>
+                    <p className="text-[11px] text-body dark:text-bodydark">
+                      Alertas automáticas enviadas a tu bot, canal o chat privado de Telegram.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleTestTelegram}
+                  disabled={testingTelegram || !config.telegram_bot_token || !config.telegram_id}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 disabled:opacity-40 transition w-fit self-start sm:self-center"
+                >
+                  {testingTelegram && <FiRefreshCw className="animate-spin text-xs" />}
+                  <FiSend className="text-xs" />
+                  {t('Test')} Telegram
+                </button>
+              </div>
 
             {/* Credenciales de Telegram */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -532,8 +628,9 @@ const Settings: React.FC = () => {
               />
             </div>
 
-            {/* Lista de Eventos y Plantillas */}
-            <div className="space-y-4 pt-2">
+            {/* Eventos y Plantillas de Telegram (SÓLO SI LAS NOTIFICACIONES ESTÁN ACTIVADAS) */}
+            {isEnabled('telegram_notification') && (
+              <div className="space-y-4 pt-2 border-t border-stroke/70 dark:border-strokedark/70">
               <div className="flex items-center gap-2 p-2.5 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 text-xs border border-sky-500/20">
                 <FiHelpCircle className="text-base flex-shrink-0" />
                 <span>
@@ -647,75 +744,92 @@ const Settings: React.FC = () => {
                 )}
               </div>
 
-              {/* Evento 7: Servidor Caído / Desconectado */}
-              <div className="border border-stroke rounded-lg p-4 dark:border-strokedark space-y-3">
+            </div>
+          )}
+        </div>
+
+            {/* SECCIÓN 3: DISCORD, GOTIFY Y WEBHOOKS */}
+            <div className="rounded-xl border border-stroke dark:border-strokedark p-4.5 bg-gray-50/60 dark:bg-meta-4/20 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-500">
+                    <FiShare2 className="text-lg" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-black dark:text-white">
+                      Discord / Gotify / Webhooks
+                    </h4>
+                    <p className="text-[11px] text-body dark:text-bodydark">
+                      Envía eventos a canales de Discord, servidores Gotify o Home Assistant.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleTestWebhook}
+                  disabled={testingWebhook || !config.webhook_url}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-100 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4 disabled:opacity-40 transition w-fit self-start sm:self-center"
+                >
+                  {testingWebhook && <FiRefreshCw className="animate-spin text-xs" />}
+                  <FiShare2 className="text-xs" />
+                  Probar Webhook
+                </button>
+              </div>
+
+              <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
+                <ToggleSwitch
+                  label="Habilitar notificaciones por Webhook"
+                  description="Transmitir eventos de transmisiones en tiempo real al webhook configurado"
+                  enabled={isEnabled('webhook_enabled')}
+                  onChange={(v) => handleToggle('webhook_enabled', v)}
+                />
+              </div>
+
+              {isEnabled('webhook_enabled') && (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
+                  <div className="sm:col-span-1">
+                    <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
+                      Tipo de Webhook
+                    </label>
+                    <select
+                      value={config.webhook_type || 'discord'}
+                      onChange={(e) => handleChange('webhook_type', e.target.value)}
+                      className="w-full rounded-lg border border-stroke bg-white py-2.5 px-4 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white"
+                    >
+                      <option value="discord">Discord (Rich Embeds)</option>
+                      <option value="gotify">Gotify</option>
+                      <option value="generic">Genérico (JSON POST)</option>
+                    </select>
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <Input
+                      label="URL del Webhook"
+                      placeholder="https://discord.com/api/webhooks/... o https://gotify.local/message?token=..."
+                      value={config.webhook_url || ''}
+                      onChange={(e) => handleChange('webhook_url', e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* SECCIÓN 4: RESILIENCIA Y MONITOR TVHEADEND */}
+            <div className="rounded-xl border border-stroke dark:border-strokedark p-4.5 bg-gray-50/60 dark:bg-meta-4/20 space-y-3">
+              <div className="flex items-center gap-2 mb-1">
+                <FiTv className="text-primary text-base" />
+                <h4 className="text-sm font-bold text-black dark:text-white">
+                  Estado y Caídas del Servidor TVHeadend
+                </h4>
+              </div>
+
+              <div className="p-3 rounded-lg bg-white dark:bg-boxdark border border-stroke dark:border-strokedark">
                 <ToggleSwitch
                   label={t('Notify on Server Down') || 'Notificar si TVHeadend se desconecta o cae (> 2 min)'}
                   description={t('Sends alert if connection with TVHeadend is lost for more than 2 minutes and another when recovered') || 'Envía una alerta automática si se pierde la conexión con TVHeadend por más de 2 minutos y otra al restablecerse'}
                   enabled={isEnabled('notify_server_down')}
                   onChange={(v) => handleToggle('notify_server_down', v)}
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* PESTAÑA 3: DISCORD & WEBHOOKS */}
-        {activeTab === 'webhooks' && (
-          <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <h3 className="text-sm font-semibold text-black dark:text-white mb-1">
-                  Integración Discord / Gotify / Webhook
-                </h3>
-                <p className="text-xs text-body dark:text-bodydark">
-                  Envía alertas automáticas de inicio y fin de streaming a canales de Discord, servidores Gotify o Home Assistant.
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={handleTestWebhook}
-                disabled={testingWebhook || !config.webhook_url}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white disabled:opacity-40 transition w-fit"
-              >
-                {testingWebhook && <FiRefreshCw className="animate-spin text-xs" />}
-                <FiShare2 className="text-xs" />
-                Probar Webhook
-              </button>
-            </div>
-
-            <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
-              <ToggleSwitch
-                label="Habilitar notificaciones por Webhook"
-                description="Transmitir eventos de transmisiones en tiempo real al webhook configurado"
-                enabled={isEnabled('webhook_enabled')}
-                onChange={(v) => handleToggle('webhook_enabled', v)}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div className="sm:col-span-1">
-                <label className="mb-1.5 block text-sm font-medium text-black dark:text-white">
-                  Tipo de Webhook
-                </label>
-                <select
-                  value={config.webhook_type || 'discord'}
-                  onChange={(e) => handleChange('webhook_type', e.target.value)}
-                  className="w-full rounded-lg border border-stroke bg-transparent py-2.5 px-4 text-xs text-black outline-none transition focus:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white"
-                >
-                  <option value="discord">Discord (Rich Embeds)</option>
-                  <option value="gotify">Gotify</option>
-                  <option value="generic">Genérico (JSON POST)</option>
-                </select>
-              </div>
-
-              <div className="sm:col-span-2">
-                <Input
-                  label="URL del Webhook"
-                  placeholder="https://discord.com/api/webhooks/... o https://gotify.local/message?token=..."
-                  value={config.webhook_url || ''}
-                  onChange={(e) => handleChange('webhook_url', e.target.value)}
                 />
               </div>
             </div>
@@ -908,84 +1022,10 @@ const Settings: React.FC = () => {
                 </div>
               )}
             </div>
-
-            {/* SECCIÓN NOTIFICACIONES DE ESCRITORIO Y SONIDO */}
-            <div className="pt-6 border-t border-stroke dark:border-strokedark space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <FiBell className="text-primary text-base" />
-                  <h4 className="text-sm font-bold text-black dark:text-white">
-                    {t('Desktop Notifications & Sound Alerts') || 'Notificaciones de Escritorio y Sonido'}
-                  </h4>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (notificationSettings.desktopNotifications) {
-                        sendBrowserNotification(t('TVSPY Test Notification') || 'Notificación de prueba TVSPY', {
-                          body: t('Desktop notifications are active and working!') || '¡Las notificaciones de escritorio están funcionando correctamente!',
-                        });
-                        toast.success(t('Test notification sent') || 'Notificación de prueba enviada');
-                      } else {
-                        toast(t('Enable desktop notifications first') || 'Activa primero las notificaciones de escritorio');
-                      }
-                    }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white transition"
-                  >
-                    <FiBell className="text-xs" />
-                    {t('Test notification') || 'Probar aviso'}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => playNotificationChime()}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stroke bg-white text-xs font-medium text-black hover:bg-gray-50 dark:border-strokedark dark:bg-boxdark dark:text-white transition"
-                  >
-                    <FiVolume2 className="text-xs" />
-                    {t('Test sound') || 'Probar sonido'}
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
-                  <ToggleSwitch
-                    label={t('Browser Desktop Notifications') || 'Notificaciones de escritorio del navegador'}
-                    description={
-                      browserPermission === 'denied'
-                        ? t('Notifications blocked in browser permissions') || 'Bloqueadas en los permisos del navegador. Desbloquéalas en la barra de direcciones.'
-                        : t('Show native OS/browser notification banner when a new stream starts') || 'Muestra un aviso nativo del sistema operativo al iniciarse una emisión'
-                    }
-                    enabled={notificationSettings.desktopNotifications}
-                    onChange={handleToggleDesktopNotif}
-                  />
-                </div>
-
-                <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
-                  <ToggleSwitch
-                    label={t('Stream Start Sound Chime') || 'Sonido de aviso al iniciar emisión'}
-                    description={t('Play a subtle chime using Web Audio when a playback or recording begins') || 'Reproduce un tono sonoro sutil al detectar una nueva reproducción o grabación'}
-                    enabled={notificationSettings.soundAlerts}
-                    onChange={handleToggleSound}
-                  />
-                </div>
-
-                <div className="p-3 rounded-lg bg-gray-50 dark:bg-meta-4/20 border border-stroke dark:border-strokedark">
-                  <ToggleSwitch
-                    label={t('Alert on Unauthorized IP') || 'Alerta sonora y visual en IPs no autorizadas'}
-                    description={t('Play warning sound and send high-priority alert if connection is not in allowed list') || 'Aviso destacado inmediato cuando un cliente se conecte desde una IP fuera de la lista permitida'}
-                    enabled={notificationSettings.unauthorizedIpAlerts}
-                    onChange={handleToggleUnauthAlert}
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         )}
 
-        {/* PESTAÑA 5: SISTEMA & MANTENIMIENTO BD & ACTUALIZACIONES */}
+        {/* PESTAÑA 4: SISTEMA & MANTENIMIENTO BD & ACTUALIZACIONES */}
         {activeTab === 'system' && (
           <div className="space-y-6">
             <div>
