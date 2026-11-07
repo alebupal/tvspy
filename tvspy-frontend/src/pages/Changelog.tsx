@@ -145,16 +145,16 @@ const Changelog: React.FC = () => {
       </div>
 
       {/* Banner de Donación y Agradecimiento */}
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4.5 text-xs text-black dark:text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+      <div className="rounded-xl border border-stroke dark:border-strokedark bg-gray-50/60 dark:bg-meta-4/20 p-4 text-xs text-black dark:text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-none">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow">
-            <FiGift className="text-xl" />
+          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-gray-200/60 text-body dark:bg-meta-4 dark:text-bodydark">
+            <FiGift className="text-base" />
           </div>
           <div>
-            <h4 className="font-bold text-sm text-black dark:text-white">
+            <h4 className="font-semibold text-xs text-black dark:text-white">
               ¿Te resulta útil TVSPY?
             </h4>
-            <p className="text-xs text-body dark:text-bodydark mt-0.5 max-w-xl">
+            <p className="text-[11px] text-body dark:text-bodydark mt-0.5 max-w-xl">
               {t('Support project')}
             </p>
           </div>
@@ -164,9 +164,9 @@ const Changelog: React.FC = () => {
           href={PAYPAL_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-xs font-bold text-white hover:bg-amber-600 transition whitespace-nowrap"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-stroke/80 bg-white dark:border-strokedark/80 dark:bg-boxdark px-3 py-1.5 text-xs font-medium text-body hover:border-amber-500/40 hover:text-amber-600 dark:text-bodydark dark:hover:border-amber-400/40 dark:hover:text-amber-400 transition whitespace-nowrap self-start sm:self-center"
         >
-          <FiHeart className="text-sm fill-white" />
+          <FiHeart className="text-xs text-rose-500/80 dark:text-rose-400/80" />
           {t('Donate with PayPal')}
         </a>
       </div>

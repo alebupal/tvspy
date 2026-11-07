@@ -161,3 +161,4 @@ export function saveNotificationSettings(settings: {
     localStorage.setItem(UNAUTH_KEY, settings.unauthorizedIpAlerts ? '1' : '0');
   }
 }
+

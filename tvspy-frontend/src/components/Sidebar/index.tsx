@@ -188,14 +188,14 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
 
       {/* Footer del Sidebar con Donación PayPal y Enlaces */}
       <div className="p-4 border-t border-stroke dark:border-strokedark space-y-3">
-        {/* Botón de Donación de PayPal */}
+        {/* Botón de Donación de PayPal (estilo sutil y discreto) */}
         <a
           href={PAYPAL_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 p-2.5 text-xs font-bold text-white shadow-sm hover:from-amber-600 hover:to-orange-600 transition"
+          className="flex items-center justify-center gap-2 rounded-xl border border-stroke/80 bg-gray-50/60 p-2 text-xs font-medium text-body hover:border-amber-500/40 hover:bg-amber-500/5 hover:text-amber-600 dark:border-strokedark/80 dark:bg-meta-4/20 dark:text-bodydark dark:hover:border-amber-400/40 dark:hover:bg-amber-400/10 dark:hover:text-amber-400 transition"
         >
-          <FiHeart className="text-sm fill-current" />
+          <FiHeart className="text-xs text-rose-500/80 dark:text-rose-400/80" />
           <span>{t('Donate with PayPal')}</span>
         </a>
 
