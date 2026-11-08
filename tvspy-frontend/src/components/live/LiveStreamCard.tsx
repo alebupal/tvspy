@@ -269,19 +269,6 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
           </div>
         </div>
 
-        {/* Red de emisión */}
-        {resolvedNetwork && (
-          <div className="flex items-center justify-between text-body dark:text-bodydark">
-            <span className="flex items-center gap-1.5">
-              <span className="text-sm">📡</span>
-              {t('Network')}:
-            </span>
-            <span className="font-semibold text-black dark:text-white truncate max-w-[160px]">
-              {resolvedNetwork}
-            </span>
-          </div>
-        )}
-
         {/* Servicio / Profile (filtrando hashes UUID hexadecimales crudos) */}
         {subscription.service && !/^[0-9a-fA-F-]{20,}$/.test(subscription.service) && (
           <div className="flex items-center justify-between text-body dark:text-bodydark">
