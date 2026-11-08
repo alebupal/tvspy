@@ -34,9 +34,11 @@
   - **Avisos de Escritorio y Timbres Sonoros**: Banners nativos del navegador y tono acústico de dos notas sintetizado en tiempo real (Web Audio API) ante nuevas emisiones o IPs no autorizadas.
   - Integración nativa con **Telegram**, **Discord** (Rich Embeds), **Gotify** y **Webhooks HTTP POST**.
   - Alertas automáticas por inicio/fin de reproducción, grabación, límites de tiempo, accesos no autorizados y desconexión/recuperación del servidor.
-- 📺 **Vistas Duales y Estadísticas para Canales y Usuarios**:
+- 📺 **Vistas Duales, Filtros y Estadísticas para Canales y Usuarios**:
   - Selector de vista en **Cuadrícula** y **Tabla Detallada Compacta** tanto en Canales como en Usuarios con preferencia persistente.
-  - **Modal de Perfil de Canal**: Estadísticas agregadas completas (reproducciones totales, tiempo acumulado, tráfico descargado, espectadores únicos, top usuarios y registros recientes).
+  - **Filtros por Categorías y Red / Servicio**: Desplegables para filtrar al instante por categoría o red/proveedor con búsqueda ampliada.
+  - **Ordenación por Columnas**: Permite ordenar las tablas interactivamente haciendo clic en cualquier encabezado (CH #, Nombre, Categorías, Red, Estado, etc.).
+  - **Modal de Perfil de Canal**: Estadísticas agregadas completas (reproducciones totales, tiempo acumulado, tráfico descargado, espectadores únicos, top usuarios, servicios y registros recientes).
   - **Modal de Perfil de Usuario**: Horas de visualización, canales preferidos y registro individual de actividad.
 - 📊 **Panel Analítico y Estadísticas Avanzadas**:
   - Gráfico de **Evolución Temporal** (consumo diario de horas/reproducciones).

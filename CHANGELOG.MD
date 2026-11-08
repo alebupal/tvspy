@@ -24,6 +24,10 @@
     - In **Channels**: sort by Channel Number (`CH #`), Name, Categories, Network/Service, and Status.
     - In **Users**: sort by Username, Comment, and Status.
   - Directional sorting indicators (↑/↓) for ascending and descending order.
+- **Visual Polish & Human-Readable Service Names**:
+  - Smart network resolution from TVHeadend provider tags (e.g. `·TDTChannels` ➔ `📡 TDTChannels`) and suppressed raw internal 32-character hex UUIDs, replacing them with readable badges such as `N linked services`.
+  - Redesigned Channel Grid cards with a dedicated top header row for Channel Number (`CH #`), completely preventing badge overlap with channel logos.
+  - Cleaned up the top navigation bar separator between language selector and dark mode switch.
 
 ## [3.2.3] - 2026-11-08
 

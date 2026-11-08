@@ -34,9 +34,11 @@
   - **Browser Desktop Notifications & Sound Chimes**: Native OS notification banners and synthesized two-tone chimes (Web Audio API) when new playbacks start or unauthorized IPs connect.
   - **Telegram**, **Discord** (Rich Embeds), **Gotify**, and custom **HTTP POST Webhooks**.
   - Notifications on playback/recording start, stop, extended viewing limits, unauthorized IP access, and TVHeadend server disconnection/recovery.
-- 📺 **Dual Views & In-Depth Analytics for Channels & Users**:
+- 📺 **Dual Views, Filters & In-Depth Analytics for Channels & Users**:
   - Switch between **Grid** and **Detailed Table / List** views in both Channels and Users sections with persistent preference.
-  - **Channel Profile Modal**: Detailed statistics (total plays, accumulated duration, bytes downloaded, unique viewers, top viewers, and recent logs).
+  - **Category & Network / Service Filtering**: Fast dropdown selectors to filter channels by category or broadcast network/provider with multi-field search.
+  - **Interactive Column Sorting**: Click any table header to sort records on demand (CH #, Name, Categories, Network, Status, etc.).
+  - **Channel Profile Modal**: Detailed statistics (total plays, accumulated duration, bytes downloaded, unique viewers, top viewers, linked services, and recent logs).
   - **User Profile Modal**: Viewer statistics, top watched channels, total streaming time, and activity history.
 - 📊 **Advanced Analytics & Charts Dashboard**:
   - **Timeline Trend** chart (daily hours or playback counts).

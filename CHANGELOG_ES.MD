@@ -24,6 +24,10 @@
     - En **Canales**: ordenación por Número de canal (`CH #`), Nombre, Categorías, Red/Servicio y Estado (Activo/Desactivado).
     - En **Usuarios**: ordenación por Nombre de usuario, Comentario y Estado.
   - Indicador visual interactivo de flecha ascendente/descendente (↑/↓).
+- **Mejoras Visuales y Legibilidad en Canales y Encabezado**:
+  - Detección inteligente de red desde etiquetas de TVHeadend (ej. `·TDTChannels` ➔ `📡 TDTChannels`) y ocultación de identificadores hexadecimales internos (UUIDs), reemplazándolos por textos claros como `N servicios vinculados`.
+  - Reestructuradas las tarjetas de cuadrícula de canales con fila superior dedicada para el número de canal (`CH #`), eliminando cualquier solapamiento visual con el logotipo.
+  - Limpiado el separador del encabezado superior entre el selector de idioma y el selector de tema oscuro/claro.
 
 ## [3.2.3] - 2026-11-08
 
