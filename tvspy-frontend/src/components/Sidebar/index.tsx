@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../../images/logo/logo.svg';
+import pkg from '../../../package.json';
 import { useTranslation } from 'react-i18next';
 import { useWebSocket } from '../../context/WebSocketContext';
 import { systemApi } from '../../api';
@@ -23,7 +24,7 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const CURRENT_VERSION = '3.2.2';
+const DEFAULT_VERSION = pkg.version || '3.2.2';
 const PAYPAL_URL = 'https://www.paypal.me/alebupal';
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
@@ -35,6 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const trigger = useRef<HTMLButtonElement | null>(null);
   const sidebar = useRef<HTMLElement | null>(null);
 
+  const [currentVersion, setCurrentVersion] = useState<string>(DEFAULT_VERSION);
   const [remoteVersion, setRemoteVersion] = useState<string | null>(null);
   const [releaseUrl, setReleaseUrl] = useState<string>('https://github.com/alebupal/tvspy/releases');
   const [isNewVersionAvailable, setIsNewVersionAvailable] = useState(false);
@@ -72,6 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
       .checkUpdate()
       .then((info) => {
         if (info) {
+          if (info.currentVersion) setCurrentVersion(info.currentVersion);
           setRemoteVersion(info.latestVersion);
           setIsNewVersionAvailable(info.hasUpdate);
           if (info.releaseUrl) setReleaseUrl(info.releaseUrl);
@@ -142,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
             <NavLink to="/" className="flex items-center gap-3">
               <img src={Logo} alt="TVSPY Logo" className="h-8 w-auto" />
               <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
-                v{CURRENT_VERSION}
+                v{currentVersion}
               </span>
             </NavLink>
 
