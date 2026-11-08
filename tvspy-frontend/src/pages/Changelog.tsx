@@ -136,7 +136,7 @@ const Changelog: React.FC = () => {
         <div>
           <h2 className="text-xl font-bold text-black dark:text-white flex items-center gap-2">
             <FiBookOpen className="text-primary" />
-            {t('Changelog & Docs')}
+            {t('Documentation')}
           </h2>
           <p className="text-xs text-body dark:text-bodydark mt-0.5">
             {t('Read official repository documentation directly')}

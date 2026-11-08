@@ -117,7 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
     },
     {
       to: '/changelog',
-      label: t('Changelog & Docs'),
+      label: t('Documentation'),
       icon: <FiFileText className="text-xl" />,
     },
   ];

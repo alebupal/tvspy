@@ -161,7 +161,7 @@ function App() {
               path="/changelog"
               element={
                 <>
-                  <PageTitle title="Changelog & Docs - TVSpy" />
+                  <PageTitle title={`${t('Documentation')} - TVSpy`} />
                   <Changelog />
                 </>
               }
