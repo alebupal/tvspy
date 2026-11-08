@@ -232,18 +232,21 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
       <div className="space-y-2.5 pt-2 border-t border-stroke/70 dark:border-strokedark/70 text-xs">
         {/* Cliente / Reproductor */}
         <div className="flex items-center justify-between text-body dark:text-bodydark">
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 shrink-0">
             <FiMonitor className="text-sm" />
             {t('Client')}:
           </span>
-          <span className="font-medium text-black dark:text-white truncate max-w-[160px]">
+          <span
+            className="font-medium text-black dark:text-white truncate max-w-[180px] sm:max-w-[220px] text-right cursor-default"
+            title={subscription.client || 'N/A'}
+          >
             {subscription.client || 'N/A'}
           </span>
         </div>
 
         {/* IP / Hostname & Geolocalización */}
         <div className="flex items-center justify-between text-body dark:text-bodydark">
-          <span className="flex items-center gap-1.5">
+          <span className="flex items-center gap-1.5 shrink-0">
             {isIpAllowed ? (
               <FiShield className="text-sm text-emerald-500" />
             ) : (
@@ -272,11 +275,14 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
         {/* Servicio / Profile (filtrando hashes UUID hexadecimales crudos) */}
         {subscription.service && !/^[0-9a-fA-F-]{20,}$/.test(subscription.service) && (
           <div className="flex items-center justify-between text-body dark:text-bodydark">
-            <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1.5 shrink-0">
               <FiActivity className="text-sm" />
               {t('Service')}:
             </span>
-            <span className="font-medium text-black dark:text-white truncate max-w-[160px]">
+            <span
+              className="font-medium text-black dark:text-white truncate max-w-[180px] sm:max-w-[220px] text-right cursor-help hover:text-primary dark:hover:text-secondary transition"
+              title={subscription.service}
+            >
               {subscription.service}
             </span>
           </div>
