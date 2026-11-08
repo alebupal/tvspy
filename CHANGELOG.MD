@@ -15,6 +15,15 @@
 - **Ultra-Compact Storage Widget**:
   - Redesigned the TVHeadend disk space widget into an ultra-compact horizontal strip with a slim `h-1.5` progress bar, reducing vertical footprint by more than 50%.
   - Simplified title to **"Storage"** (in Spanish: **"Almacenamiento"**), allowing live streams to remain immediately visible above the fold without scrolling.
+- **Categories, Networks & Advanced Channel Filtering**:
+  - Automatically resolves channel tags to human-readable category names and correlates linked broadcast networks and services from TVHeadend.
+  - Added dedicated dropdown selectors to filter channels by **Category** and by **Network / Service**, with multi-field search and a clear-filters button.
+  - Visual badges for categories and network names across Grid cards, Table view, and Channel Profile Modal.
+- **Interactive Column Sorting in Channels and Users**:
+  - Sort table records on demand by clicking on column headers:
+    - In **Channels**: sort by Channel Number (`CH #`), Name, Categories, Network/Service, and Status.
+    - In **Users**: sort by Username, Comment, and Status.
+  - Directional sorting indicators (↑/↓) for ascending and descending order.
 
 ## [3.2.3] - 2026-11-08
 

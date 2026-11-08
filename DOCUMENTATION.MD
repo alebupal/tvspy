@@ -87,12 +87,15 @@ On your first access, head to **Settings** (gear icon in the sidebar):
 - Tracks duration, bandwidth consumed, and exact start/end timestamps.
 
 ### 📺 Channels
-- Full channel catalog detected from TVHeadend.
-- Dual-view toggle: **Grid view** or **Detailed Compact Table**.
-- **Channel Profile Modal**: Aggregated playback hours, traffic downloaded, unique viewers, top watchers ranking, and recent session logs.
+- Full channel catalog detected from TVHeadend displaying **Categories** and **Network / Services**.
+- Dynamic filters in header: full-text search plus dedicated dropdown selectors to filter by **Category** and by **Network / Service**.
+- **Interactive Column Sorting**: Click any column header (CH #, Name, Categories, Network/Service, or Status) to sort ascending or descending.
+- Dual-view toggle: **Grid view** (visual cards with network badges and category pills) or **Detailed Compact Table**.
+- **Channel Profile Modal**: Aggregated playback hours, traffic downloaded, unique viewers, top watchers ranking, linked services, and recent session logs.
 
 ### 👥 Users
-- List of all clients that have connected to the server.
+- List of all client accounts configured in the TVHeadend server.
+- **Interactive Column Sorting**: Click column headers to sort by Username, Comment, or Status.
 - Grid or Table view options.
 - **User Profile Modal**: Total viewing duration, preferred channels, and historical session logs.
 

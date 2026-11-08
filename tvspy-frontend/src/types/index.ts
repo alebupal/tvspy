@@ -50,6 +50,13 @@ export interface PaginatedResult<T> {
   };
 }
 
+export interface ServiceDetail {
+  uuid: string;
+  name: string;
+  network?: string;
+  multiplex?: string;
+}
+
 export interface ChannelItem {
   uuid: string;
   enabled: boolean;
@@ -58,6 +65,11 @@ export interface ChannelItem {
   icon?: string;
   icon_public_url?: string;
   services?: string[];
+  tags?: string[];
+  tags_names?: string[];
+  services_details?: ServiceDetail[];
+  networks?: string[];
+  network_name?: string;
 }
 
 export interface UserItem {

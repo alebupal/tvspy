@@ -15,6 +15,15 @@
 - **Widget de Almacenamiento Ultra-Compacto**:
   - Rediseñado el bloque de espacio en disco de TVHeadend a un formato barra estilizada y horizontal que ocupa menos de la mitad de altura vertical (`h-1.5` de grosor).
   - Título simplificado a **"Almacenamiento"** ("Storage"), permitiendo ver las emisiones en directo sin necesidad de hacer scroll vertical en pantallas estándar.
+- **Categorías, Redes y Filtros Avanzados en Canales**:
+  - Mapeo automático de etiquetas (`tags`) a nombres de categorías y detección de redes y servicios vinculados a cada canal desde TVHeadend.
+  - Nuevos selectores en la cabecera para filtrar instantáneamente por **Categoría** y por **Red / Servicio**, con búsqueda por texto ampliada y botón para restablecer filtros.
+  - Visualización de etiquetas y redes en tarjetas de cuadrícula, tabla detallada y modal de estadísticas del canal.
+- **Ordenación Interactiva por Columnas en Canales y Usuarios**:
+  - Ahora se puede ordenar cualquier tabla haciendo clic en el encabezado de sus columnas:
+    - En **Canales**: ordenación por Número de canal (`CH #`), Nombre, Categorías, Red/Servicio y Estado (Activo/Desactivado).
+    - En **Usuarios**: ordenación por Nombre de usuario, Comentario y Estado.
+  - Indicador visual interactivo de flecha ascendente/descendente (↑/↓).
 
 ## [3.2.3] - 2026-11-08
 

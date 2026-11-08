@@ -87,12 +87,15 @@ Al acceder por primera vez, navega a la sección **Ajustes** (icono de engranaje
 - Registro de duración, volumen de datos transferidos y fecha/hora de inicio y fin.
 
 ### 📺 Canales
-- Catálogo de todos los canales sintonizados en TVHeadend.
-- Selector de vista dual: **Cuadrícula** (tarjetas visuales) o **Tabla Detallada Compacta**.
-- **Modal de Perfil de Canal**: Muestra horas acumuladas de reproducción, volumen de datos, espectadores únicos, ranking de usuarios más asiduos y sus registros recientes.
+- Catálogo de todos los canales sintonizados en TVHeadend con visualización de **Categorías** y **Red o Servicio**.
+- Filtros dinámicos en cabecera: buscador de texto y menús desplegables para filtrar por **Categoría** y por **Red / Servicio**.
+- **Ordenación por Columnas**: Permite ordenar la tabla al hacer clic en los encabezados (Número, Nombre, Categorías, Red/Servicio o Estado) en orden ascendente y descendente.
+- Selector de vista dual: **Cuadrícula** (tarjetas visuales con insignias de red y categoría) o **Tabla Detallada Compacta**.
+- **Modal de Perfil de Canal**: Muestra horas acumuladas de reproducción, volumen de datos, espectadores únicos, ranking de usuarios más asiduos, servicios vinculados y sus registros recientes.
 
 ### 👥 Usuarios
-- Vista de todos los clientes que han conectado al servidor.
+- Vista de todos los clientes configurados en el servidor TVHeadend.
+- **Ordenación por Columnas**: Permite ordenar la lista al hacer clic en Nombre de usuario, Comentario o Estado.
 - Vista en **Cuadrícula** o **Tabla**.
 - **Modal de Perfil de Usuario**: Resumen de consumo, canales más vistos y desglose de sesiones.
 

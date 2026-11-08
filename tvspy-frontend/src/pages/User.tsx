@@ -15,7 +15,12 @@ import {
   FiChevronLeft,
   FiGrid,
   FiList,
+  FiArrowUp,
+  FiArrowDown,
 } from 'react-icons/fi';
+
+type UserSortField = 'username' | 'comment' | 'enabled';
+type SortDirection = 'asc' | 'desc';
 
 const User: React.FC = () => {
   const { t } = useTranslation();
@@ -24,6 +29,8 @@ const User: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>('');
+  const [sortField, setSortField] = useState<UserSortField>('username');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
     return (localStorage.getItem('tvspy_user_view') as 'grid' | 'list') || 'grid';
@@ -55,6 +62,26 @@ const User: React.FC = () => {
     fetchUsers();
   }, []);
 
+  const handleSort = (field: UserSortField) => {
+    if (sortField === field) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const renderSortIcon = (field: UserSortField) => {
+    if (sortField !== field) {
+      return <FiArrowDown className="inline-block ml-1 opacity-25 text-[10px]" />;
+    }
+    return sortDirection === 'asc' ? (
+      <FiArrowUp className="inline-block ml-1 text-primary dark:text-secondary text-xs" />
+    ) : (
+      <FiArrowDown className="inline-block ml-1 text-primary dark:text-secondary text-xs" />
+    );
+  };
+
   const filteredUsers = useMemo(() => {
     if (!search.trim()) return users;
     const q = search.toLowerCase();
@@ -65,11 +92,34 @@ const User: React.FC = () => {
     );
   }, [users, search]);
 
-  const totalPages = Math.ceil(filteredUsers.length / limit) || 1;
+  const sortedUsers = useMemo(() => {
+    const list = [...filteredUsers];
+    list.sort((a, b) => {
+      let comparison = 0;
+      switch (sortField) {
+        case 'username':
+          comparison = (a.username || '').localeCompare(b.username || '');
+          break;
+        case 'comment':
+          comparison = (a.comment || '').localeCompare(b.comment || '');
+          break;
+        case 'enabled': {
+          const enA = a.enabled !== false ? 1 : 0;
+          const enB = b.enabled !== false ? 1 : 0;
+          comparison = enB - enA;
+          break;
+        }
+      }
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+    return list;
+  }, [filteredUsers, sortField, sortDirection]);
+
+  const totalPages = Math.ceil(sortedUsers.length / limit) || 1;
   const paginatedUsers = useMemo(() => {
     const start = (page - 1) * limit;
-    return filteredUsers.slice(start, start + limit);
-  }, [filteredUsers, page, limit]);
+    return sortedUsers.slice(start, start + limit);
+  }, [sortedUsers, page, limit]);
 
   return (
     <div className="space-y-6">
@@ -141,7 +191,7 @@ const User: React.FC = () => {
           </div>
 
           <div className="text-xs text-body dark:text-bodydark font-medium">
-            {t('Total')}: <b>{filteredUsers.length}</b> {t('Users').toLowerCase()}
+            {t('Total')}: <b>{sortedUsers.length}</b> {t('Users').toLowerCase()}
           </div>
         </div>
 
@@ -160,18 +210,18 @@ const User: React.FC = () => {
           </div>
         ) : viewMode === 'grid' ? (
           /* VISTA 1: CUADRÍCULA (GRID) */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {paginatedUsers.map((user, idx) => {
               const isEnabled = user.enabled !== false;
               return (
                 <div
                   key={user.uuid || idx}
                   onClick={() => setSelectedUser(user)}
-                  className="flex items-center justify-between p-4 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer group"
+                  className="group flex items-center justify-between p-4 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition-all duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold text-white shadow-sm group-hover:scale-105 transition-transform ${
+                      className={`flex h-11 w-11 items-center justify-center rounded-xl font-bold text-sm text-white shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform ${
                         isEnabled
                           ? 'bg-gradient-to-tr from-primary to-blue-500'
                           : 'bg-gray-400'
@@ -179,13 +229,17 @@ const User: React.FC = () => {
                     >
                       {user.username ? user.username.charAt(0).toUpperCase() : '?'}
                     </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-black dark:text-white group-hover:text-primary transition">
+                    <div className="truncate">
+                      <h4 className="text-xs font-semibold text-black dark:text-white group-hover:text-primary transition truncate">
                         {user.username || 'Sin nombre'}
                       </h4>
-                      {user.comment && (
-                        <p className="text-xs text-body dark:text-bodydark line-clamp-1">
+                      {user.comment ? (
+                        <p className="text-[11px] text-body dark:text-bodydark truncate mt-0.5">
                           {user.comment}
+                        </p>
+                      ) : (
+                        <p className="text-[11px] text-body/50 dark:text-bodydark/50 italic mt-0.5">
+                          Sin comentario
                         </p>
                       )}
                     </div>
@@ -210,15 +264,30 @@ const User: React.FC = () => {
             })}
           </div>
         ) : (
-          /* VISTA 2: LISTA / TABLA COMPACTA DETALLADA */
+          /* VISTA 2: LISTA / TABLA COMPACTA DETALLADA CON ORDENACIÓN */
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-meta-4/30">
                   <th className="py-3 px-3 font-semibold text-black dark:text-white w-14">Avatar</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Username')}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Comment')}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Status')}</th>
+                  <th
+                    onClick={() => handleSort('username')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white cursor-pointer select-none hover:text-primary transition"
+                  >
+                    {t('Username')} {renderSortIcon('username')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('comment')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white cursor-pointer select-none hover:text-primary transition"
+                  >
+                    {t('Comment')} {renderSortIcon('comment')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('enabled')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white cursor-pointer select-none hover:text-primary transition"
+                  >
+                    {t('Status')} {renderSortIcon('enabled')}
+                  </th>
                   <th className="py-3 px-3 w-10"></th>
                 </tr>
               </thead>
@@ -298,7 +367,7 @@ const User: React.FC = () => {
         )}
       </Card>
 
-      {/* Modal de Detalle de Usuario */}
+      {/* Modal de Estadísticas del Usuario */}
       {selectedUser && (
         <UserProfileModal
           user={selectedUser}

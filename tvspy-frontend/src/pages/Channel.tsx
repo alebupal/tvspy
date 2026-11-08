@@ -16,7 +16,13 @@ import {
   FiList,
   FiCheckCircle,
   FiXCircle,
+  FiX,
+  FiArrowUp,
+  FiArrowDown,
 } from 'react-icons/fi';
+
+type ChannelSortField = 'number' | 'name' | 'tags' | 'network' | 'enabled';
+type SortDirection = 'asc' | 'desc';
 
 const Channel: React.FC = () => {
   const { t } = useTranslation();
@@ -25,6 +31,10 @@ const Channel: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState<string>('');
+  const [selectedTag, setSelectedTag] = useState<string>('all');
+  const [selectedNetwork, setSelectedNetwork] = useState<string>('all');
+  const [sortField, setSortField] = useState<ChannelSortField>('number');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [selectedChannel, setSelectedChannel] = useState<ChannelItem | null>(null);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
     return (localStorage.getItem('tvspy_channel_view') as 'grid' | 'list') || 'grid';
@@ -56,18 +66,143 @@ const Channel: React.FC = () => {
     fetchChannels();
   }, []);
 
+  // Listas de categorías (tags) y redes disponibles
+  const availableTags = useMemo(() => {
+    const set = new Set<string>();
+    channels.forEach((c) => {
+      (c.tags_names || []).forEach((t) => {
+        if (t && t.trim()) set.add(t.trim());
+      });
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [channels]);
+
+  const availableNetworks = useMemo(() => {
+    const set = new Set<string>();
+    channels.forEach((c) => {
+      (c.networks || []).forEach((n) => {
+        if (n && n.trim()) set.add(n.trim());
+      });
+      if (c.network_name && c.network_name.trim()) {
+        c.network_name.split(',').forEach((n) => {
+          const trimmed = n.trim();
+          if (trimmed) set.add(trimmed);
+        });
+      }
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [channels]);
+
+  // Manejador de ordenación por columna
+  const handleSort = (field: ChannelSortField) => {
+    if (sortField === field) {
+      setSortDirection((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const renderSortIcon = (field: ChannelSortField) => {
+    if (sortField !== field) {
+      return <FiArrowDown className="inline-block ml-1 opacity-25 text-[10px]" />;
+    }
+    return sortDirection === 'asc' ? (
+      <FiArrowUp className="inline-block ml-1 text-primary dark:text-secondary text-xs" />
+    ) : (
+      <FiArrowDown className="inline-block ml-1 text-primary dark:text-secondary text-xs" />
+    );
+  };
+
   // Filtrado en memoria
   const filteredChannels = useMemo(() => {
-    if (!search.trim()) return channels;
-    const q = search.toLowerCase();
-    return channels.filter((c) => c.name?.toLowerCase().includes(q));
-  }, [channels, search]);
+    return channels.filter((c) => {
+      // 1. Búsqueda por texto (nombre, número, categorías, red o servicios)
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        const matchesName = c.name?.toLowerCase().includes(q);
+        const matchesNumber = String(c.number || '').includes(q);
+        const matchesTags = (c.tags_names || []).some((t) => t.toLowerCase().includes(q));
+        const matchesNetwork =
+          (c.networks || []).some((n) => n.toLowerCase().includes(q)) ||
+          c.network_name?.toLowerCase().includes(q);
+        const matchesServices = (c.services_details || []).some((s) =>
+          s.name?.toLowerCase().includes(q)
+        );
+        if (!matchesName && !matchesNumber && !matchesTags && !matchesNetwork && !matchesServices) {
+          return false;
+        }
+      }
 
-  const totalPages = Math.ceil(filteredChannels.length / limit) || 1;
+      // 2. Filtro por categoría seleccionada
+      if (selectedTag !== 'all') {
+        const hasTag = (c.tags_names || []).includes(selectedTag);
+        if (!hasTag) return false;
+      }
+
+      // 3. Filtro por red seleccionada
+      if (selectedNetwork !== 'all') {
+        const inNetworks = (c.networks || []).includes(selectedNetwork);
+        const inNetworkName = c.network_name?.includes(selectedNetwork);
+        const inServices = (c.services_details || []).some(
+          (s) => s.network === selectedNetwork || s.name === selectedNetwork
+        );
+        if (!inNetworks && !inNetworkName && !inServices) return false;
+      }
+
+      return true;
+    });
+  }, [channels, search, selectedTag, selectedNetwork]);
+
+  // Ordenación de la lista filtrada
+  const sortedChannels = useMemo(() => {
+    const list = [...filteredChannels];
+    list.sort((a, b) => {
+      let comparison = 0;
+      switch (sortField) {
+        case 'number': {
+          const numA = a.number !== undefined && a.number > 0 ? a.number : 999999;
+          const numB = b.number !== undefined && b.number > 0 ? b.number : 999999;
+          comparison = numA - numB;
+          if (comparison === 0) {
+            comparison = (a.name || '').localeCompare(b.name || '');
+          }
+          break;
+        }
+        case 'name':
+          comparison = (a.name || '').localeCompare(b.name || '');
+          break;
+        case 'tags': {
+          const tagA = (a.tags_names || []).join(', ');
+          const tagB = (b.tags_names || []).join(', ');
+          comparison = tagA.localeCompare(tagB);
+          break;
+        }
+        case 'network': {
+          const netA = a.network_name || (a.networks || []).join(', ');
+          const netB = b.network_name || (b.networks || []).join(', ');
+          comparison = netA.localeCompare(netB);
+          break;
+        }
+        case 'enabled': {
+          const enA = a.enabled !== false ? 1 : 0;
+          const enB = b.enabled !== false ? 1 : 0;
+          comparison = enB - enA;
+          break;
+        }
+      }
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+    return list;
+  }, [filteredChannels, sortField, sortDirection]);
+
+  const totalPages = Math.ceil(sortedChannels.length / limit) || 1;
   const paginatedChannels = useMemo(() => {
     const start = (page - 1) * limit;
-    return filteredChannels.slice(start, start + limit);
-  }, [filteredChannels, page, limit]);
+    return sortedChannels.slice(start, start + limit);
+  }, [sortedChannels, page, limit]);
+
+  const isFiltered = search.trim() !== '' || selectedTag !== 'all' || selectedNetwork !== 'all';
 
   return (
     <div className="space-y-6">
@@ -124,23 +259,90 @@ const Channel: React.FC = () => {
 
       {/* Controles y Visualización */}
       <Card>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-          <div className="relative flex-1 max-w-md">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-body dark:text-bodydark" />
-            <input
-              type="text"
-              placeholder={t('Filter channels...')}
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              className="w-full rounded-lg border border-stroke bg-transparent pl-9 pr-4 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white"
-            />
+        {/* Barra de Filtros */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-6">
+          <div className="flex flex-wrap items-center gap-2.5 flex-1">
+            {/* Buscador de texto */}
+            <div className="relative flex-1 min-w-[200px] max-w-xs">
+              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-body dark:text-bodydark" />
+              <input
+                type="text"
+                placeholder={t('Filter channels...')}
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPage(1);
+                }}
+                className="w-full rounded-lg border border-stroke bg-transparent pl-9 pr-4 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white"
+              />
+            </div>
+
+            {/* Selector de Categoría / Tag */}
+            {availableTags.length > 0 && (
+              <div className="relative min-w-[150px]">
+                <select
+                  value={selectedTag}
+                  onChange={(e) => {
+                    setSelectedTag(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white cursor-pointer"
+                >
+                  <option value="all">{t('All categories')}</option>
+                  {availableTags.map((tag) => (
+                    <option key={tag} value={tag}>
+                      {tag}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Selector de Red / Servicio */}
+            {availableNetworks.length > 0 && (
+              <div className="relative min-w-[150px]">
+                <select
+                  value={selectedNetwork}
+                  onChange={(e) => {
+                    setSelectedNetwork(e.target.value);
+                    setPage(1);
+                  }}
+                  className="w-full rounded-lg border border-stroke bg-white px-3 py-2 text-xs text-black outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:text-white cursor-pointer"
+                >
+                  <option value="all">{t('All networks')}</option>
+                  {availableNetworks.map((net) => (
+                    <option key={net} value={net}>
+                      {net}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Botón limpiar filtros */}
+            {isFiltered && (
+              <button
+                onClick={() => {
+                  setSearch('');
+                  setSelectedTag('all');
+                  setSelectedNetwork('all');
+                  setPage(1);
+                }}
+                className="flex items-center gap-1 rounded-lg border border-stroke px-2.5 py-1.5 text-xs text-body hover:bg-gray-100 hover:text-black dark:border-strokedark dark:text-bodydark dark:hover:bg-meta-4 dark:hover:text-white transition"
+                title={t('Clear filters')}
+              >
+                <FiX className="text-xs" />
+                <span>{t('Clear filters')}</span>
+              </button>
+            )}
           </div>
 
-          <div className="text-xs text-body dark:text-bodydark font-medium">
-            {t('Total')}: <b>{filteredChannels.length}</b> {t('Channels').toLowerCase()}
+          {/* Contador de Canales */}
+          <div className="text-xs text-body dark:text-bodydark font-medium self-end md:self-center">
+            {t('Total')}: <b>{sortedChannels.length}</b> {t('Channels').toLowerCase()}
+            {sortedChannels.length !== channels.length && (
+              <span className="opacity-75"> ({t('of')} {channels.length})</span>
+            )}
           </div>
         </div>
 
@@ -164,9 +366,17 @@ const Channel: React.FC = () => {
               <div
                 key={channel.uuid || idx}
                 onClick={() => setSelectedChannel(channel)}
-                className="group flex flex-col items-center text-center p-4 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition-all duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer"
+                className="group relative flex flex-col items-center text-center p-3.5 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition-all duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer"
               >
-                <div className="h-16 w-16 mb-3 flex items-center justify-center p-1 bg-white rounded-lg shadow-sm border border-stroke/60 dark:border-strokedark/60 dark:bg-meta-4 group-hover:scale-105 transition-transform">
+                {/* Número de canal flotante */}
+                {channel.number !== undefined && channel.number > 0 && (
+                  <span className="absolute top-2 left-2 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
+                    CH {channel.number}
+                  </span>
+                )}
+
+                {/* Logo */}
+                <div className="h-16 w-16 mb-2 mt-2 flex items-center justify-center p-1 bg-white rounded-lg shadow-xs border border-stroke/60 dark:border-strokedark/60 dark:bg-meta-4 group-hover:scale-105 transition-transform">
                   <img
                     src={channel.icon_public_url || channel.icon || imgNotFound}
                     alt={channel.name}
@@ -176,28 +386,86 @@ const Channel: React.FC = () => {
                     }}
                   />
                 </div>
-                <h4 className="text-xs font-semibold text-black dark:text-white line-clamp-2 group-hover:text-primary transition">
+
+                {/* Nombre de Canal */}
+                <h4
+                  className="text-xs font-semibold text-black dark:text-white line-clamp-1 group-hover:text-primary transition w-full"
+                  title={channel.name}
+                >
                   {channel.name}
                 </h4>
-                {channel.number !== undefined && channel.number > 0 && (
-                  <span className="mt-1 text-[10px] font-mono font-medium px-1.5 py-0.5 rounded bg-gray-200 text-black dark:bg-meta-4 dark:text-bodydark">
-                    CH {channel.number}
-                  </span>
+
+                {/* Red o Servicio */}
+                {channel.network_name ? (
+                  <p
+                    className="mt-1 text-[10px] text-body dark:text-bodydark truncate max-w-full font-medium"
+                    title={channel.network_name}
+                  >
+                    📡 {channel.network_name}
+                  </p>
+                ) : (
+                  <p className="mt-1 text-[10px] text-transparent select-none">-</p>
                 )}
+
+                {/* Categorías / Tags */}
+                <div className="mt-1.5 flex flex-wrap justify-center gap-1 min-h-[18px]">
+                  {channel.tags_names && channel.tags_names.length > 0 ? (
+                    channel.tags_names.slice(0, 2).map((tag, tIdx) => (
+                      <span
+                        key={tIdx}
+                        className="rounded px-1.5 py-0.2 text-[9px] font-medium bg-gray-200 text-black dark:bg-meta-4 dark:text-bodydark truncate max-w-[80px]"
+                        title={tag}
+                      >
+                        {tag}
+                      </span>
+                    ))
+                  ) : null}
+                  {channel.tags_names && channel.tags_names.length > 2 && (
+                    <span className="text-[9px] text-body dark:text-bodydark font-semibold">
+                      +{channel.tags_names.length - 2}
+                    </span>
+                  )}
+                </div>
               </div>
             ))}
           </div>
         ) : (
-          /* VISTA 2: LISTA / TABLA COMPACTA DETALLADA */
+          /* VISTA 2: LISTA / TABLA COMPACTA DETALLADA CON ORDENACIÓN */
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
                 <tr className="border-b border-stroke bg-gray-50/70 dark:border-strokedark dark:bg-meta-4/30">
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white w-16">CH #</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white w-20">{t('Logo')}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Name')}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Status')}</th>
-                  <th className="py-3 px-3 font-semibold text-black dark:text-white">{t('Services')}</th>
+                  <th
+                    onClick={() => handleSort('number')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white w-20 cursor-pointer select-none hover:text-primary transition"
+                  >
+                    CH # {renderSortIcon('number')}
+                  </th>
+                  <th className="py-3 px-3 font-semibold text-black dark:text-white w-16">{t('Logo')}</th>
+                  <th
+                    onClick={() => handleSort('name')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white cursor-pointer select-none hover:text-primary transition"
+                  >
+                    {t('Name')} {renderSortIcon('name')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('tags')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white cursor-pointer select-none hover:text-primary transition"
+                  >
+                    {t('Categories')} {renderSortIcon('tags')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('network')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white cursor-pointer select-none hover:text-primary transition"
+                  >
+                    {t('Network / Service')} {renderSortIcon('network')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('enabled')}
+                    className="py-3 px-3 font-semibold text-black dark:text-white cursor-pointer select-none hover:text-primary transition"
+                  >
+                    {t('Status')} {renderSortIcon('enabled')}
+                  </th>
                   <th className="py-3 px-3 w-10"></th>
                 </tr>
               </thead>
@@ -208,9 +476,12 @@ const Channel: React.FC = () => {
                     onClick={() => setSelectedChannel(channel)}
                     className="hover:bg-gray-50/70 dark:hover:bg-meta-4/40 transition-colors cursor-pointer group"
                   >
+                    {/* CH # */}
                     <td className="py-2.5 px-3 font-mono font-bold text-primary dark:text-secondary">
                       {channel.number !== undefined && channel.number > 0 ? channel.number : '-'}
                     </td>
+
+                    {/* Logo */}
                     <td className="py-2.5 px-3">
                       <div className="h-9 w-12 flex items-center justify-center p-0.5 bg-white rounded border border-stroke dark:border-strokedark dark:bg-meta-4 group-hover:scale-105 transition-transform">
                         <img
@@ -223,9 +494,54 @@ const Channel: React.FC = () => {
                         />
                       </div>
                     </td>
+
+                    {/* Nombre */}
                     <td className="py-2.5 px-3 font-semibold text-black dark:text-white group-hover:text-primary transition">
                       {channel.name}
                     </td>
+
+                    {/* Categorías / Tags */}
+                    <td className="py-2.5 px-3">
+                      {channel.tags_names && channel.tags_names.length > 0 ? (
+                        <div className="flex flex-wrap gap-1 max-w-xs">
+                          {channel.tags_names.map((tag, tIdx) => (
+                            <span
+                              key={tIdx}
+                              className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-secondary"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <span className="text-[11px] text-body/50 dark:text-bodydark/50 italic">
+                          {t('No categories')}
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Red / Servicio */}
+                    <td className="py-2.5 px-3">
+                      <div className="text-[11px] space-y-0.5">
+                        {channel.network_name ? (
+                          <div className="font-medium text-black dark:text-white flex items-center gap-1">
+                            <span className="text-primary dark:text-secondary">📡</span>
+                            <span>{channel.network_name}</span>
+                          </div>
+                        ) : (
+                          <div className="text-body/50 dark:text-bodydark/50 italic">
+                            {t('No network')}
+                          </div>
+                        )}
+                        {channel.services_details && channel.services_details.length > 0 && (
+                          <div className="text-[10px] text-body dark:text-bodydark truncate max-w-xs">
+                            {channel.services_details.map((s) => s.name).join(', ')}
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* Estado */}
                     <td className="py-2.5 px-3">
                       {channel.enabled !== false ? (
                         <Badge variant="success">
@@ -239,11 +555,8 @@ const Channel: React.FC = () => {
                         </Badge>
                       )}
                     </td>
-                    <td className="py-2.5 px-3 text-body dark:text-bodydark font-mono text-[11px]">
-                      {channel.services && channel.services.length > 0
-                        ? `${channel.services.length} servicio(s)`
-                        : 'Default'}
-                    </td>
+
+                    {/* Flecha */}
                     <td className="py-2.5 px-3 text-right">
                       <FiChevronRight className="text-body dark:text-bodydark group-hover:text-primary group-hover:translate-x-0.5 transition" />
                     </td>

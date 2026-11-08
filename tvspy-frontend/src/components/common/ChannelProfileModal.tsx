@@ -49,32 +49,60 @@ export const ChannelProfileModal: React.FC<ChannelProfileModalProps> = ({ channe
         </button>
 
         {/* Cabecera del Canal */}
-        <div className="flex items-center gap-4 pb-4 border-b border-stroke dark:border-strokedark">
-          <div className="h-16 w-16 flex items-center justify-center p-1.5 bg-white rounded-xl shadow-sm border border-stroke dark:border-strokedark dark:bg-meta-4 flex-shrink-0">
-            <img
-              src={channel.icon_public_url || channel.icon || imgNotFound}
-              alt={channel.name}
-              className="max-h-full max-w-full object-contain"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = imgNotFound;
-              }}
-            />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-black dark:text-white">
-                {channel.name}
-              </h3>
-              {channel.number !== undefined && channel.number > 0 && (
-                <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
-                  CH {channel.number}
-                </span>
-              )}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stroke dark:border-strokedark">
+          <div className="flex items-center gap-4">
+            <div className="h-16 w-16 flex items-center justify-center p-1.5 bg-white rounded-xl shadow-sm border border-stroke dark:border-strokedark dark:bg-meta-4 flex-shrink-0">
+              <img
+                src={channel.icon_public_url || channel.icon || imgNotFound}
+                alt={channel.name}
+                className="max-h-full max-w-full object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = imgNotFound;
+                }}
+              />
             </div>
-            <p className="text-xs text-body dark:text-bodydark mt-0.5">
-              Canal configurado en TVHeadend
-            </p>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-bold text-black dark:text-white">
+                  {channel.name}
+                </h3>
+                {channel.number !== undefined && channel.number > 0 && (
+                  <span className="text-[11px] font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
+                    CH {channel.number}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-body dark:text-bodydark">
+                {channel.network_name ? (
+                  <span className="font-medium text-black dark:text-white flex items-center gap-1">
+                    <span className="text-primary dark:text-secondary">📡</span>
+                    <span>{channel.network_name}</span>
+                  </span>
+                ) : (
+                  <span>Canal TVHeadend</span>
+                )}
+                {channel.services_details && channel.services_details.length > 0 && (
+                  <span className="opacity-75">
+                    • {channel.services_details.length} servicio(s)
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
+
+          {/* Categorías / Tags */}
+          {channel.tags_names && channel.tags_names.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 sm:justify-end">
+              {channel.tags_names.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="rounded-lg px-2.5 py-1 text-xs font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-secondary"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {loading ? (

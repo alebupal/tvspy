@@ -752,6 +752,70 @@ class TvheadendService extends EventEmitter {
             }
         }
     }
+
+    async getChannelTagsMap() {
+        const now = Date.now();
+        if (this._tagMapCache && (now - (this._tagMapCacheTime || 0) < 60000)) {
+            return this._tagMapCache;
+        }
+        const map = {};
+        try {
+            let res;
+            try {
+                res = await this.queryApi('/api/channeltag/grid?limit=10000');
+            } catch (e) {
+                res = await this.queryApi('/api/channel/tag/grid?limit=10000');
+            }
+            if (res?.entries && Array.isArray(res.entries)) {
+                for (const t of res.entries) {
+                    if (t.uuid && t.name) {
+                        map[t.uuid] = t.name;
+                    }
+                }
+            }
+        } catch (err) {
+            this.debugLog('TvheadendService: Could not fetch channel tags:', err.message);
+        }
+        this._tagMapCache = map;
+        this._tagMapCacheTime = now;
+        return map;
+    }
+
+    async getServicesMap() {
+        const now = Date.now();
+        if (this._servicesMapCache && (now - (this._servicesMapCacheTime || 0) < 60000)) {
+            return this._servicesMapCache;
+        }
+        const map = { byId: {}, byChannel: {} };
+        try {
+            const res = await this.queryApi('/api/service/grid?limit=100000');
+            if (res?.entries && Array.isArray(res.entries)) {
+                for (const s of res.entries) {
+                    if (s.uuid) {
+                        const item = {
+                            uuid: s.uuid,
+                            name: s.svcname || s.name || s.uuid,
+                            network: s.network || s.network_name || '',
+                            multiplex: s.multiplex || '',
+                            channel: s.channel || ''
+                        };
+                        map.byId[s.uuid] = item;
+                        if (s.channel) {
+                            if (!map.byChannel[s.channel]) {
+                                map.byChannel[s.channel] = [];
+                            }
+                            map.byChannel[s.channel].push(item);
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            this.debugLog('TvheadendService: Could not fetch services:', err.message);
+        }
+        this._servicesMapCache = map;
+        this._servicesMapCacheTime = now;
+        return map;
+    }
 }
 
 module.exports = new TvheadendService();

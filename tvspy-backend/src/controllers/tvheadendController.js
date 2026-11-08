@@ -13,8 +13,58 @@ class TvheadendController {
                 }]))}`;
             }
 
-            const data = await tvheadendService.queryApi(endpoint);
-            res.json(data);
+            const [channelsData, tagsMap, servicesMap] = await Promise.all([
+                tvheadendService.queryApi(endpoint),
+                tvheadendService.getChannelTagsMap(),
+                tvheadendService.getServicesMap()
+            ]);
+
+            if (channelsData?.entries && Array.isArray(channelsData.entries)) {
+                for (const ch of channelsData.entries) {
+                    // Mapear tags / categorías a nombres legibles
+                    const tagNames = [];
+                    if (Array.isArray(ch.tags)) {
+                        for (const t of ch.tags) {
+                            const name = tagsMap[t] || t;
+                            if (name) tagNames.push(name);
+                        }
+                    }
+                    ch.tags_names = tagNames;
+
+                    // Mapear servicios y redes
+                    const serviceDetails = [];
+                    const networks = new Set();
+
+                    // 1. Por lista de servicios vinculados en el canal
+                    if (Array.isArray(ch.services)) {
+                        for (const sid of ch.services) {
+                            const sInfo = servicesMap.byId ? servicesMap.byId[sid] : null;
+                            if (sInfo) {
+                                serviceDetails.push(sInfo);
+                                if (sInfo.network) networks.add(sInfo.network);
+                            } else {
+                                serviceDetails.push({ uuid: sid, name: sid });
+                            }
+                        }
+                    }
+
+                    // 2. Por servicios que apuntan al canal
+                    if (ch.uuid && servicesMap.byChannel && servicesMap.byChannel[ch.uuid]) {
+                        for (const sInfo of servicesMap.byChannel[ch.uuid]) {
+                            if (!serviceDetails.some(s => s.uuid === sInfo.uuid)) {
+                                serviceDetails.push(sInfo);
+                                if (sInfo.network) networks.add(sInfo.network);
+                            }
+                        }
+                    }
+
+                    ch.services_details = serviceDetails;
+                    ch.networks = Array.from(networks);
+                    ch.network_name = ch.networks.join(', ');
+                }
+            }
+
+            res.json(channelsData);
         } catch (err) {
             res.status(502).json({ error: 'Error al consultar canales de TVHeadend', details: err.message });
         }
