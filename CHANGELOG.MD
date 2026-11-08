@@ -1,5 +1,15 @@
 # Changelog TVSPY
 
+## [3.2.2] - 2026-11-08
+
+- **Mobile Navigation & Sidebar Fixes**:
+  - Added full-screen dark backdrop overlay (`bg-black/60 backdrop-blur-xs`) on mobile devices allowing users to tap outside the sidebar to close it easily.
+  - Fixed mobile menu toggle behavior by preventing click event propagation (`e.stopPropagation()`) from hamburger button to document.
+  - Positioned mobile sidebar with `fixed inset-y-0` and `overflow-y-auto` so the entire menu and footer links remain completely scrollable on short phone screens and landscape orientation.
+  - Added automatic background body scroll lock when mobile menu is opened.
+  - Added automatic sidebar closure when navigating between routes.
+  - Standardized project license to GNU General Public License v3.0 (GPL-3.0) across all configuration files and documentation.
+
 ## [3.2.1] - 2026-11-07
 
 - **Security Updates (Dependabot Remediation)**:

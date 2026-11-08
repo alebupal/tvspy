@@ -23,7 +23,7 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const CURRENT_VERSION = '3.2.0';
+const CURRENT_VERSION = '3.2.2';
 const PAYPAL_URL = 'https://www.paypal.me/alebupal';
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
@@ -39,17 +39,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const [releaseUrl, setReleaseUrl] = useState<string>('https://github.com/alebupal/tvspy/releases');
   const [isNewVersionAvailable, setIsNewVersionAvailable] = useState(false);
 
-  // Cerrar al hacer clic fuera
-  useEffect(() => {
-    const clickHandler = ({ target }: MouseEvent) => {
-      if (!sidebar.current || !trigger.current) return;
-      if (!sidebarOpen || sidebar.current.contains(target as Node) || trigger.current.contains(target as Node)) return;
-      setSidebarOpen(false);
-    };
-    document.addEventListener('click', clickHandler);
-    return () => document.removeEventListener('click', clickHandler);
-  }, [sidebarOpen, setSidebarOpen]);
-
   // Cerrar al pulsar Esc
   useEffect(() => {
     const keyHandler = ({ key }: KeyboardEvent) => {
@@ -59,6 +48,23 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
     document.addEventListener('keydown', keyHandler);
     return () => document.removeEventListener('keydown', keyHandler);
   }, [sidebarOpen, setSidebarOpen]);
+
+  // Cerrar automáticamente al cambiar de ruta
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname, setSidebarOpen]);
+
+  // Bloquear scroll de la página de fondo cuando el menú móvil está abierto
+  useEffect(() => {
+    if (sidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [sidebarOpen]);
 
   // Comprobar versión remota mediante el backend
   useEffect(() => {
@@ -114,35 +120,45 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   ];
 
   return (
-    <aside
-      ref={sidebar}
-      className={`absolute left-0 top-0 z-50 flex h-screen w-64 flex-col justify-between overflow-y-hidden border-r border-stroke bg-white duration-300 ease-in-out dark:border-strokedark dark:bg-boxdark lg:static lg:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
-      }`}
-    >
-      <div>
-        {/* Header del Sidebar con Logo */}
-        <div className="flex items-center justify-between px-6 py-5.5 border-b border-stroke dark:border-strokedark">
-          <NavLink to="/" className="flex items-center gap-3">
-            <img src={Logo} alt="TVSPY Logo" className="h-8 w-auto" />
-            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
-              v{CURRENT_VERSION}
-            </span>
-          </NavLink>
+    <>
+      {/* Backdrop overlay para móviles */}
+      <div
+        className={`fixed inset-0 z-40 bg-black/60 backdrop-blur-xs transition-opacity duration-300 lg:hidden ${
+          sidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
 
-          <button
-            ref={trigger}
-            onClick={() => setSidebarOpen(false)}
-            aria-controls="sidebar"
-            aria-expanded={sidebarOpen}
-            className="block text-body hover:text-black dark:text-bodydark dark:hover:text-white lg:hidden"
-          >
-            <FiX className="text-xl" />
-          </button>
-        </div>
+      <aside
+        ref={sidebar}
+        className={`fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col justify-between overflow-y-auto border-r border-stroke bg-white duration-300 ease-in-out dark:border-strokedark dark:bg-boxdark lg:static lg:z-auto lg:h-screen lg:w-64 lg:max-w-none lg:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
+        }`}
+      >
+        <div>
+          {/* Header del Sidebar con Logo */}
+          <div className="flex items-center justify-between px-6 py-5.5 border-b border-stroke dark:border-strokedark">
+            <NavLink to="/" className="flex items-center gap-3">
+              <img src={Logo} alt="TVSPY Logo" className="h-8 w-auto" />
+              <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
+                v{CURRENT_VERSION}
+              </span>
+            </NavLink>
 
-        {/* Navegación */}
-        <div className="px-4 py-6">
+            <button
+              ref={trigger}
+              onClick={() => setSidebarOpen(false)}
+              aria-controls="sidebar"
+              aria-expanded={sidebarOpen}
+              className="block text-body hover:text-black dark:text-bodydark dark:hover:text-white lg:hidden"
+            >
+              <FiX className="text-xl" />
+            </button>
+          </div>
+
+          {/* Navegación */}
+          <div className="px-4 py-6">
           <p className="px-3 text-xs font-semibold uppercase tracking-wider text-body dark:text-bodydark mb-3">
             {t('Main Menu')}
           </p>
@@ -244,6 +260,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
         </div>
       </div>
     </aside>
+  </>
   );
 };
 

@@ -1,5 +1,15 @@
 # Changelog TVSPY
 
+## [3.2.2] - 2026-11-08
+
+- **Correcciones en Navegación y Menú Móvil**:
+  - Añadido overlay de fondo oscuro (`bg-black/60 backdrop-blur-xs`) en pantallas móviles para cerrar el menú cómodamente pulsando fuera.
+  - Corregido el botón hamburguesa del encabezado evitando la propagación accidental del clic (`e.stopPropagation()`).
+  - Posicionamiento `fixed inset-y-0` y scroll vertical habilitado (`overflow-y-auto`) para que todos los elementos de navegación y enlaces del pie sean accesibles en pantallas pequeñas y formato horizontal.
+  - Bloqueo automático del scroll de fondo de la página mientras el menú móvil está desplegado.
+  - Cierre automático de la barra lateral al cambiar de pantalla o ruta.
+  - Estandarización de la licencia del proyecto a GNU General Public License v3.0 (GPL-3.0) en configuraciones y documentación.
+
 ## [3.2.1] - 2026-11-07
 
 - **Actualizaciones de Seguridad (Dependabot)**:

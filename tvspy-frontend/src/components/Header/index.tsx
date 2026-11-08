@@ -57,9 +57,13 @@ const Header: React.FC<HeaderProps> = ({ sidebarOpen, setSidebarOpen }) => {
         {/* Lado izquierdo: Botón menú móvil y estado de TVHeadend */}
         <div className="flex items-center gap-3">
           <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSidebarOpen(!sidebarOpen);
+            }}
             className="rounded-lg border border-stroke p-2 text-black hover:bg-gray-100 dark:border-strokedark dark:text-white dark:hover:bg-meta-4 lg:hidden"
             aria-label={t('Open Menu')}
+            aria-expanded={sidebarOpen}
           >
             <FiMenu className="text-xl" />
           </button>
