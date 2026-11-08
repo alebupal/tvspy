@@ -24,6 +24,12 @@ import {
 type ChannelSortField = 'number' | 'name' | 'tags' | 'network' | 'enabled';
 type SortDirection = 'asc' | 'desc';
 
+const isRawUuid = (str?: string): boolean => {
+  if (!str) return true;
+  const clean = str.replace(/[-_]/g, '');
+  return clean.length >= 20 && /^[0-9a-fA-F]+$/.test(clean);
+};
+
 const Channel: React.FC = () => {
   const { t } = useTranslation();
 
@@ -71,7 +77,7 @@ const Channel: React.FC = () => {
     const set = new Set<string>();
     channels.forEach((c) => {
       (c.tags_names || []).forEach((t) => {
-        if (t && t.trim()) set.add(t.trim());
+        if (t && t.trim() && !t.startsWith('·')) set.add(t.trim());
       });
     });
     return Array.from(set).sort((a, b) => a.localeCompare(b));
@@ -203,6 +209,53 @@ const Channel: React.FC = () => {
   }, [sortedChannels, page, limit]);
 
   const isFiltered = search.trim() !== '' || selectedTag !== 'all' || selectedNetwork !== 'all';
+
+  // Renderizadores auxiliares legibles para Red y Servicio
+  const renderNetworkCell = (channel: ChannelItem) => {
+    if (channel.network_name && channel.network_name.trim()) {
+      return (
+        <div className="font-semibold text-black dark:text-white flex items-center gap-1.5">
+          <span className="text-primary dark:text-secondary text-xs">📡</span>
+          <span>{channel.network_name}</span>
+        </div>
+      );
+    }
+    return (
+      <div className="font-medium text-body dark:text-bodydark flex items-center gap-1.5">
+        <span className="opacity-60 text-xs">📺</span>
+        <span>TVHeadend</span>
+      </div>
+    );
+  };
+
+  const renderServiceCell = (channel: ChannelItem) => {
+    const readableNames = (channel.services_details || [])
+      .map((s) => s.name)
+      .filter((n) => n && n.trim() && !isRawUuid(n));
+
+    if (readableNames.length > 0) {
+      return (
+        <div className="text-[10px] text-body dark:text-bodydark truncate max-w-xs" title={readableNames.join(', ')}>
+          {readableNames.join(', ')}
+        </div>
+      );
+    }
+
+    const count = channel.services_details?.length || channel.services?.length || 0;
+    if (count > 0) {
+      return (
+        <div className="text-[10px] text-body/80 dark:text-bodydark/80">
+          {count} {count === 1 ? t('service linked') : t('services linked')}
+        </div>
+      );
+    }
+
+    return (
+      <div className="text-[10px] text-body/50 dark:text-bodydark/50 italic">
+        {t('Default service')}
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -360,74 +413,85 @@ const Channel: React.FC = () => {
             {t('No data available')}
           </div>
         ) : viewMode === 'grid' ? (
-          /* VISTA 1: CUADRÍCULA (GRID) */
+          /* VISTA 1: CUADRÍCULA (GRID) CON DISEÑO LIMPIO SIN SOLAPAR */
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {paginatedChannels.map((channel, idx) => (
-              <div
-                key={channel.uuid || idx}
-                onClick={() => setSelectedChannel(channel)}
-                className="group relative flex flex-col items-center text-center p-3.5 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition-all duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer"
-              >
-                {/* Número de canal flotante */}
-                {channel.number !== undefined && channel.number > 0 && (
-                  <span className="absolute top-2 left-2 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
-                    CH {channel.number}
-                  </span>
-                )}
+            {paginatedChannels.map((channel, idx) => {
+              const displayTags = (channel.tags_names || []).filter(
+                (tag) => !tag.startsWith('·') && tag.toLowerCase() !== channel.network_name?.toLowerCase()
+              );
 
-                {/* Logo */}
-                <div className="h-16 w-16 mb-2 mt-2 flex items-center justify-center p-1 bg-white rounded-lg shadow-xs border border-stroke/60 dark:border-strokedark/60 dark:bg-meta-4 group-hover:scale-105 transition-transform">
-                  <img
-                    src={channel.icon_public_url || channel.icon || imgNotFound}
-                    alt={channel.name}
-                    className="max-h-full max-w-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = imgNotFound;
-                    }}
-                  />
-                </div>
-
-                {/* Nombre de Canal */}
-                <h4
-                  className="text-xs font-semibold text-black dark:text-white line-clamp-1 group-hover:text-primary transition w-full"
-                  title={channel.name}
+              return (
+                <div
+                  key={channel.uuid || idx}
+                  onClick={() => setSelectedChannel(channel)}
+                  className="group flex flex-col items-center text-center p-3 rounded-xl border border-stroke bg-gray-50/50 hover:bg-white hover:shadow-md hover:border-primary/50 transition-all duration-200 dark:border-strokedark dark:bg-meta-4/20 dark:hover:bg-boxdark cursor-pointer"
                 >
-                  {channel.name}
-                </h4>
+                  {/* Fila superior para número de canal y estado (sin pisar el logo) */}
+                  <div className="w-full flex items-center justify-between mb-1 h-5">
+                    {channel.number !== undefined && channel.number > 0 ? (
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary dark:text-secondary">
+                        CH {channel.number}
+                      </span>
+                    ) : (
+                      <span className="inline-block" />
+                    )}
+                    {channel.enabled === false && (
+                      <span className="text-[9px] font-bold text-rose-500 bg-rose-500/10 px-1 py-0.2 rounded border border-rose-500/20">
+                        OFF
+                      </span>
+                    )}
+                  </div>
 
-                {/* Red o Servicio */}
-                {channel.network_name ? (
+                  {/* Logo del Canal */}
+                  <div className="h-16 w-16 mb-2 flex items-center justify-center p-1 bg-white rounded-lg shadow-xs border border-stroke/60 dark:border-strokedark/60 dark:bg-meta-4 group-hover:scale-105 transition-transform shrink-0">
+                    <img
+                      src={channel.icon_public_url || channel.icon || imgNotFound}
+                      alt={channel.name}
+                      className="max-h-full max-w-full object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = imgNotFound;
+                      }}
+                    />
+                  </div>
+
+                  {/* Nombre de Canal */}
+                  <h4
+                    className="text-xs font-semibold text-black dark:text-white line-clamp-1 group-hover:text-primary transition w-full"
+                    title={channel.name}
+                  >
+                    {channel.name}
+                  </h4>
+
+                  {/* Red o Proveedor */}
                   <p
                     className="mt-1 text-[10px] text-body dark:text-bodydark truncate max-w-full font-medium"
-                    title={channel.network_name}
+                    title={channel.network_name || 'TVHeadend'}
                   >
-                    📡 {channel.network_name}
+                    📡 {channel.network_name || 'TVHeadend'}
                   </p>
-                ) : (
-                  <p className="mt-1 text-[10px] text-transparent select-none">-</p>
-                )}
 
-                {/* Categorías / Tags */}
-                <div className="mt-1.5 flex flex-wrap justify-center gap-1 min-h-[18px]">
-                  {channel.tags_names && channel.tags_names.length > 0 ? (
-                    channel.tags_names.slice(0, 2).map((tag, tIdx) => (
-                      <span
-                        key={tIdx}
-                        className="rounded px-1.5 py-0.2 text-[9px] font-medium bg-gray-200 text-black dark:bg-meta-4 dark:text-bodydark truncate max-w-[80px]"
-                        title={tag}
-                      >
-                        {tag}
+                  {/* Categorías / Tags */}
+                  <div className="mt-1.5 flex flex-wrap justify-center gap-1 min-h-[18px]">
+                    {displayTags.length > 0 ? (
+                      displayTags.slice(0, 2).map((tag, tIdx) => (
+                        <span
+                          key={tIdx}
+                          className="rounded px-1.5 py-0.2 text-[9px] font-medium bg-gray-200 text-black dark:bg-meta-4 dark:text-bodydark truncate max-w-[80px]"
+                          title={tag}
+                        >
+                          {tag}
+                        </span>
+                      ))
+                    ) : null}
+                    {displayTags.length > 2 && (
+                      <span className="text-[9px] text-body dark:text-bodydark font-semibold">
+                        +{displayTags.length - 2}
                       </span>
-                    ))
-                  ) : null}
-                  {channel.tags_names && channel.tags_names.length > 2 && (
-                    <span className="text-[9px] text-body dark:text-bodydark font-semibold">
-                      +{channel.tags_names.length - 2}
-                    </span>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
           /* VISTA 2: LISTA / TABLA COMPACTA DETALLADA CON ORDENACIÓN */
@@ -504,14 +568,16 @@ const Channel: React.FC = () => {
                     <td className="py-2.5 px-3">
                       {channel.tags_names && channel.tags_names.length > 0 ? (
                         <div className="flex flex-wrap gap-1 max-w-xs">
-                          {channel.tags_names.map((tag, tIdx) => (
-                            <span
-                              key={tIdx}
-                              className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-secondary"
-                            >
-                              {tag}
-                            </span>
-                          ))}
+                          {channel.tags_names
+                            .filter((tag) => !tag.startsWith('·'))
+                            .map((tag, tIdx) => (
+                              <span
+                                key={tIdx}
+                                className="rounded px-1.5 py-0.5 text-[10px] font-medium bg-primary/10 text-primary dark:bg-primary/20 dark:text-secondary"
+                              >
+                                {tag}
+                              </span>
+                            ))}
                         </div>
                       ) : (
                         <span className="text-[11px] text-body/50 dark:text-bodydark/50 italic">
@@ -520,24 +586,11 @@ const Channel: React.FC = () => {
                       )}
                     </td>
 
-                    {/* Red / Servicio */}
+                    {/* Red / Servicio Legible */}
                     <td className="py-2.5 px-3">
                       <div className="text-[11px] space-y-0.5">
-                        {channel.network_name ? (
-                          <div className="font-medium text-black dark:text-white flex items-center gap-1">
-                            <span className="text-primary dark:text-secondary">📡</span>
-                            <span>{channel.network_name}</span>
-                          </div>
-                        ) : (
-                          <div className="text-body/50 dark:text-bodydark/50 italic">
-                            {t('No network')}
-                          </div>
-                        )}
-                        {channel.services_details && channel.services_details.length > 0 && (
-                          <div className="text-[10px] text-body dark:text-bodydark truncate max-w-xs">
-                            {channel.services_details.map((s) => s.name).join(', ')}
-                          </div>
-                        )}
+                        {renderNetworkCell(channel)}
+                        {renderServiceCell(channel)}
                       </div>
                     </td>
 

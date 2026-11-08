@@ -1,5 +1,11 @@
 const tvheadendService = require('../services/tvheadendService');
 
+function isRawUuid(str) {
+    if (!str || typeof str !== 'string') return true;
+    const clean = str.replace(/[-_]/g, '');
+    return clean.length >= 20 && /^[0-9a-fA-F]+$/.test(clean);
+}
+
 class TvheadendController {
     async getChannels(req, res) {
         try {
@@ -26,7 +32,7 @@ class TvheadendController {
                     if (Array.isArray(ch.tags)) {
                         for (const t of ch.tags) {
                             const name = tagsMap[t] || t;
-                            if (name) tagNames.push(name);
+                            if (name && !isRawUuid(name)) tagNames.push(name);
                         }
                     }
                     ch.tags_names = tagNames;
@@ -40,10 +46,11 @@ class TvheadendController {
                         for (const sid of ch.services) {
                             const sInfo = servicesMap.byId ? servicesMap.byId[sid] : null;
                             if (sInfo) {
-                                serviceDetails.push(sInfo);
-                                if (sInfo.network) networks.add(sInfo.network);
+                                const cleanName = isRawUuid(sInfo.name) ? '' : sInfo.name;
+                                serviceDetails.push({ ...sInfo, name: cleanName });
+                                if (sInfo.network && !isRawUuid(sInfo.network)) networks.add(sInfo.network);
                             } else {
-                                serviceDetails.push({ uuid: sid, name: sid });
+                                serviceDetails.push({ uuid: sid, name: '' });
                             }
                         }
                     }
@@ -52,8 +59,18 @@ class TvheadendController {
                     if (ch.uuid && servicesMap.byChannel && servicesMap.byChannel[ch.uuid]) {
                         for (const sInfo of servicesMap.byChannel[ch.uuid]) {
                             if (!serviceDetails.some(s => s.uuid === sInfo.uuid)) {
-                                serviceDetails.push(sInfo);
-                                if (sInfo.network) networks.add(sInfo.network);
+                                const cleanName = isRawUuid(sInfo.name) ? '' : sInfo.name;
+                                serviceDetails.push({ ...sInfo, name: cleanName });
+                                if (sInfo.network && !isRawUuid(sInfo.network)) networks.add(sInfo.network);
+                            }
+                        }
+                    }
+
+                    // 3. Si no se detectó red desde los servicios, detectar si hay tag de proveedor/red (ej. ·TDTChannels)
+                    if (networks.size === 0 && tagNames.length > 0) {
+                        for (const t of tagNames) {
+                            if (t.startsWith('·') || t.startsWith('.')) {
+                                networks.add(t.replace(/^[·.]\s*/, ''));
                             }
                         }
                     }
