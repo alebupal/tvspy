@@ -1,5 +1,11 @@
 # Changelog TVSPY
 
+## [3.2.4] - 2026-11-08
+
+- **Corrección en Detención de Emisiones ("Kill Stream")**:
+  - Reemplazada la llamada incorrecta a `/api/status/cancel` (que generaba error 404 en TVHeadend) por el endpoint nativo oficial `/api/connections/cancel`.
+  - Mapeo inteligente entre suscripciones activas y conexiones de clientes mediante timestamp de inicio y dirección IP para expulsar al cliente de forma limpia y efectiva.
+
 ## [3.2.3] - 2026-11-08
 
 - **Sincronización Dinámica de Versión en el Menú**:

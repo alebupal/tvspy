@@ -133,8 +133,11 @@ export const tvheadendApi = {
     return res.data;
   },
 
-  cancelSubscription: async (id: number): Promise<{ success: boolean; message: string }> => {
-    const res = await apiClient.post('/subscriptions/cancel', { id });
+  cancelSubscription: async (
+    params: number | { id?: number; start?: number; hostname?: string; username?: string; channel?: string }
+  ): Promise<{ success: boolean; message: string; connectionId?: number | string }> => {
+    const payload = typeof params === 'number' ? { id: params } : params;
+    const res = await apiClient.post('/subscriptions/cancel', payload);
     return res.data;
   },
 

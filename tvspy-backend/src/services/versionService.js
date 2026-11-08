@@ -18,7 +18,7 @@ class VersionService {
         } catch (e) {
             console.warn('[VersionService] Error leyendo versión local:', e.message);
         }
-        return '3.2.3';
+        return '3.2.4';
     }
 
     compareVersions(current, latest) {

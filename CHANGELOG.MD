@@ -1,5 +1,11 @@
 # Changelog TVSPY
 
+## [3.2.4] - 2026-11-08
+
+- **Fix Kill Stream / Disconnect Playback (`/api/connections/cancel`)**:
+  - Replaced invalid `/api/status/cancel` call (which caused 404 errors in TVHeadend) with native TVHeadend `/api/connections/cancel` endpoint.
+  - Automatically correlates active subscriptions to active client connections by start timestamp and client peer IP for reliable stream termination.
+
 ## [3.2.3] - 2026-11-08
 
 - **Dynamic Version Binding in Sidebar Menu**:

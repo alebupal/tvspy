@@ -41,12 +41,79 @@ class TvheadendController {
     async cancelSubscription(req, res) {
         try {
             const id = req.body?.id || req.query?.id;
-            if (!id) {
-                return res.status(400).json({ error: 'Falta el ID de la suscripción a cancelar' });
+            const start = req.body?.start || req.query?.start;
+            const hostname = req.body?.hostname || req.query?.hostname;
+            const username = req.body?.username || req.query?.username;
+
+            if (!id && !start && !hostname) {
+                return res.status(400).json({ error: 'Faltan parámetros para identificar la conexión a cancelar' });
             }
 
-            const result = await tvheadendService.queryApi(`/api/status/cancel?id=${id}`);
-            res.json({ success: true, message: `Suscripción ${id} cancelada`, result });
+            // 1. Buscar la suscripción activa en memoria si existe
+            const targetSub = tvheadendService.activeSubscriptions.find(s =>
+                (id && s.id == id) ||
+                (start && s.start == start) ||
+                (id && s.start == id) ||
+                (hostname && (s.hostname === hostname || s.peer === hostname))
+            );
+
+            // 2. Consultar las conexiones activas en TVHeadend (/api/status/connections)
+            let connections = [];
+            try {
+                const connData = await tvheadendService.queryApi('/api/status/connections');
+                connections = Array.isArray(connData?.entries) ? connData.entries : (Array.isArray(connData) ? connData : []);
+            } catch (connErr) {
+                // Silencioso, usaremos fallback si falla la lista
+            }
+
+            // 3. Mapear la suscripción con la conexión correspondiente
+            let matchedConn = null;
+            const targetStart = targetSub?.start || start;
+            const targetIp = targetSub?.hostname || targetSub?.peer || hostname;
+            const targetUser = targetSub?.username || targetSub?.user || username;
+
+            // Prioridad a) Coincidencia por timestamp exacto de inicio
+            if (targetStart) {
+                matchedConn = connections.find(c => c.started == targetStart);
+            }
+
+            // Prioridad b) Coincidencia por IP de origen (peer) y usuario
+            if (!matchedConn && targetIp) {
+                matchedConn = connections.find(c =>
+                    c.peer === targetIp && (!targetUser || c.user === targetUser)
+                );
+            }
+
+            // Prioridad c) Coincidencia por ID directo en la lista de conexiones
+            if (!matchedConn && id) {
+                matchedConn = connections.find(c => c.id == id);
+            }
+
+            const connectionIdToCancel = matchedConn ? matchedConn.id : id;
+
+            if (!connectionIdToCancel) {
+                return res.status(404).json({ error: 'No se encontró la conexión activa correspondiente en TVHeadend' });
+            }
+
+            // 4. Ejecutar cancelación en TVHeadend usando /api/connections/cancel
+            let result = null;
+            try {
+                result = await tvheadendService.queryApi(`/api/connections/cancel?id=${encodeURIComponent(connectionIdToCancel)}`);
+            } catch (err1) {
+                // Alternativa compatible con versiones variantes de TVHeadend
+                try {
+                    result = await tvheadendService.queryApi(`/api/status/connections/cancel?id=${encodeURIComponent(connectionIdToCancel)}`);
+                } catch (err2) {
+                    throw err1;
+                }
+            }
+
+            res.json({
+                success: true,
+                message: `Conexión ${connectionIdToCancel} cancelada correctamente`,
+                connectionId: connectionIdToCancel,
+                result
+            });
         } catch (err) {
             res.status(500).json({ error: 'Error al cancelar la suscripción', details: err.message });
         }

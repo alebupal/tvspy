@@ -77,7 +77,13 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
 
     setCancelling(true);
     try {
-      await tvheadendApi.cancelSubscription(subscription.id || subscription.start);
+      await tvheadendApi.cancelSubscription({
+        id: subscription.id,
+        start: subscription.start,
+        hostname: subscription.hostname || (subscription as any).peer,
+        username: subscription.username,
+        channel: subscription.channel,
+      });
       toast.success(t('Stream disconnected successfully'));
     } catch (err: any) {
       toast.error(err.response?.data?.details || err.message || t('Error disconnecting stream'));
