@@ -1,6 +1,6 @@
 # TVSPY 📺
 
-[![Version](https://img.shields.io/badge/version-3.2.2-blue.svg)](https://github.com/alebupal/tvspy/releases)
+[![Version](https://img.shields.io/badge/version-3.2.3-blue.svg)](https://github.com/alebupal/tvspy/releases)
 [![Docker Hub](https://img.shields.io/docker/pulls/alebupal/tvspy.svg)](https://hub.docker.com/r/alebupal/tvspy/)
 [![License: GPL-3.0](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Donate PayPal](https://img.shields.io/badge/Donate-PayPal-orange.svg)](https://www.paypal.me/alebupal)

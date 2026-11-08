@@ -24,7 +24,7 @@ interface SidebarProps {
   setSidebarOpen: (arg: boolean) => void;
 }
 
-const DEFAULT_VERSION = pkg.version || '3.2.2';
+const DEFAULT_VERSION = pkg.version || '3.2.3';
 const PAYPAL_URL = 'https://www.paypal.me/alebupal';
 
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {

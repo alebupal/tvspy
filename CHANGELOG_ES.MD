@@ -1,5 +1,11 @@
 # Changelog TVSPY
 
+## [3.2.3] - 2026-11-08
+
+- **Sincronización Dinámica de Versión en el Menú**:
+  - Enlace dinámico del indicador de versión del menú lateral con la configuración local del paquete y el servicio de versiones del backend, evitando que quede desactualizado.
+  - Sincronización de los archivos de bloqueo (`package-lock.json`) en raíz, backend y frontend.
+
 ## [3.2.2] - 2026-11-08
 
 - **Correcciones en Navegación y Menú Móvil**:

@@ -1,5 +1,11 @@
 # Changelog TVSPY
 
+## [3.2.3] - 2026-11-08
+
+- **Dynamic Version Binding in Sidebar Menu**:
+  - Dynamically synchronized the version badge in the sidebar menu with the local package configuration and the backend version service, resolving stale version indicators.
+  - Synchronized all package lockfiles across root, backend, and frontend packages.
+
 ## [3.2.2] - 2026-11-08
 
 - **Mobile Navigation & Sidebar Fixes**:
