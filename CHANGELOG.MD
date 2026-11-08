@@ -5,6 +5,16 @@
 - **Fix Kill Stream / Disconnect Playback (`/api/connections/cancel`)**:
   - Replaced invalid `/api/status/cancel` call (which caused 404 errors in TVHeadend) with native TVHeadend `/api/connections/cancel` endpoint.
   - Automatically correlates active subscriptions to active client connections by start timestamp and client peer IP for reliable stream termination.
+- **PIN Session Persistence (Remember Device for 30 Days)**:
+  - Once authenticated via PIN code, the browser session is persistently remembered for 30 days using cookies and `localStorage`.
+  - Prevents repetitive PIN prompts on every page reload, tab switch, or browser restart.
+  - Added a dedicated **"Lock now"** action button in Settings to revoke device authorization on demand.
+- **Sidebar Menu & Navigation Polish**:
+  - Eliminated the unsightly native white scrollbar track rendered by Windows/Chrome on desktop using `no-scrollbar` and explicit rendering styles.
+  - Shortened the sidebar menu item to a single word: **"Documentation"** (in Spanish: **"Documentación"**) for a cleaner visual layout.
+- **Ultra-Compact Storage Widget**:
+  - Redesigned the TVHeadend disk space widget into an ultra-compact horizontal strip with a slim `h-1.5` progress bar, reducing vertical footprint by more than 50%.
+  - Simplified title to **"Storage"** (in Spanish: **"Almacenamiento"**), allowing live streams to remain immediately visible above the fold without scrolling.
 
 ## [3.2.3] - 2026-11-08
 

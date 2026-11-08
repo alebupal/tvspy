@@ -190,7 +190,7 @@ export const systemApi = {
 };
 
 export const docsApi = {
-  getDoc: async (type: 'changelog' | 'readme', lang = 'es'): Promise<{ filename: string; content: string }> => {
+  getDoc: async (type: 'changelog' | 'readme' | 'documentation' | 'guide', lang = 'es'): Promise<{ filename: string; content: string }> => {
     const res = await apiClient.get<{ filename: string; content: string }>(`/docs/${type}`, {
       params: { lang },
     });

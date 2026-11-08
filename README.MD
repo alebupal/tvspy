@@ -16,13 +16,14 @@
   - Displays real channel logos with graceful fallbacks.
   - **Live EPG in Stream Cards**: Shows currently broadcasting program title, summary, progress bar, and remaining minutes.
   - Who is online, what channel they are watching, client player (VLC, Kodi, TiviMate, etc.), and instant bitrate pulse via WebSockets.
-  - **Kill Stream**: Remote stream termination button directly stopping playbacks via TVHeadend API.
+  - **Kill Stream**: Remote stream termination button directly stopping playbacks via native TVHeadend API (`/api/connections/cancel`).
   - **Signal Health**: Real-time error packet counter and transport stream degradation warning.
   - **Bandwidth Sparklines**: Live chart showing bitrate fluctuations per session.
   - **GeoIP & Local IP Recognition**: Country flags and automatic local area network (LAN) detection.
   - **Smart Scan Filtering**: Automatically filters out internal TVHeadend IPTV/M3U mux scans and EPG grabber tasks.
-- 💾 **TVHeadend Storage & Disk Space Monitor**:
+- 💾 **Ultra-Compact Storage Monitor**:
   - Real-time disk capacity, free space, and used space metrics queried directly from TVHeadend `/comet/poll` and WebSocket events.
+  - Slim horizontal strip layout that keeps active live streams immediately visible without vertical scrolling.
   - Color-coded progress bar with low-space alerts (< 10%).
   - DVR recording storage utilization breakdown.
 - 🔴 **DVR Recording Detection & Upcoming Schedules**:
@@ -44,7 +45,7 @@
   - **Peak Hours** analysis (24-hour usage distribution).
   - Flexible filters by date range (7, 14, 30, 90 days, or full year) and metric (time vs uses).
 - 🔒 **Security & Access Control**:
-  - **PIN Lock Screen**: Secure your TVSpy panel with a custom numeric PIN, dynamic digits, and physical keyboard support.
+  - **PIN Lock Screen**: Secure your TVSpy panel with a custom numeric PIN, physical keyboard support, and **30-day device remembering** via cookies/localStorage with an on-demand manual lock option.
   - **Interactive IP Whitelist**: Manage authorized IPs with interactive tags/chips, quick presets, wildcard (`192.168.1.*`), and CIDR subnet (`10.0.0.0/24`) support.
   - **Local Server & LAN Protection**: Loopback connections (`127.0.0.1`, `localhost`, `::1`) are always permitted by default, with optional one-click auto-authorization for all private LANs.
 - 🔄 **Server Health, Reliability & Maintenance**:

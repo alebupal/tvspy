@@ -5,6 +5,16 @@
 - **Corrección en Detención de Emisiones ("Kill Stream")**:
   - Reemplazada la llamada incorrecta a `/api/status/cancel` (que generaba error 404 en TVHeadend) por el endpoint nativo oficial `/api/connections/cancel`.
   - Mapeo inteligente entre suscripciones activas y conexiones de clientes mediante timestamp de inicio y dirección IP para expulsar al cliente de forma limpia y efectiva.
+- **Persistencia de Sesión por Código PIN (30 días)**:
+  - Al desbloquear el panel con el código PIN correcto, el dispositivo se recuerda automáticamente durante 30 días mediante cookies y `localStorage`.
+  - Ya no solicita el PIN en cada reapertura de pestaña, recarga o reinicio del navegador.
+  - Añadido botón manual **"Bloquear ahora"** en Ajustes para revocar el acceso persistente cuando se desee.
+- **Optimización del Menú Lateral y Navegación**:
+  - Eliminada la barra vertical de desplazamiento blanca que aparecía en Windows/Chrome en modo escritorio mediante `no-scrollbar` y estilos directos de renderizado.
+  - Renombrada la entrada del menú a una sola palabra: **"Documentación"** (en inglés: **"Documentation"**) para un diseño más limpio y legible.
+- **Widget de Almacenamiento Ultra-Compacto**:
+  - Rediseñado el bloque de espacio en disco de TVHeadend a un formato barra estilizada y horizontal que ocupa menos de la mitad de altura vertical (`h-1.5` de grosor).
+  - Título simplificado a **"Almacenamiento"** ("Storage"), permitiendo ver las emisiones en directo sin necesidad de hacer scroll vertical en pantallas estándar.
 
 ## [3.2.3] - 2026-11-08
 

@@ -16,13 +16,14 @@
   - Logotipos oficiales de canales con renderizado proporcional y fallback automático.
   - **EPG en Vivo en Tarjetas**: Muestra el título del programa en emisión, sinopsis, barra de progreso y minutos restantes.
   - Usuarios conectados, canal sintonizado, cliente/reproductor utilizado (VLC, Kodi, TiviMate, etc.) y tasa de bits instantánea mediante WebSockets nativos.
-  - **Kill Stream**: Botón de detención remota para cancelar cualquier emisión activa directamente a través de la API de TVHeadend.
+  - **Kill Stream**: Botón de detención remota para cancelar cualquier emisión activa directamente a través de la API oficial de TVHeadend (`/api/connections/cancel`).
   - **Salud de Señal**: Contador de paquetes con error y aviso de degradación de transporte de flujo.
   - **Sparklines de Ancho de Banda**: Gráficas dinámicas de consumo por sesión en tiempo real.
   - **Geolocalización e IPs Locales**: Detección de país con banderas e identificación automática de red local (LAN).
   - **Filtro Inteligente de Escaneos**: Descarta automáticamente tareas internas de TVHeadend como escaneos de listas M3U/IPTV, muxes y grabadores EPG.
-- 💾 **Monitor de Almacenamiento y Espacio en Disco de TVHeadend**:
+- 💾 **Monitor de Almacenamiento Ultra-Compacto**:
   - Lectura en tiempo real de capacidad total, espacio libre y ocupado consultando directamente `/comet/poll` y eventos WebSocket de TVHeadend.
+  - Formato barra horizontal estilizada de bajo perfil que no resta visibilidad a las transmisiones activas.
   - Barra de progreso coloreada con alerta de espacio bajo (< 10%).
   - Métrica de espacio consumido específicamente por las grabaciones del DVR.
 - 🔴 **Detección de Grabaciones DVR y Modal de Próximas Emisiones**:
@@ -44,7 +45,7 @@
   - Análisis de **Horas Pico** (distribución de uso de 00:00 a 23:00).
   - Filtros interactivos por rango de fechas (7, 14, 30, 90 días o 1 año) y métrica (tiempo vs usos).
 - 🔒 **Seguridad y Control de Acceso**:
-  - **Bloqueo por Código PIN**: Protege el acceso al panel con un PIN numérico personalizable, soporte de teclado físico y arranque protegido sin fugas visuales.
+  - **Bloqueo por Código PIN**: Protege el acceso al panel con un PIN numérico personalizable, soporte de teclado físico, arranque protegido sin fugas visuales y **recuerdo del dispositivo durante 30 días** mediante cookies/localStorage con opción de bloqueo manual inmediato.
   - **Gestor Interactivo de IPs Autorizadas**: Lista blanca mediante etiquetas/chips con presets rápidos y compatibilidad completa con comodines (`192.168.1.*`) y subredes CIDR (`10.0.0.0/24`).
   - **Protección de IPs Locales y del Servidor**: Conexiones locales del servidor (`127.0.0.1`, `localhost`, `::1`) permitidas siempre por defecto, con opción para autorizar toda la LAN privada con un solo clic.
 - 🔄 **Resiliencia, Salud y Mantenimiento del Servidor**:

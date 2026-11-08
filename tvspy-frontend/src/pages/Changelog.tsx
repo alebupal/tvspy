@@ -12,13 +12,14 @@ import {
   FiCheck,
   FiTag,
   FiGift,
+  FiFileText,
 } from 'react-icons/fi';
 
 const PAYPAL_URL = 'https://www.paypal.me/alebupal';
 
 const Changelog: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const [activeTab, setActiveTab] = useState<string>('changelog');
+  const [activeTab, setActiveTab] = useState<string>('documentation');
   const [content, setContent] = useState<string>('');
   const [filename, setFilename] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,7 +31,11 @@ const Changelog: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const type = activeTab === 'readme' ? 'readme' : 'changelog';
+      const type = activeTab === 'readme'
+        ? 'readme'
+        : activeTab === 'documentation'
+        ? 'documentation'
+        : 'changelog';
       const data = await docsApi.getDoc(type, currentLang);
       setContent(data.content);
       setFilename(data.filename);
@@ -39,6 +44,8 @@ const Changelog: React.FC = () => {
       try {
         const file = activeTab === 'readme'
           ? (currentLang === 'en' ? 'README.MD' : 'README_ES.MD')
+          : activeTab === 'documentation'
+          ? (currentLang === 'en' ? 'DOCUMENTATION.MD' : 'DOCUMENTACION.MD')
           : (currentLang === 'en' ? 'CHANGELOG.MD' : 'CHANGELOG_ES.MD');
         const fallbackUrl = `https://raw.githubusercontent.com/alebupal/tvspy/main/${file}`;
         const res = await fetch(fallbackUrl);
@@ -59,8 +66,9 @@ const Changelog: React.FC = () => {
   }, [activeTab, currentLang]);
 
   const tabs: TabItem[] = [
+    { id: 'documentation', label: t('User Guide'), icon: <FiBookOpen /> },
     { id: 'changelog', label: t('Changelog / Versions'), icon: <FiList /> },
-    { id: 'readme', label: t('README / Documentation'), icon: <FiBookOpen /> },
+    { id: 'readme', label: t('README / Repository'), icon: <FiFileText /> },
   ];
 
   // Parser simple de Markdown para mostrar el texto estilizado
