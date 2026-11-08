@@ -23,6 +23,7 @@ interface LiveStreamCardProps {
   subscription: SubscriptionMessage;
   allowedIps?: string;
   channelLogo?: string;
+  network?: string;
   epgEvent?: CurrentEpgEvent;
 }
 
@@ -30,6 +31,7 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
   subscription,
   allowedIps = '',
   channelLogo,
+  network,
   epgEvent,
 }) => {
   const { t } = useTranslation();
@@ -39,6 +41,20 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
 
   const isDvr = subscription.title && subscription.title.includes('DVR:');
   const isIpAllowed = checkIpAuthorized(subscription.hostname, allowedIps);
+
+  // Resolver red de emisión (prop, subscription o caché de sesión)
+  const resolvedNetwork = useMemo(() => {
+    if (network && network.trim()) return network;
+    if ((subscription as any).network && (subscription as any).network.trim()) return (subscription as any).network;
+    try {
+      const cached = sessionStorage.getItem('tvspy_channel_networks');
+      if (cached && subscription.channel) {
+        const map = JSON.parse(cached);
+        if (map[subscription.channel]) return map[subscription.channel];
+      }
+    } catch {}
+    return null;
+  }, [network, (subscription as any).network, subscription.channel]);
 
   // Resolver logo del canal desde prop, suscripción o caché de sesión
   const resolvedLogo = useMemo(() => {
@@ -132,11 +148,17 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
             >
               {subscription.channel || t('Unknown channel')}
             </h4>
-            <div className="flex items-center gap-2 mt-0.5">
+            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
               <span className="text-xs text-body dark:text-bodydark flex items-center gap-1 truncate">
                 <FiUser className="text-xs flex-shrink-0" />
                 <span className="truncate">{subscription.username || t('No user')}</span>
               </span>
+              {resolvedNetwork && (
+                <span className="inline-flex items-center gap-1 rounded px-1.5 py-0.2 text-[10px] font-semibold bg-primary/10 text-primary dark:bg-primary/20 dark:text-secondary">
+                  <span>📡</span>
+                  <span className="truncate max-w-[120px]">{resolvedNetwork}</span>
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -247,8 +269,21 @@ export const LiveStreamCard: React.FC<LiveStreamCardProps> = ({
           </div>
         </div>
 
-        {/* Servicio / Profile */}
-        {subscription.service && (
+        {/* Red de emisión */}
+        {resolvedNetwork && (
+          <div className="flex items-center justify-between text-body dark:text-bodydark">
+            <span className="flex items-center gap-1.5">
+              <span className="text-sm">📡</span>
+              {t('Network')}:
+            </span>
+            <span className="font-semibold text-black dark:text-white truncate max-w-[160px]">
+              {resolvedNetwork}
+            </span>
+          </div>
+        )}
+
+        {/* Servicio / Profile (filtrando hashes UUID hexadecimales crudos) */}
+        {subscription.service && !/^[0-9a-fA-F-]{20,}$/.test(subscription.service) && (
           <div className="flex items-center justify-between text-body dark:text-bodydark">
             <span className="flex items-center gap-1.5">
               <FiActivity className="text-sm" />

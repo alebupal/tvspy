@@ -51,25 +51,39 @@ const Home: React.FC = () => {
       return {};
     }
   });
+  const [channelNetworks, setChannelNetworks] = useState<Record<string, string>>(() => {
+    try {
+      const cached = sessionStorage.getItem('tvspy_channel_networks');
+      return cached ? JSON.parse(cached) : {};
+    } catch {
+      return {};
+    }
+  });
 
-  // Cargar logos de canales para mostrarlos en las emisiones en vivo
+  // Cargar logos de canales y redes para mostrarlos en las emisiones en vivo
   useEffect(() => {
     tvheadendApi
       .getChannels()
       .then((data) => {
         if (Array.isArray(data?.entries)) {
-          const map: Record<string, string> = {};
+          const logosMap: Record<string, string> = {};
+          const networksMap: Record<string, string> = {};
           data.entries.forEach((ch: any) => {
             if (ch.name) {
               const icon = ch.icon_public_url || ch.icon;
               if (icon) {
-                map[ch.name] = icon;
+                logosMap[ch.name] = icon;
+              }
+              if (ch.network_name) {
+                networksMap[ch.name] = ch.network_name;
               }
             }
           });
-          setChannelLogos(map);
+          setChannelLogos(logosMap);
+          setChannelNetworks(networksMap);
           try {
-            sessionStorage.setItem('tvspy_channel_logos', JSON.stringify(map));
+            sessionStorage.setItem('tvspy_channel_logos', JSON.stringify(logosMap));
+            sessionStorage.setItem('tvspy_channel_networks', JSON.stringify(networksMap));
           } catch {}
         }
       })
@@ -318,6 +332,7 @@ const Home: React.FC = () => {
                 subscription={sub}
                 allowedIps={allowedIps}
                 channelLogo={channelLogos[sub.channel]}
+                network={channelNetworks[sub.channel] || (sub as any).network}
                 epgEvent={currentEpg[sub.channel?.toLowerCase()?.trim()]}
               />
             ))}

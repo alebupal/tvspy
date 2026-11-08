@@ -8,6 +8,7 @@ export interface SubscriptionMessage {
   title: string;
   channel: string;
   service: string;
+  network?: string;
   pids?: number[];
   profile?: string;
   in: number;
