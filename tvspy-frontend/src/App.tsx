@@ -16,15 +16,16 @@ import Changelog from './pages/Changelog';
 import DefaultLayout from './layout/DefaultLayout';
 import PinLockScreen from './components/common/PinLockScreen';
 import { configApi } from './api';
+import { isAppUnlocked, clearAppUnlocked } from './utils/authUtils';
 
 function App() {
-  const isUnlockedSession = typeof window !== 'undefined' && sessionStorage.getItem('tvspy_unlocked') === '1';
+  const isUnlocked = isAppUnlocked();
   const cachedPinEnabled = typeof window !== 'undefined' && localStorage.getItem('tvspy_pin_enabled') === '1';
   const cachedPinLength = typeof window !== 'undefined' ? (Number(localStorage.getItem('tvspy_pin_length')) || 4) : 4;
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [checkingAuth, setCheckingAuth] = useState<boolean>(!isUnlockedSession);
-  const [isLocked, setIsLocked] = useState<boolean>(!isUnlockedSession && cachedPinEnabled);
+  const [checkingAuth, setCheckingAuth] = useState<boolean>(!isUnlocked);
+  const [isLocked, setIsLocked] = useState<boolean>(!isUnlocked && cachedPinEnabled);
   const [pinLength, setPinLength] = useState<number>(cachedPinLength);
   const { pathname } = useLocation();
   const { t, i18n } = useTranslation();
@@ -44,7 +45,7 @@ function App() {
             localStorage.setItem('tvspy_pin_length', String(res.length));
             setPinLength(res.length);
           }
-          if (sessionStorage.getItem('tvspy_unlocked') !== '1') {
+          if (!isAppUnlocked()) {
             setIsLocked(true);
           } else {
             setIsLocked(false);
@@ -52,11 +53,12 @@ function App() {
         } else {
           localStorage.removeItem('tvspy_pin_enabled');
           localStorage.removeItem('tvspy_pin_length');
+          clearAppUnlocked();
           setIsLocked(false);
         }
       })
       .catch(() => {
-        if (!cachedPinEnabled) {
+        if (!cachedPinEnabled || isAppUnlocked()) {
           setIsLocked(false);
         }
       })

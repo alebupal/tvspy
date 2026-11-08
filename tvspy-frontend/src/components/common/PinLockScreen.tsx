@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { configApi } from '../../api';
+import { setAppUnlocked } from '../../utils/authUtils';
 import Logo from '../../images/logo/logo-icon.svg';
 import { FiLock, FiUnlock, FiDelete } from 'react-icons/fi';
 import toast from 'react-hot-toast';
@@ -48,7 +49,7 @@ export const PinLockScreen: React.FC<PinLockScreenProps> = ({
     try {
       const res = await configApi.verifyPin(code);
       if (res.success) {
-        sessionStorage.setItem('tvspy_unlocked', '1');
+        setAppUnlocked(res.token, 30);
         toast.success(t('Access granted') || 'Acceso concedido');
         onUnlock();
       } else {

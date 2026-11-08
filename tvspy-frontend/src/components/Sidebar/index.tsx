@@ -135,9 +135,10 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
 
       <aside
         ref={sidebar}
-        className={`fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col justify-between overflow-y-auto border-r border-stroke bg-white duration-300 ease-in-out dark:border-strokedark dark:bg-boxdark lg:static lg:z-auto lg:h-screen lg:w-64 lg:max-w-none lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col justify-between overflow-y-auto no-scrollbar border-r border-stroke bg-white duration-300 ease-in-out dark:border-strokedark dark:bg-boxdark lg:static lg:z-auto lg:h-screen lg:w-64 lg:max-w-none lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         }`}
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         <div>
           {/* Header del Sidebar con Logo */}

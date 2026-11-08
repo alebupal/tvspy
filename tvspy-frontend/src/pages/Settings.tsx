@@ -37,6 +37,7 @@ import {
   getNotificationSettings,
   saveNotificationSettings,
 } from '../utils/notifications';
+import { clearAppUnlocked } from '../utils/authUtils';
 
 const Settings: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -196,6 +197,7 @@ const Settings: React.FC = () => {
         } else if (map.pin_enabled === '0') {
           localStorage.removeItem('tvspy_pin_enabled');
           localStorage.removeItem('tvspy_pin_length');
+          clearAppUnlocked();
         }
         loadDbInfo();
         systemApi.checkUpdate(false).then((u) => setUpdateInfo(u)).catch(() => {});
@@ -235,6 +237,7 @@ const Settings: React.FC = () => {
       } else if (config.pin_enabled === '0') {
         localStorage.removeItem('tvspy_pin_enabled');
         localStorage.removeItem('tvspy_pin_length');
+        clearAppUnlocked();
       }
       toast.success(t('Successfully updated'));
       if (config.language && config.language !== i18n.language) {
@@ -1002,14 +1005,37 @@ const Settings: React.FC = () => {
               />
 
               {isEnabled('pin_enabled') && (
-                <div className="max-w-xs">
-                  <Input
-                    label={t('Access PIN Code (4-8 digits)') || 'Código PIN de acceso (4-8 dígitos)'}
-                    type="password"
-                    placeholder="1234"
-                    value={config.pin_code || ''}
-                    onChange={(e) => handleChange('pin_code', e.target.value.replace(/\D/g, '').slice(0, 8))}
-                  />
+                <div className="space-y-3 max-w-md">
+                  <div className="max-w-xs">
+                    <Input
+                      label={t('Access PIN Code (4-8 digits)') || 'Código PIN de acceso (4-8 dígitos)'}
+                      type="password"
+                      placeholder="1234"
+                      value={config.pin_code || ''}
+                      onChange={(e) => handleChange('pin_code', e.target.value.replace(/\D/g, '').slice(0, 8))}
+                    />
+                  </div>
+                  <div className="rounded-lg bg-gray-50 dark:bg-meta-4/20 p-3 text-xs text-body dark:text-bodydark border border-stroke dark:border-strokedark flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-medium text-black dark:text-white">
+                        {t('Device remembered for 30 days') || 'Dispositivo recordado por 30 días'}
+                      </p>
+                      <p className="mt-0.5 text-[11px]">
+                        {t('Once unlocked, this browser stays authenticated without asking for the PIN on each reload.') ||
+                          'Una vez introducido el PIN, este navegador se mantiene desbloqueado sin solicitarlo en cada recarga.'}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        clearAppUnlocked();
+                        window.location.reload();
+                      }}
+                      className="shrink-0 rounded-lg px-2.5 py-1.5 text-xs font-medium border border-stroke dark:border-strokedark hover:bg-rose-500/10 hover:border-rose-500/40 hover:text-rose-500 transition text-body dark:text-bodydark"
+                    >
+                      {t('Lock now') || 'Bloquear ahora'}
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
